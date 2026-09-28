@@ -1,4 +1,4 @@
-# Cosmo — chatbot de Kauplayon
+# Wanda — chatbot de Kauplayon
 
 Chatbot web em português com respostas por IA Gemini, histórico recente e entrada por voz no navegador.
 
@@ -24,7 +24,7 @@ A hospedagem gratuita pode suspender o serviço após inatividade e pode demorar
 
 ## Personalização
 Configure estas variáveis no servidor (ou no `.env` local):
-- `BOT_NAME`: nome exibido e usado pelo assistente (padrão: Cosmo).
+- `BOT_NAME`: nome exibido e usado pelo assistente (padrão: Wanda).
 - `BOT_PERSONALITY`: descrição do jeito de responder (padrão: amigável, paciente, curioso e didático).
 - `GEMINI_MODEL`: modelo Gemini (padrão: gemini-2.5-flash).
 - `GEMINI_API_KEY`: chave secreta da API; nunca a publique no GitHub.
