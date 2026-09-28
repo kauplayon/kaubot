@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 64 * 1024
+app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
 
 api_token = os.getenv("CLOUDFLARE_API_TOKEN")
 account_id = os.getenv("CLOUDFLARE_ACCOUNT_ID")
@@ -87,6 +87,50 @@ def chat():
             }), 502
 
     return jsonify({"reply": local_reply(conversation[-1]["content"])})
+
+
+@app.post("/transcribe")
+def transcribe():
+    if not client_configured:
+        return jsonify({"error": "A transcrição precisa da API da Cloudflare configurada."}), 503
+
+    audio = request.files.get("audio")
+    if not audio or not audio.filename:
+        return jsonify({"error": "Selecione um arquivo de áudio."}), 400
+
+    allowed = {".mp3", ".wav", ".m4a", ".mp4", ".mpeg", ".mpga", ".ogg", ".webm", ".flac"}
+    import os as _os
+    extension = _os.path.splitext(audio.filename.lower())[1]
+    if extension not in allowed:
+        return jsonify({"error": "Formato não suportado. Use MP3, WAV, M4A, OGG ou WEBM."}), 415
+
+    raw = audio.read(8 * 1024 * 1024 + 1)
+    if not raw:
+        return jsonify({"error": "O arquivo está vazio."}), 400
+    if len(raw) > 8 * 1024 * 1024:
+        return jsonify({"error": "O áudio deve ter no máximo 8 MB."}), 413
+
+    try:
+        import base64
+        encoded = base64.b64encode(raw).decode("ascii")
+        model = "@cf/openai/whisper-large-v3-turbo"
+        url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/{model}"
+        response = requests.post(
+            url,
+            headers={"Authorization": f"Bearer {api_token}"},
+            json={"audio": encoded, "task": "transcribe", "language": "pt"},
+            timeout=120
+        )
+        response.raise_for_status()
+        result = response.json().get("result") or {}
+        transcript = result.get("text") or result.get("transcription_info", {}).get("text")
+        if not transcript:
+            raise ValueError("A Cloudflare não retornou uma transcrição.")
+        return jsonify({"text": transcript})
+    except Exception:
+        app.logger.exception("Erro ao transcrever áudio")
+        return jsonify({"error": "Não consegui transcrever esse áudio. Tente outro arquivo."}), 502
+
 
 def local_reply(text):
     """Fallback simples, baseado em regras; não é um modelo generativo."""
