@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KauBot | Kauplayon</title>
+<title>{{ bot_name }} | Kauplayon</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eaf0ff;font:16px Arial,sans-serif;display:grid;place-items:center;min-height:100vh}
 .app{width:min(760px,95vw);height:min(780px,94vh);background:#141c32;border:1px solid #293653;border-radius:20px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px #0006}
@@ -13,7 +13,7 @@ form{display:flex;gap:9px;padding:15px;border-top:1px solid #293653}input{flex:1
 </style>
 </head>
 <body><main class="app">
-<header><h1>✨ KauBot</h1><p>Seu assistente virtual • criado por Kauplayon</p></header>
+<header><h1>✨ {{ bot_name }}</h1><p>Seu assistente virtual • criado por Kauplayon</p></header>
 <section id="chat"><div class="msg bot">Olá! Sou o KauBot. Pode escrever ou usar o microfone para conversar comigo.</div></section>
 <form id="form"><input id="input" placeholder="Digite sua pergunta..." autocomplete="off"><button type="button" id="mic" title="Falar">🎙️</button><button id="send">Enviar</button></form>
 <footer>As conversas são enviadas à API configurada no servidor. Não compartilhe dados pessoais.</footer>
