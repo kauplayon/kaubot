@@ -150,6 +150,7 @@ function applyAccent(){document.documentElement.style.setProperty('--line',color
 applyAccent();
 document.querySelector('#saveSettings').addEventListener('click',()=>{localStorage.setItem('cosmo-personality',personalitySelect.value);localStorage.setItem('cosmo-language',languageSelect.value);localStorage.setItem('cosmo-color',colorSelect.value);localStorage.setItem('cosmo-memory',memoryInput.value.trim());applyAccent();settingsOverlay.hidden=true;});
 colorSelect.addEventListener('change',applyAccent);
+function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function showStats(){
  const total=conversations.length;
  const msgs=conversations.reduce((n,c)=>n+c.messages.length,0);
