@@ -47,7 +47,7 @@ def chat():
         return jsonify({"reply": "Envie uma pergunta para começarmos."}), 400
 
     conversation = [{"role": "system", "content": SYSTEM}]
-    for item in messages[-12:]:
+    for item in messages[-30:]:
         if not isinstance(item, dict):
             continue
         role = "user" if item.get("role") == "user" else "assistant"
