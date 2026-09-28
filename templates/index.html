@@ -5,27 +5,80 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ bot_name }} | Kauplayon</title>
 <style>
+:root{color-scheme:dark;--line:rgba(119,132,255,.38);--panel:rgba(8,13,39,.76);--purple:#7954f5;--text:#f3f5ff;--muted:#b9c4e9}
 *{box-sizing:border-box}
-body{margin:0;background:#0b1020 url("/static/fundo-cosmo.jpg") center/cover fixed no-repeat;color:#eaf0ff;font:16px Arial,sans-serif;display:grid;place-items:center;min-height:100vh;padding:18px}
-.app{width:min(760px,95vw);height:min(780px,94vh);background:rgba(20,28,50,.91);backdrop-filter:blur(8px);border:1px solid #53618a;border-radius:20px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px #0008}
-header{display:flex;align-items:center;gap:13px;padding:15px 24px;border-bottom:1px solid #394766}
-.logo{width:54px;height:54px;object-fit:contain;background:#fff;border-radius:50%;padding:3px;flex-shrink:0}
-h1{margin:0;font-size:23px}header p{margin:6px 0 0;color:#c0cbea;font-size:13px}
-#chat{flex:1;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px}.msg{max-width:82%;padding:12px 15px;border-radius:15px;line-height:1.5;white-space:pre-wrap}.user{align-self:flex-end;background:#5969e8;color:white;border-bottom-right-radius:4px}.bot{align-self:flex-start;background:rgba(44,57,88,.94);border-bottom-left-radius:4px}
-form{display:flex;gap:9px;padding:15px;border-top:1px solid #394766;background:rgba(14,21,40,.55)}input{flex:1;min-width:0;background:#0e1528;border:1px solid #526184;color:white;padding:13px;border-radius:12px;font-size:15px;outline:none}input:focus{border-color:#8a9aff}button{border:0;border-radius:12px;padding:0 16px;background:#6978f4;color:white;font-weight:bold;cursor:pointer}button:disabled{opacity:.5}#mic{background:#293653}footer{padding:0 17px 12px;color:#c0cbea;font-size:11px;background:rgba(14,21,40,.55)}
-@media(max-width:520px){.app{width:100%;height:94vh}.msg{max-width:92%}header{padding:13px 16px}.logo{width:46px;height:46px}form{padding:10px;gap:6px}button{padding:0 12px}}
+body{margin:0;min-height:100vh;color:var(--text);font:15px Inter,system-ui,Arial,sans-serif;background:#070b20 url("/static/fundo-cosmo.jpg") center/cover fixed no-repeat}
+body:before{content:"";position:fixed;inset:0;background:linear-gradient(90deg,rgba(5,8,29,.45),rgba(7,11,35,.18));pointer-events:none}
+button,input{font:inherit}
+.topbar{height:86px;display:flex;align-items:center;justify-content:space-between;padding:12px 3%;position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:16px;font-size:27px;font-weight:700;letter-spacing:5px}
+.logo{width:66px;height:66px;object-fit:contain;filter:drop-shadow(0 0 12px #8c56ff)}
+.top-actions{display:flex;gap:14px;align-items:center}
+.icon-button,.profile{border:1px solid var(--line);background:rgba(10,15,43,.72);color:var(--text);border-radius:30px;padding:10px 15px}
+.profile{display:flex;align-items:center;gap:10px}
+.layout{height:calc(100vh - 102px);min-height:520px;display:grid;grid-template-columns:246px minmax(0,1fr);gap:14px;padding:0 3% 18px;position:relative;z-index:1}
+.sidebar,.workspace{border:1px solid var(--line);background:rgba(7,12,37,.72);backdrop-filter:blur(12px);border-radius:15px;box-shadow:0 12px 40px #0003}
+.sidebar{padding:15px 10px}
+.nav{display:flex;flex-direction:column;gap:8px}
+.nav button{border:1px solid transparent;background:transparent;color:#dce4ff;text-align:left;padding:13px 14px;border-radius:11px;cursor:pointer}
+.nav button.active,.nav button:hover{background:rgba(91,82,220,.23);border-color:rgba(135,115,255,.2)}
+.nav .symbol{display:inline-block;width:27px;color:#b9a4ff;font-size:18px;margin-right:8px}
+.workspace{display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.chat{flex:1;min-height:0;overflow:auto;padding:28px;display:flex;flex-direction:column;gap:14px}
+.welcome{margin:auto;max-width:680px;width:100%;text-align:center;padding:24px 10px}
+.welcome-logo{width:78px;height:78px;object-fit:contain;filter:drop-shadow(0 0 16px #8755ff);vertical-align:middle;margin-right:10px}
+.welcome-brand{font-size:39px;letter-spacing:5px;font-weight:700;display:flex;justify-content:center;align-items:center;margin-bottom:25px}
+.welcome h1{font-size:34px;margin:10px 0 12px}.welcome h1 span{color:#a18aff}
+.welcome p{color:var(--muted);font-size:16px;line-height:1.7;margin:0 auto 28px}
+.suggestions{display:grid;grid-template-columns:1fr 1fr;gap:13px;text-align:left}
+.suggestion{display:flex;align-items:center;gap:16px;padding:17px 18px;border:1px solid var(--line);border-radius:15px;background:rgba(13,19,57,.68);color:var(--text);cursor:pointer;text-align:left;min-height:74px}
+.suggestion:hover{border-color:#9a79ff;background:rgba(69,50,139,.3)}
+.suggestion .sicon{font-size:25px;color:#b7a0ff}.suggestion small{display:block;color:var(--muted);margin-top:5px;font-size:13px}
+.msg{max-width:82%;padding:12px 15px;border-radius:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.user{align-self:flex-end;background:#6253d9;border-bottom-right-radius:4px}.bot{align-self:flex-start;background:rgba(35,43,83,.94);border:1px solid rgba(119,132,255,.18);border-bottom-left-radius:4px}
+.composer{padding:12px 18px 17px}
+form{display:flex;gap:10px;align-items:center;padding:8px;border:1px solid #795cf4;border-radius:24px;background:rgba(10,15,44,.9);box-shadow:0 0 18px rgba(103,75,241,.12)}
+input{flex:1;min-width:0;background:transparent;border:0;color:white;padding:12px 14px;outline:none}input::placeholder{color:#aab5da}
+button.send,button.mic{border:0;border-radius:15px;padding:12px 17px;background:#7454f5;color:white;cursor:pointer;font-weight:650}
+button.mic{background:rgba(39,49,91,.95);padding:12px}
+button:disabled{opacity:.5;cursor:not-allowed}
+footer{padding:0 22px 12px;color:#9eadd7;font-size:11px}
+@media(max-width:700px){.topbar{height:76px;padding:8px 14px}.brand{font-size:21px;letter-spacing:3px;gap:8px}.logo{width:50px;height:50px}.layout{height:calc(100vh - 86px);grid-template-columns:1fr;padding:0 10px 10px}.sidebar{display:none}.chat{padding:14px}.welcome{padding:10px 0}.welcome-brand{font-size:30px}.welcome-logo{width:60px;height:60px}.welcome h1{font-size:27px}.welcome p{font-size:14px}.suggestions{gap:8px}.suggestion{padding:12px;gap:8px;font-size:13px}.suggestion small{font-size:11px}.composer{padding:8px 10px 12px}footer{padding:0 12px 9px}.profile{padding:8px 10px}.top-actions{gap:6px}}
+@media(max-width:390px){.suggestions{grid-template-columns:1fr}.welcome-brand{margin-bottom:12px}.welcome h1{margin-top:0}}
 </style>
 </head>
-<body><main class="app">
-<header><img class="logo" src="{{ url_for('static', filename='logo-cosmo.png') }}" alt="Logo do Cosmo"><div><h1>{{ bot_name }}</h1><p>Seu assistente virtual • criado por Kauplayon</p></div></header>
-<section id="chat"><div class="msg bot">Olá! Sou o {{ bot_name }}. Pode escrever ou usar o microfone para conversar comigo.</div></section>
-<form id="form"><input id="input" placeholder="Digite sua pergunta..." autocomplete="off"><button type="button" id="mic" title="Falar">🎙️</button><button id="send">Enviar</button></form>
-<footer>As conversas são enviadas à API configurada no servidor. Não compartilhe dados pessoais.</footer>
+<body>
+<header class="topbar">
+  <div class="brand"><img class="logo" src="{{ url_for('static', filename='logo-cosmo.png') }}" alt="Logo do Cosmo"><span>COSMO</span><span style="color:#b47cff;margin-left:-12px">✦</span></div>
+  <div class="top-actions"><button class="icon-button" type="button" title="Tema">☾</button><button class="profile" type="button">♙ <span>Kauã</span>⌄</button></div>
+</header>
+<main class="layout">
+  <aside class="sidebar"><nav class="nav"><button class="active" type="button"><span class="symbol">▣</span>Chat</button><button type="button"><span class="symbol">◴</span>Histórico</button><button type="button"><span class="symbol">⚙</span>Configurações</button><button type="button"><span class="symbol">ⓘ</span>Sobre</button></nav></aside>
+  <section class="workspace">
+    <section id="chat" class="chat">
+      <div class="welcome" id="welcome">
+        <div class="welcome-brand"><img class="welcome-logo" src="{{ url_for('static', filename='logo-cosmo.png') }}" alt="Logo"><span>COSMO</span><span style="color:#b47cff;margin-left:8px">✦</span></div>
+        <h1>Olá, sou o <span>{{ bot_name }}!</span></h1>
+        <p>Seu assistente inteligente, sempre pronto para ajudar.<br>Faça uma pergunta, tire suas dúvidas ou peça uma explicação.</p>
+        <div class="suggestions">
+          <button class="suggestion" type="button" data-prompt="Explique um conceito de forma simples"><span class="sicon">♧</span><span>Explique um conceito<small>de forma simples</small></span></button>
+          <button class="suggestion" type="button" data-prompt="Resuma este texto ou conteúdo"><span class="sicon">▤</span><span>Resuma um texto<small>ou conteúdo</small></span></button>
+          <button class="suggestion" type="button" data-prompt="Ajude-me com código e programação"><span class="sicon">‹/›</span><span>Ajude com código<small>e programação</small></span></button>
+          <button class="suggestion" type="button" data-prompt="Tenho uma dúvida sobre um assunto"><span class="sicon">ⓘ</span><span>Tire uma dúvida<small>sobre qualquer assunto</small></span></button>
+        </div>
+      </div>
+    </section>
+    <div class="composer"><form id="form"><input id="input" placeholder="Digite sua mensagem..." autocomplete="off" aria-label="Digite sua mensagem"><button type="button" id="mic" class="mic" title="Falar">🎙</button><button id="send" class="send">➤</button></form></div>
+    <footer>As conversas são enviadas à API configurada no servidor. Não compartilhe dados pessoais.</footer>
+  </section>
 </main>
 <script>
-const chat=document.querySelector('#chat'),input=document.querySelector('#input'),form=document.querySelector('#form'),send=document.querySelector('#send'),messages=[];
-function bubble(text,who){const el=document.createElement('div');el.className='msg '+who;el.textContent=text;chat.appendChild(el);chat.scrollTop=chat.scrollHeight}
+const chat=document.querySelector('#chat'),welcome=document.querySelector('#welcome'),input=document.querySelector('#input'),form=document.querySelector('#form'),send=document.querySelector('#send'),messages=[];
+function bubble(text,who){if(welcome)welcome.remove();const el=document.createElement('div');el.className='msg '+who;el.textContent=text;chat.appendChild(el);chat.scrollTop=chat.scrollHeight}
 form.addEventListener('submit',async e=>{e.preventDefault();const text=input.value.trim();if(!text)return;input.value='';bubble(text,'user');messages.push({role:'user',content:text});send.disabled=true;try{const r=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});const d=await r.json();bubble(d.reply||'Não recebi uma resposta.','bot');messages.push({role:'assistant',content:d.reply||''})}catch{bubble('Não consegui conectar ao servidor.','bot')}finally{send.disabled=false;input.focus()}});
+document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{input.value=b.dataset.prompt;input.focus();form.requestSubmit()}));
 const mic=document.querySelector('#mic'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(SR){const rec=new SR();rec.lang='pt-BR';rec.interimResults=false;mic.onclick=()=>{rec.start();mic.textContent='🔴'};rec.onresult=e=>{input.value=e.results[0][0].transcript;form.requestSubmit()};rec.onend=()=>mic.textContent='🎙️';rec.onerror=()=>{mic.textContent='🎙️';bubble('Não consegui reconhecer a fala. Você também pode digitar.','bot')}}else{mic.disabled=true;mic.title='Reconhecimento de fala não suportado neste navegador'}
-</script></body></html>
+if(SR){const rec=new SR();rec.lang='pt-BR';rec.interimResults=false;mic.onclick=()=>{rec.start();mic.textContent='🔴'};rec.onresult=e=>{input.value=e.results[0][0].transcript;form.requestSubmit()};rec.onend=()=>mic.textContent='🎙';rec.onerror=()=>{mic.textContent='🎙';bubble('Não consegui reconhecer a fala. Você também pode digitar.','bot')}}else{mic.disabled=true;mic.title='Reconhecimento de fala não suportado neste navegador'}
+</script>
+</body>
+</html>
