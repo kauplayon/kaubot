@@ -78,7 +78,7 @@ def chat():
             response = requests.post(
                 url,
                 headers={"Authorization": f"Bearer {api_token}"},
-                json={"messages": conversation},
+                json={"messages": conversation, "max_tokens": 2048},
                 timeout=60
             )
             response.raise_for_status()
