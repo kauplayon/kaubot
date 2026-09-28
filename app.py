@@ -47,6 +47,7 @@ def chat():
         return jsonify({"reply": "Envie uma pergunta para começarmos."}), 400
 
     study_mode = bool(data.get("study_mode"))
+    assistant_mode = str(data.get("assistant_mode", "normal"))
     memory = str(data.get("memory", ""))[:1500].strip()
     personalities = {
         "amigavel": "Amigável e acolhedor, com linguagem simples.",
@@ -59,8 +60,10 @@ def chat():
     languages = {"pt": "português do Brasil", "en": "English", "es": "español", "fr": "français"}
     language = languages.get(str(data.get("language", "pt")), "português do Brasil")
     system_prompt = SYSTEM + "\\nPersonalidade escolhida: " + personality + "\\nResponda sempre no idioma: " + language + "."
-    if study_mode:
-        system_prompt += "\nModo estudos: explique passo a passo, use exemplos simples e ajude o estudante a compreender o assunto."
+    if study_mode or assistant_mode == "tutor":
+        system_prompt += "\nModo tutor: ensine de forma gradual, explique o raciocínio, use exemplos simples e, quando solicitado, crie exercícios com respostas comentadas. Não entregue apenas a resposta quando uma explicação ajudar na aprendizagem."
+    if assistant_mode == "developer":
+        system_prompt += "\nModo desenvolvedor: ajude a planejar, escrever, revisar e depurar código. Explique as alterações, considere segurança e boas práticas, e não afirme que executou ou testou código se isso não aconteceu."
     if memory:
         system_prompt += "\nPreferências que o usuário escolheu salvar: " + memory
     conversation = [{"role": "system", "content": system_prompt}]
