@@ -43,7 +43,31 @@ testVoice.addEventListener('click',()=>{if(!('speechSynthesis' in window)){bubbl
 function speak(t,force=false){if((!speakEnabled&&!force)||!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);const selected=availableVoices.find(v=>v.voiceURI===voiceSelect.value);if(selected){u.voice=selected;u.lang=selected.lang||'pt-BR'}else u.lang='pt-BR';u.rate=1;speechSynthesis.speak(u)}
 function bubble(t,w){if(document.querySelector('#welcome'))document.querySelector('#welcome').remove();const e=document.createElement('div');e.className='msg '+w;e.textContent=t;if(w==='bot'){const b=document.createElement('button');b.className='speak-btn';b.type='button';b.textContent='🔊 Ouvir';b.onclick=()=>speak(t);e.appendChild(b)}chat.appendChild(e);chat.scrollTop=chat.scrollHeight}function use(t){input.value=t;form.requestSubmit()}function info(n){bubble(n+' ainda está em desenvolvimento. Por enquanto, use o Chat para conversar comigo.','bot')}
 form.addEventListener('submit',async e=>{e.preventDefault();const t=input.value.trim();if(!t)return;input.value='';bubble(t,'user');messages.push({role:'user',content:t});saveMessages();send.disabled=true;try{const r=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});const d=await r.json();bubble(d.reply||'Não recebi uma resposta.','bot');messages.push({role:'assistant',content:d.reply||''});saveMessages();speak(d.reply||'')}catch{bubble('Não consegui conectar ao servidor.','bot')}finally{send.disabled=false;input.focus()}});
-const mic=document.querySelector('#mic'),audioFile=document.querySelector('#audioFile'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){const rec=new SR();rec.lang='pt-BR';rec.interimResults=false;mic.onclick=()=>{rec.start();mic.textContent='🔴'};rec.onresult=e=>{input.value=e.results[0][0].transcript;form.requestSubmit()};rec.onend=()=>mic.textContent='🎙️';rec.onerror=()=>{mic.textContent='🎙️';bubble('Não consegui reconhecer a fala. Você também pode digitar.','bot')}}else mic.disabled=true;
+const mic=document.querySelector('#mic'),audioFile=document.querySelector('#audioFile');
+let recorder=null,recordedChunks=[],recording=false;
+mic.addEventListener('click',async()=>{
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){bubble('Seu navegador não permite gravar áudio. Use o Chrome ou Edge atualizado e permita o acesso ao microfone.','bot');return}
+ if(recording){recorder.stop();return}
+ try{
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  const mime=['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'].find(t=>MediaRecorder.isTypeSupported(t));
+  recorder=new MediaRecorder(stream,mime?{mimeType:mime}:{});
+  recordedChunks=[];
+  recorder.ondataavailable=e=>{if(e.data.size)recordedChunks.push(e.data)};
+  recorder.onstop=async()=>{
+   stream.getTracks().forEach(t=>t.stop());recording=false;mic.textContent='🎙️';mic.title='Falar';
+   const blob=new Blob(recordedChunks,{type:recorder.mimeType||'audio/webm'});
+   if(!blob.size){bubble('Não consegui gravar o áudio. Tente novamente.','bot');return}
+   const ext=blob.type.includes('ogg')?'ogg':'webm';
+   const fd=new FormData();fd.append('audio',blob,'gravacao.'+ext);
+   mic.disabled=true;send.disabled=true;bubble('🎧 Entendendo o que você falou...','bot');
+   try{const r=await fetch('/transcribe',{method:'POST',body:fd});const d=await r.json();if(!r.ok)throw new Error(d.error||'Falha na transcrição');if(!d.text||!d.text.trim())throw new Error('Não consegui entender. Tente falar mais perto do microfone.');input.value=d.text;form.requestSubmit()}
+   catch(err){bubble(err.message||'Não consegui transcrever sua fala.','bot')}
+   finally{mic.disabled=false;send.disabled=false;recordedChunks=[]}
+  };
+  recorder.start();recording=true;mic.textContent='⏹️';mic.title='Parar gravação';bubble('🎙️ Estou ouvindo. Clique novamente para parar e enviar.','bot');
+ }catch(err){bubble(err.name==='NotAllowedError'?'O acesso ao microfone foi bloqueado. Permita o microfone nas configurações do navegador e tente novamente.':'Não consegui acessar o microfone. Verifique se ele está conectado e tente novamente.','bot')}
+});
 audioFile.addEventListener('change',async()=>{const file=audioFile.files[0];if(!file)return;if(file.size>8*1024*1024){bubble('O áudio deve ter no máximo 8 MB.','bot');audioFile.value='';return}const fd=new FormData();fd.append('audio',file);bubble('🎧 Enviando e transcrevendo: '+file.name,'user');send.disabled=true;mic.disabled=true;try{const r=await fetch('/transcribe',{method:'POST',body:fd});const d=await r.json();if(!r.ok)throw new Error(d.error||'Falha na transcrição');input.value=d.text||'';if(input.value.trim())form.requestSubmit()}catch(err){bubble(err.message||'Não consegui enviar o áudio.','bot')}finally{send.disabled=false;mic.disabled=false;audioFile.value=''}});
 </script></body></html>
 
