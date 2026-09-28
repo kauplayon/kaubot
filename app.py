@@ -48,7 +48,17 @@ def chat():
 
     study_mode = bool(data.get("study_mode"))
     memory = str(data.get("memory", ""))[:1500].strip()
-    system_prompt = SYSTEM
+    personalities = {
+        "amigavel": "Amigável e acolhedor, com linguagem simples.",
+        "professor": "Professor paciente: explique conceitos em etapas e dê exemplos.",
+        "criativo": "Criativo: proponha ideias originais, mantendo clareza e precisão.",
+        "objetivo": "Objetivo: responda de forma direta, sem perder informações importantes.",
+        "formal": "Formal e profissional, mantendo educação e clareza."
+    }
+    personality = personalities.get(str(data.get("personality", "amigavel")), personalities["amigavel"])
+    languages = {"pt": "português do Brasil", "en": "English", "es": "español", "fr": "français"}
+    language = languages.get(str(data.get("language", "pt")), "português do Brasil")
+    system_prompt = SYSTEM + "\\nPersonalidade escolhida: " + personality + "\\nResponda sempre no idioma: " + language + "."
     if study_mode:
         system_prompt += "\nModo estudos: explique passo a passo, use exemplos simples e ajude o estudante a compreender o assunto."
     if memory:
