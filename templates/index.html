@@ -101,7 +101,8 @@ body.light{background-color:#eef1ff;color:#182044}body.light:before{background:r
 
 // Botão para abrir o menu no celular
 document.querySelector('#mobileMenu').addEventListener('click',()=>document.body.classList.toggle('mobile-menu-open'));
-\n// Menu lateral no celular: deslize da borda esquerda para abrir e para a esquerda para fechar.
+
+// Menu lateral no celular: deslize da borda esquerda para abrir e para a esquerda para fechar.
 let touchStartX=0,touchStartY=0;
 document.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY},{passive:true});
 document.addEventListener('touchend',e=>{
