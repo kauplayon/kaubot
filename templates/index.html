@@ -1,84 +1,24 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ bot_name }} | Kauplayon</title>
 <style>
-:root{color-scheme:dark;--line:rgba(119,132,255,.38);--panel:rgba(8,13,39,.76);--purple:#7954f5;--text:#f3f5ff;--muted:#b9c4e9}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;color:var(--text);font:15px Inter,system-ui,Arial,sans-serif;background:#070b20 url("/static/fundo-cosmo.jpg") center/cover fixed no-repeat}
-body:before{content:"";position:fixed;inset:0;background:linear-gradient(90deg,rgba(5,8,29,.45),rgba(7,11,35,.18));pointer-events:none}
-button,input{font:inherit}
-.topbar{height:86px;display:flex;align-items:center;justify-content:space-between;padding:12px 3%;position:relative;z-index:1}
-.brand{display:flex;align-items:center;gap:16px;font-size:27px;font-weight:700;letter-spacing:5px}
-.logo{width:66px;height:66px;object-fit:contain;filter:drop-shadow(0 0 12px #8c56ff)}
-.top-actions{display:flex;gap:14px;align-items:center}
-.icon-button,.profile{border:1px solid var(--line);background:rgba(10,15,43,.72);color:var(--text);border-radius:30px;padding:10px 15px}
-.profile{display:flex;align-items:center;gap:10px}
-.layout{height:calc(100vh - 102px);min-height:520px;display:grid;grid-template-columns:246px minmax(0,1fr);gap:14px;padding:0 3% 18px;position:relative;z-index:1}
-.sidebar,.workspace{border:1px solid var(--line);background:rgba(7,12,37,.72);backdrop-filter:blur(12px);border-radius:15px;box-shadow:0 12px 40px #0003}
-.sidebar{padding:15px 10px}
-.nav{display:flex;flex-direction:column;gap:8px}
-.nav button{border:1px solid transparent;background:transparent;color:#dce4ff;text-align:left;padding:13px 14px;border-radius:11px;cursor:pointer}
-.nav button.active,.nav button:hover{background:rgba(91,82,220,.23);border-color:rgba(135,115,255,.2)}
-.nav .symbol{display:inline-block;width:27px;color:#b9a4ff;font-size:18px;margin-right:8px}
-.workspace{display:flex;flex-direction:column;min-width:0;overflow:hidden}
-.chat{flex:1;min-height:0;overflow:auto;padding:28px;display:flex;flex-direction:column;gap:14px}
-.welcome{margin:auto;max-width:680px;width:100%;text-align:center;padding:24px 10px}
-.welcome-logo{width:78px;height:78px;object-fit:contain;filter:drop-shadow(0 0 16px #8755ff);vertical-align:middle;margin-right:10px}
-.welcome-brand{font-size:39px;letter-spacing:5px;font-weight:700;display:flex;justify-content:center;align-items:center;margin-bottom:25px}
-.welcome h1{font-size:34px;margin:10px 0 12px}.welcome h1 span{color:#a18aff}
-.welcome p{color:var(--muted);font-size:16px;line-height:1.7;margin:0 auto 28px}
-.suggestions{display:grid;grid-template-columns:1fr 1fr;gap:13px;text-align:left}
-.suggestion{display:flex;align-items:center;gap:16px;padding:17px 18px;border:1px solid var(--line);border-radius:15px;background:rgba(13,19,57,.68);color:var(--text);cursor:pointer;text-align:left;min-height:74px}
-.suggestion:hover{border-color:#9a79ff;background:rgba(69,50,139,.3)}
-.suggestion .sicon{font-size:25px;color:#b7a0ff}.suggestion small{display:block;color:var(--muted);margin-top:5px;font-size:13px}
-.msg{max-width:82%;padding:12px 15px;border-radius:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
-.user{align-self:flex-end;background:#6253d9;border-bottom-right-radius:4px}.bot{align-self:flex-start;background:rgba(35,43,83,.94);border:1px solid rgba(119,132,255,.18);border-bottom-left-radius:4px}
-.composer{padding:12px 18px 17px}
-form{display:flex;gap:10px;align-items:center;padding:8px;border:1px solid #795cf4;border-radius:24px;background:rgba(10,15,44,.9);box-shadow:0 0 18px rgba(103,75,241,.12)}
-input{flex:1;min-width:0;background:transparent;border:0;color:white;padding:12px 14px;outline:none}input::placeholder{color:#aab5da}
-button.send,button.mic{border:0;border-radius:15px;padding:12px 17px;background:#7454f5;color:white;cursor:pointer;font-weight:650}
-button.mic{background:rgba(39,49,91,.95);padding:12px}
-button:disabled{opacity:.5;cursor:not-allowed}
-footer{padding:0 22px 12px;color:#9eadd7;font-size:11px}
-@media(max-width:700px){.topbar{height:76px;padding:8px 14px}.brand{font-size:21px;letter-spacing:3px;gap:8px}.logo{width:50px;height:50px}.layout{height:calc(100vh - 86px);grid-template-columns:1fr;padding:0 10px 10px}.sidebar{display:none}.chat{padding:14px}.welcome{padding:10px 0}.welcome-brand{font-size:30px}.welcome-logo{width:60px;height:60px}.welcome h1{font-size:27px}.welcome p{font-size:14px}.suggestions{gap:8px}.suggestion{padding:12px;gap:8px;font-size:13px}.suggestion small{font-size:11px}.composer{padding:8px 10px 12px}footer{padding:0 12px 9px}.profile{padding:8px 10px}.top-actions{gap:6px}}
-@media(max-width:390px){.suggestions{grid-template-columns:1fr}.welcome-brand{margin-bottom:12px}.welcome h1{margin-top:0}}
-</style>
-</head>
-<body>
-<header class="topbar">
-  <div class="brand"><img class="logo" src="{{ url_for('static', filename='logo-cosmo.png') }}" alt="Logo do Cosmo"><span>COSMO</span><span style="color:#b47cff;margin-left:-12px">✦</span></div>
-  <div class="top-actions"><button class="icon-button" type="button" title="Tema">☾</button><button class="profile" type="button">♙ <span>Kauã</span>⌄</button></div>
-</header>
-<main class="layout">
-  <aside class="sidebar"><nav class="nav"><button class="active" type="button"><span class="symbol">▣</span>Chat</button><button type="button"><span class="symbol">◴</span>Histórico</button><button type="button"><span class="symbol">⚙</span>Configurações</button><button type="button"><span class="symbol">ⓘ</span>Sobre</button></nav></aside>
-  <section class="workspace">
-    <section id="chat" class="chat">
-      <div class="welcome" id="welcome">
-        <div class="welcome-brand"><img class="welcome-logo" src="{{ url_for('static', filename='logo-cosmo.png') }}" alt="Logo"><span>COSMO</span><span style="color:#b47cff;margin-left:8px">✦</span></div>
-        <h1>Olá, sou o <span>{{ bot_name }}!</span></h1>
-        <p>Seu assistente inteligente, sempre pronto para ajudar.<br>Faça uma pergunta, tire suas dúvidas ou peça uma explicação.</p>
-        <div class="suggestions">
-          <button class="suggestion" type="button" data-prompt="Explique um conceito de forma simples"><span class="sicon">♧</span><span>Explique um conceito<small>de forma simples</small></span></button>
-          <button class="suggestion" type="button" data-prompt="Resuma este texto ou conteúdo"><span class="sicon">▤</span><span>Resuma um texto<small>ou conteúdo</small></span></button>
-          <button class="suggestion" type="button" data-prompt="Ajude-me com código e programação"><span class="sicon">‹/›</span><span>Ajude com código<small>e programação</small></span></button>
-          <button class="suggestion" type="button" data-prompt="Tenho uma dúvida sobre um assunto"><span class="sicon">ⓘ</span><span>Tire uma dúvida<small>sobre qualquer assunto</small></span></button>
-        </div>
-      </div>
-    </section>
-    <div class="composer"><form id="form"><input id="input" placeholder="Digite sua mensagem..." autocomplete="off" aria-label="Digite sua mensagem"><button type="button" id="mic" class="mic" title="Falar">🎙</button><button id="send" class="send">➤</button></form></div>
-    <footer>As conversas são enviadas à API configurada no servidor. Não compartilhe dados pessoais.</footer>
-  </section>
-</main>
+*{box-sizing:border-box} :root{--line:rgba(115,105,255,.55)}
+body{margin:0;min-height:100vh;padding:20px;background:#050816 url("/static/fundo-cosmo.jpg") center/cover fixed no-repeat;color:#f4f5ff;font-family:Arial,Helvetica,sans-serif;overflow:hidden}
+body:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 70% 50%,rgba(74,55,180,.15),transparent 42%),linear-gradient(180deg,rgba(2,5,20,.25),rgba(2,5,20,.48));pointer-events:none}
+.page{position:relative;z-index:1;display:grid;grid-template-columns:245px minmax(0,1fr);gap:14px;max-width:1400px;height:calc(100vh - 40px);margin:auto}.sidebar{border:1px solid var(--line);border-radius:16px;background:rgba(3,7,28,.68);backdrop-filter:blur(12px);padding:16px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 24px}.brand img{width:48px;height:48px;object-fit:contain;background:transparent;border-radius:10px}.brand-name{font-size:25px;font-weight:700;letter-spacing:2px}.nav{display:flex;flex-direction:column;gap:8px}.nav button{width:100%;height:48px;border:1px solid transparent;background:transparent;color:#dce0ff;border-radius:12px;text-align:left;padding:0 14px;font-size:15px;cursor:pointer}.nav button:hover,.nav button.active{background:rgba(91,72,220,.26);border-color:rgba(125,108,255,.4)}.nav-icon{display:inline-block;width:25px;font-size:19px}.side-info{margin-top:auto;color:#929bc6;font-size:11px;line-height:1.5;padding:10px}
+.main{min-width:0;min-height:0;display:flex;flex-direction:column}.topbar{height:62px;display:flex;align-items:center;justify-content:flex-end;gap:12px}.icon-btn,.profile{border:1px solid rgba(126,136,255,.45);background:rgba(4,9,31,.58);color:#eef0ff;border-radius:24px;height:44px;cursor:pointer}.icon-btn{width:44px;font-size:20px}.profile{padding:0 15px;display:flex;align-items:center;gap:9px;font-size:14px}.chat-shell{flex:1;min-height:0;border:1px solid var(--line);border-radius:16px;background:rgba(4,8,31,.54);backdrop-filter:blur(10px);box-shadow:0 20px 70px rgba(0,0,0,.32);display:flex;flex-direction:column;overflow:hidden}
+#chat{flex:1;overflow:auto;padding:34px;display:flex;flex-direction:column;gap:14px}.welcome{margin:auto;width:min(680px,100%);text-align:center}.welcome-logo{width:220px;max-height:105px;object-fit:contain;margin:0 auto 8px;filter:drop-shadow(0 0 14px rgba(92,78,255,.35))}.welcome h1{margin:0 0 8px;font-size:34px}.welcome h1 span{color:#8068ff}.welcome p{margin:0 auto 22px;color:#c2c7e8;line-height:1.6;max-width:620px}.suggestions{display:grid;grid-template-columns:1fr 1fr;gap:14px}.suggestion{border:1px solid rgba(113,91,255,.65);border-radius:14px;background:rgba(12,17,55,.52);color:#e7e9ff;padding:16px;text-align:left;cursor:pointer}.suggestion:hover{background:rgba(38,29,102,.7)}.suggestion strong{display:block;font-size:14px;margin-bottom:5px}.suggestion small{color:#aeb5df}.msg{max-width:78%;padding:13px 16px;border-radius:15px;line-height:1.55;white-space:pre-wrap}.msg.user{align-self:flex-end;background:linear-gradient(135deg,#6653e8,#4e7df4);border-bottom-right-radius:4px}.msg.bot{align-self:flex-start;background:rgba(28,34,70,.82);border:1px solid rgba(108,116,190,.25);border-bottom-left-radius:4px}.composer{padding:14px 28px 22px}form{display:flex;gap:10px;border:1px solid #725dff;border-radius:17px;background:rgba(5,9,34,.76);padding:7px;box-shadow:0 0 22px rgba(92,72,255,.12)}input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:white;padding:13px 12px;font-size:15px}input::placeholder{color:#9099c2}.mic,.send{border:0;border-radius:12px;cursor:pointer}.mic{width:44px;background:rgba(44,52,88,.8);color:#e4e6ff;font-size:18px}.send{width:52px;background:linear-gradient(135deg,#755cff,#6359ef);color:white;font-size:20px}button:disabled{opacity:.5;cursor:not-allowed}footer{color:#8790ba;font-size:10px;text-align:center;padding:0 0 7px}
+@media(max-width:800px){body{padding:10px;overflow:auto}.page{height:auto;min-height:calc(100vh - 20px);grid-template-columns:1fr}.sidebar{display:none}.topbar{height:52px}.chat-shell{min-height:calc(100vh - 82px)}#chat{padding:20px 14px}.composer{padding:10px 10px 16px}.suggestions{grid-template-columns:1fr}.welcome h1{font-size:27px}.welcome-logo{width:180px}}
+</style></head>
+<body><div class="page">
+<aside class="sidebar"><div class="brand"><img src="{{ url_for('static', filename='logo-cosmo.png') }}" alt="Cosmo"><div class="brand-name">COSMO ✦</div></div><nav class="nav"><button class="active" type="button">▣ &nbsp; Chat</button><button type="button" onclick="info('Histórico')">◷ &nbsp; Histórico</button><button type="button" onclick="info('Configurações')">⚙ &nbsp; Configurações</button><button type="button" onclick="info('Sobre')">ⓘ &nbsp; Sobre</button></nav><div class="side-info">Seu assistente virtual<br>criado por Kauplayon</div></aside>
+<main class="main"><div class="topbar"><button class="icon-btn" type="button">☾</button><button class="profile" type="button">♙ &nbsp;Kauã&nbsp;⌄</button></div><section class="chat-shell"><section id="chat"><div class="welcome" id="welcome"><img class="welcome-logo" src="{{ url_for('static', filename='logo-cosmo.png') }}" alt="Logo Cosmo"><h1>Olá, sou o <span>{{ bot_name }}</span>!</h1><p>Seu assistente inteligente, sempre pronto para ajudar.<br>Faça uma pergunta, tire suas dúvidas ou peça uma explicação.</p><div class="suggestions"><button class="suggestion" onclick="use('Explique um conceito de forma simples')"><strong>💡 Explique um conceito</strong><small>de forma simples</small></button><button class="suggestion" onclick="use('Resuma um texto para mim')"><strong>▤ Resuma um texto</strong><small>ou conteúdo</small></button><button class="suggestion" onclick="use('Me ajude com código e programação')"><strong>&lt;/&gt; Ajude com código</strong><small>e programação</small></button><button class="suggestion" onclick="use('Tire uma dúvida sobre qualquer assunto')"><strong>❔ Tire uma dúvida</strong><small>sobre qualquer assunto</small></button></div></div></section><div class="composer"><form id="form"><input id="input" placeholder="Digite sua mensagem..." autocomplete="off"><button class="mic" type="button" id="mic">🎙️</button><button class="send" type="submit" id="send">➤</button></form><footer>As conversas são enviadas à API configurada no servidor. Não compartilhe dados pessoais.</footer></div></section></main></div>
 <script>
-const chat=document.querySelector('#chat'),welcome=document.querySelector('#welcome'),input=document.querySelector('#input'),form=document.querySelector('#form'),send=document.querySelector('#send'),messages=[];
-function bubble(text,who){if(welcome)welcome.remove();const el=document.createElement('div');el.className='msg '+who;el.textContent=text;chat.appendChild(el);chat.scrollTop=chat.scrollHeight}
-form.addEventListener('submit',async e=>{e.preventDefault();const text=input.value.trim();if(!text)return;input.value='';bubble(text,'user');messages.push({role:'user',content:text});send.disabled=true;try{const r=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});const d=await r.json();bubble(d.reply||'Não recebi uma resposta.','bot');messages.push({role:'assistant',content:d.reply||''})}catch{bubble('Não consegui conectar ao servidor.','bot')}finally{send.disabled=false;input.focus()}});
-document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{input.value=b.dataset.prompt;input.focus();form.requestSubmit()}));
-const mic=document.querySelector('#mic'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(SR){const rec=new SR();rec.lang='pt-BR';rec.interimResults=false;mic.onclick=()=>{rec.start();mic.textContent='🔴'};rec.onresult=e=>{input.value=e.results[0][0].transcript;form.requestSubmit()};rec.onend=()=>mic.textContent='🎙';rec.onerror=()=>{mic.textContent='🎙';bubble('Não consegui reconhecer a fala. Você também pode digitar.','bot')}}else{mic.disabled=true;mic.title='Reconhecimento de fala não suportado neste navegador'}
-</script>
-</body>
-</html>
+const chat=document.querySelector('#chat'),input=document.querySelector('#input'),form=document.querySelector('#form'),send=document.querySelector('#send'),messages=[];const welcome=document.querySelector('#welcome');
+function bubble(t,w){if(document.querySelector('#welcome'))document.querySelector('#welcome').remove();const e=document.createElement('div');e.className='msg '+w;e.textContent=t;chat.appendChild(e);chat.scrollTop=chat.scrollHeight}function use(t){input.value=t;form.requestSubmit()}function info(n){bubble(n+' ainda está em desenvolvimento. Por enquanto, use o Chat para conversar comigo.','bot')}
+form.addEventListener('submit',async e=>{e.preventDefault();const t=input.value.trim();if(!t)return;input.value='';bubble(t,'user');messages.push({role:'user',content:t});send.disabled=true;try{const r=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});const d=await r.json();bubble(d.reply||'Não recebi uma resposta.','bot');messages.push({role:'assistant',content:d.reply||''})}catch{bubble('Não consegui conectar ao servidor.','bot')}finally{send.disabled=false;input.focus()}});
+const mic=document.querySelector('#mic'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){const rec=new SR();rec.lang='pt-BR';rec.interimResults=false;mic.onclick=()=>{rec.start();mic.textContent='🔴'};rec.onresult=e=>{input.value=e.results[0][0].transcript;form.requestSubmit()};rec.onend=()=>mic.textContent='🎙️';rec.onerror=()=>{mic.textContent='🎙️';bubble('Não consegui reconhecer a fala. Você também pode digitar.','bot')}}else mic.disabled=true;
+</script></body></html>
+
