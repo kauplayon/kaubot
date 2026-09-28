@@ -1,13 +1,15 @@
 import os
+import requests
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
-from google import genai
 
 load_dotenv()
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 64 * 1024
-api_key = os.getenv("GEMINI_API_KEY")
-client = genai.Client(api_key=api_key) if api_key else None
+
+api_token = os.getenv("CLOUDFLARE_API_TOKEN")
+account_id = os.getenv("CLOUDFLARE_ACCOUNT_ID")
+client_configured = bool(api_token and account_id)
 
 BOT_NAME = os.getenv("BOT_NAME", "Cosmo")
 BOT_PERSONALITY = os.getenv(
@@ -28,7 +30,7 @@ def index():
 
 @app.get("/health")
 def health():
-    return jsonify({"status": "ok", "ai_configured": client is not None})
+    return jsonify({"status": "ok", "ai_configured": client_configured})
 
 @app.post("/chat")
 def chat():
@@ -37,30 +39,47 @@ def chat():
     if not isinstance(messages, list) or not messages:
         return jsonify({"reply": "Envie uma pergunta para começarmos."}), 400
 
-    contents = []
+    conversation = [{"role": "system", "content": SYSTEM}]
     for item in messages[-12:]:
         if not isinstance(item, dict):
             continue
-        role = "user" if item.get("role") == "user" else "model"
+        role = "user" if item.get("role") == "user" else "assistant"
         content = str(item.get("content", ""))[:4000]
         if content.strip():
-            contents.append({"role": role, "parts": [{"text": content}]})
-    if not contents:
+            conversation.append({"role": role, "content": content})
+
+    if len(conversation) == 1:
         return jsonify({"reply": "Não encontrei uma mensagem válida."}), 400
 
-    if client:
+    if client_configured:
         try:
-            response = client.models.generate_content(
-                model=os.getenv("GEMINI_MODEL", "gemini-3.8-flash"),
-                contents=contents,
-                config={"system_instruction": SYSTEM, "temperature": 0.7}
+            model = os.getenv(
+                "CLOUDFLARE_MODEL",
+                "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
             )
-            return jsonify({"reply": response.text or "Não consegui formular uma resposta."})
+            url = (
+                f"https://api.cloudflare.com/client/v4/accounts/"
+                f"{account_id}/ai/run/{model}"
+            )
+            response = requests.post(
+                url,
+                headers={"Authorization": f"Bearer {api_token}"},
+                json={"messages": conversation},
+                timeout=60
+            )
+            response.raise_for_status()
+            result = response.json()
+            reply = (result.get("result") or {}).get("response")
+            if not reply:
+                raise ValueError("A Cloudflare não retornou uma resposta.")
+            return jsonify({"reply": reply})
         except Exception:
-            app.logger.exception("Erro na API Gemini")
-            return jsonify({"reply": "Não consegui acessar a IA agora. Confira a configuração da API e tente novamente."}), 502
+            app.logger.exception("Erro na API Cloudflare Workers AI")
+            return jsonify({
+                "reply": "Não consegui acessar a IA agora. Verifique a configuração da Cloudflare e tente novamente."
+            }), 502
 
-    return jsonify({"reply": local_reply(contents[-1]["parts"][0]["text"])})
+    return jsonify({"reply": local_reply(conversation[-1]["content"])})
 
 def local_reply(text):
     """Fallback simples, baseado em regras; não é um modelo generativo."""
@@ -70,8 +89,8 @@ def local_reply(text):
     if "seu nome" in t or "quem é você" in t or "quem e voce" in t:
         return f"Sou o {BOT_NAME}, criado por Kauplayon."
     if "api" in t or "como você funciona" in t or "como voce funciona" in t:
-        return "Quando a API Gemini está configurada, uso um modelo de IA hospedado pelo Google para responder. Sem a chave, só consigo dar respostas básicas."
-    return "A IA ainda não está configurada. O administrador precisa adicionar a variável GEMINI_API_KEY nas configurações do servidor."
+        return "Quando a API Cloudflare Workers AI está configurada, uso um modelo de IA hospedado pela Cloudflare para responder. Sem as credenciais, só consigo dar respostas básicas."
+    return "A IA ainda não está configurada. O administrador precisa adicionar CLOUDFLARE_API_TOKEN e CLOUDFLARE_ACCOUNT_ID nas configurações do servidor."
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.getenv("PORT", "5000")), debug=False)
