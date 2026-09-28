@@ -5,15 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ bot_name }} | Kauplayon</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#eaf0ff;font:16px Arial,sans-serif;display:grid;place-items:center;min-height:100vh}
-.app{width:min(760px,95vw);height:min(780px,94vh);background:#141c32;border:1px solid #293653;border-radius:20px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px #0006}
-header{padding:20px 24px;border-bottom:1px solid #293653}h1{margin:0;font-size:23px}header p{margin:6px 0 0;color:#aab7d4;font-size:13px}
-#chat{flex:1;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px}.msg{max-width:82%;padding:12px 15px;border-radius:15px;line-height:1.5;white-space:pre-wrap}.user{align-self:flex-end;background:#5969e8;color:white;border-bottom-right-radius:4px}.bot{align-self:flex-start;background:#222e49;border-bottom-left-radius:4px}
-form{display:flex;gap:9px;padding:15px;border-top:1px solid #293653}input{flex:1;min-width:0;background:#0e1528;border:1px solid #344362;color:white;padding:13px;border-radius:12px;font-size:15px;outline:none}button{border:0;border-radius:12px;padding:0 16px;background:#6978f4;color:white;font-weight:bold;cursor:pointer}button:disabled{opacity:.5}#mic{background:#293653}footer{padding:0 17px 12px;color:#9eabc8;font-size:11px}
+*{box-sizing:border-box}
+body{margin:0;background:#0b1020 url("/static/fundo-cosmo.jpg") center/cover fixed no-repeat;color:#eaf0ff;font:16px Arial,sans-serif;display:grid;place-items:center;min-height:100vh;padding:18px}
+.app{width:min(760px,95vw);height:min(780px,94vh);background:rgba(20,28,50,.91);backdrop-filter:blur(8px);border:1px solid #53618a;border-radius:20px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px #0008}
+header{display:flex;align-items:center;gap:13px;padding:15px 24px;border-bottom:1px solid #394766}
+.logo{width:54px;height:54px;object-fit:contain;background:#fff;border-radius:50%;padding:3px;flex-shrink:0}
+h1{margin:0;font-size:23px}header p{margin:6px 0 0;color:#c0cbea;font-size:13px}
+#chat{flex:1;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px}.msg{max-width:82%;padding:12px 15px;border-radius:15px;line-height:1.5;white-space:pre-wrap}.user{align-self:flex-end;background:#5969e8;color:white;border-bottom-right-radius:4px}.bot{align-self:flex-start;background:rgba(44,57,88,.94);border-bottom-left-radius:4px}
+form{display:flex;gap:9px;padding:15px;border-top:1px solid #394766;background:rgba(14,21,40,.55)}input{flex:1;min-width:0;background:#0e1528;border:1px solid #526184;color:white;padding:13px;border-radius:12px;font-size:15px;outline:none}input:focus{border-color:#8a9aff}button{border:0;border-radius:12px;padding:0 16px;background:#6978f4;color:white;font-weight:bold;cursor:pointer}button:disabled{opacity:.5}#mic{background:#293653}footer{padding:0 17px 12px;color:#c0cbea;font-size:11px;background:rgba(14,21,40,.55)}
+@media(max-width:520px){.app{width:100%;height:94vh}.msg{max-width:92%}header{padding:13px 16px}.logo{width:46px;height:46px}form{padding:10px;gap:6px}button{padding:0 12px}}
 </style>
 </head>
 <body><main class="app">
-<header><h1>✨ {{ bot_name }}</h1><p>Seu assistente virtual • criado por Kauplayon</p></header>
+<header><img class="logo" src="{{ url_for('static', filename='logo-cosmo.png') }}" alt="Logo do Cosmo"><div><h1>{{ bot_name }}</h1><p>Seu assistente virtual • criado por Kauplayon</p></div></header>
 <section id="chat"><div class="msg bot">Olá! Sou o {{ bot_name }}. Pode escrever ou usar o microfone para conversar comigo.</div></section>
 <form id="form"><input id="input" placeholder="Digite sua pergunta..." autocomplete="off"><button type="button" id="mic" title="Falar">🎙️</button><button id="send">Enviar</button></form>
 <footer>As conversas são enviadas à API configurada no servidor. Não compartilhe dados pessoais.</footer>
