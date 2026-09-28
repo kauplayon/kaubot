@@ -14,7 +14,7 @@ form{display:flex;gap:9px;padding:15px;border-top:1px solid #293653}input{flex:1
 </head>
 <body><main class="app">
 <header><h1>✨ {{ bot_name }}</h1><p>Seu assistente virtual • criado por Kauplayon</p></header>
-<section id="chat"><div class="msg bot">Olá! Sou o KauBot. Pode escrever ou usar o microfone para conversar comigo.</div></section>
+<section id="chat"><div class="msg bot">Olá! Sou o {{ bot_name }}. Pode escrever ou usar o microfone para conversar comigo.</div></section>
 <form id="form"><input id="input" placeholder="Digite sua pergunta..." autocomplete="off"><button type="button" id="mic" title="Falar">🎙️</button><button id="send">Enviar</button></form>
 <footer>As conversas são enviadas à API configurada no servidor. Não compartilhe dados pessoais.</footer>
 </main>
