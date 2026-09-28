@@ -9,7 +9,7 @@ app.config["MAX_CONTENT_LENGTH"] = 64 * 1024
 api_key = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key) if api_key else None
 
-BOT_NAME = os.getenv("BOT_NAME", "Wanda")
+BOT_NAME = os.getenv("BOT_NAME", "Cosmo")
 BOT_PERSONALITY = os.getenv(
     "BOT_PERSONALITY",
     "Amigável, paciente, curioso e didático. Use linguagem simples e natural."
