@@ -1,22 +1,32 @@
 # KauBot — chatbot de Kauplayon
 
-Chatbot web em português, com histórico de conversa, respostas usando a API Gemini e entrada por voz no navegador.
+Chatbot web em português com respostas por IA Gemini, histórico recente e entrada por voz no navegador.
 
-## Requisitos
-- Python 3.10 ou superior
-- Chave da API Gemini (há opção gratuita sujeita a limites e disponibilidade)
+## O que ele faz
+- Responde perguntas gerais usando a API Gemini.
+- Permite conversar por texto e, em navegadores compatíveis, por voz.
+- Mantém as últimas mensagens no contexto durante a sessão.
+- Personalidade e modelo configuráveis por variáveis de ambiente.
+- Endpoint de saúde em `/health`.
 
-## Executar localmente
-1. Crie e ative um ambiente virtual.
-2. Instale as dependências: `pip install -r requirements.txt`
-3. Copie `.env.example` para `.env` e coloque sua chave em `GEMINI_API_KEY`.
-4. Execute: `python app.py`
-5. Abra `http://127.0.0.1:5000`.
+## Configuração local
+1. Use Python 3.10 ou superior.
+2. Instale as dependências: `pip install -r requirements.txt`.
+3. Copie `.env.example` para `.env` e preencha `GEMINI_API_KEY`.
+4. Execute `python app.py` e abra `http://127.0.0.1:5000`.
 
-Sem chave, o app inicia em modo básico baseado em regras; isso não é um modelo de IA generativa. O reconhecimento de voz depende do navegador e pode exigir conexão segura quando hospedado.
+Sem chave, o bot responde apenas a algumas mensagens simples; isso não é uma IA generativa.
 
-## Publicar no GitHub
-Crie um repositório chamado `kaubot` na conta `kauplayon` e envie os arquivos deste projeto. Não envie o arquivo `.env` nem publique sua chave. Para hospedar o site, configure a variável `GEMINI_API_KEY` nas configurações de ambiente da plataforma de hospedagem.
+## Publicar no Render
+Este repositório inclui `render.yaml`. No Render, crie um Blueprint a partir deste repositório e adicione a variável secreta `GEMINI_API_KEY` nas configurações do serviço. O serviço usa `pip install -r requirements.txt` e `gunicorn app:app`.
 
-## Sobre o modelo
-Este projeto usa um modelo Gemini hospedado pela Google por meio de API; não treina um modelo próprio. Treinar um modelo generativo do zero exige dados e recursos computacionais consideráveis.
+A hospedagem gratuita pode suspender o serviço após inatividade e pode demorar para iniciar novamente. O reconhecimento de voz depende do navegador e normalmente exige HTTPS.
+
+## Personalização
+Configure estas variáveis no servidor (ou no `.env` local):
+- `BOT_NAME`: nome exibido e usado pelo assistente (padrão: KauBot).
+- `BOT_PERSONALITY`: descrição do jeito de responder (padrão: amigável, paciente, curioso e didático).
+- `GEMINI_MODEL`: modelo Gemini (padrão: gemini-2.5-flash).
+- `GEMINI_API_KEY`: chave secreta da API; nunca a publique no GitHub.
+
+O projeto usa um modelo Gemini hospedado pela Google; não treina um modelo próprio. A API pode ter limites de uso e condições que mudam. Não envie dados pessoais ou informações confidenciais nas conversas.
