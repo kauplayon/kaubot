@@ -46,7 +46,14 @@ def chat():
     if not isinstance(messages, list) or not messages:
         return jsonify({"reply": "Envie uma pergunta para começarmos."}), 400
 
-    conversation = [{"role": "system", "content": SYSTEM}]
+    study_mode = bool(data.get("study_mode"))
+    memory = str(data.get("memory", ""))[:1500].strip()
+    system_prompt = SYSTEM
+    if study_mode:
+        system_prompt += "\nModo estudos: explique passo a passo, use exemplos simples e ajude o estudante a compreender o assunto."
+    if memory:
+        system_prompt += "\nPreferências que o usuário escolheu salvar: " + memory
+    conversation = [{"role": "system", "content": system_prompt}]
     for item in messages[-30:]:
         if not isinstance(item, dict):
             continue
@@ -87,6 +94,33 @@ def chat():
             }), 502
 
     return jsonify({"reply": local_reply(conversation[-1]["content"])})
+
+
+@app.post("/extract-pdf")
+def extract_pdf():
+    file = request.files.get("file")
+    if not file or not file.filename:
+        return jsonify({"error": "Selecione um arquivo PDF."}), 400
+    if not file.filename.lower().endswith(".pdf"):
+        return jsonify({"error": "Envie um arquivo PDF."}), 415
+    raw = file.read(8 * 1024 * 1024 + 1)
+    if not raw:
+        return jsonify({"error": "O arquivo está vazio."}), 400
+    if len(raw) > 8 * 1024 * 1024:
+        return jsonify({"error": "O PDF deve ter no máximo 8 MB."}), 413
+    try:
+        import io
+        from pypdf import PdfReader
+        reader = PdfReader(io.BytesIO(raw))
+        if len(reader.pages) > 40:
+            return jsonify({"error": "O PDF pode ter no máximo 40 páginas."}), 413
+        extracted = "\n".join(page.extract_text() or "" for page in reader.pages).strip()
+        if not extracted:
+            return jsonify({"error": "Não encontrei texto. PDFs digitalizados como imagem não são compatíveis nesta versão."}), 422
+        return jsonify({"text": extracted[:24000], "pages": len(reader.pages), "truncated": len(extracted) > 24000})
+    except Exception:
+        app.logger.exception("Erro ao extrair texto do PDF")
+        return jsonify({"error": "Não consegui ler o PDF. Verifique se não está protegido ou danificado."}), 422
 
 
 @app.post("/transcribe")
