@@ -14,6 +14,13 @@ body.light{background-color:#eef1ff;color:#182044}body.light:before{background:r
 .voice-panel{position:absolute;top:58px;right:68px;z-index:5;width:min(310px,calc(100vw - 24px));padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(5,9,34,.97);box-shadow:0 12px 35px rgba(0,0,0,.4);color:#f4f5ff}.voice-panel[hidden]{display:none}.voice-panel label{display:block;margin:10px 0 6px;font-size:13px}.voice-panel select,.voice-panel button{width:100%;padding:10px;border-radius:9px;border:1px solid rgba(126,136,255,.5);background:#151b43;color:#fff}.voice-panel p{font-size:11px;line-height:1.4;color:#b9c0e5;margin:10px 0 0}body.light .voice-panel{background:rgba(255,255,255,.98);color:#182044}body.light .voice-panel select,body.light .voice-panel button{background:#eef0ff;color:#182044}
 @media(max-width:800px){body{padding:10px;overflow:auto}.page{height:auto;min-height:calc(100vh - 20px);grid-template-columns:1fr}.sidebar{display:none}.topbar{height:52px}.chat-shell{min-height:calc(100vh - 82px)}#chat{padding:20px 14px}.composer{padding:10px 10px 16px}.suggestions{grid-template-columns:1fr}.welcome h1{font-size:27px}.welcome-logo{width:180px}}
 
+/* Menu lateral por gesto, somente em telas pequenas */
+@media(max-width:800px){
+ .sidebar{display:flex;position:fixed;z-index:20;top:0;bottom:0;left:0;width:min(280px,82vw);height:100dvh;border-radius:0 16px 16px 0;transform:translateX(-105%);transition:transform .25s ease;box-shadow:12px 0 35px rgba(0,0,0,.45);padding:18px 14px calc(18px + env(safe-area-inset-bottom))}
+ body.mobile-menu-open .sidebar{transform:translateX(0)}
+ body.mobile-menu-open:after{content:"";position:fixed;z-index:19;inset:0;background:rgba(0,0,0,.48)}
+ body.mobile-menu-open{touch-action:pan-y}
+}
 /* Interface mobile: viewport, safe areas e teclado virtual */
 @media(max-width:800px){
  html{height:100%;height:100dvh}
@@ -78,6 +85,18 @@ body.light{background-color:#eef1ff;color:#182044}body.light:before{background:r
 <aside class="sidebar"><button class="brand" type="button" onclick="location.reload()" title="Recarregar o Cosmo"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><div class="brand-name">COSMO ✦</div></button><nav class="nav"><button class="active" type="button">▣ &nbsp; Chat</button><button type="button" onclick="info('Histórico')">◷ &nbsp; Histórico</button><button type="button" onclick="info('Configurações')">⚙ &nbsp; Configurações</button><button type="button" onclick="info('Sobre')">ⓘ &nbsp; Sobre</button></nav><div class="side-info">Seu assistente virtual<br>criado por Kauplayon</div></aside>
 <main class="main"><div class="topbar"><button class="icon-btn" type="button" id="voice" aria-label="Ativar voz" title="Ativar/desativar fala">🔇</button><button class="icon-btn" type="button" id="voiceSettings" aria-label="Escolher voz" title="Escolher voz">🗣️</button><button class="icon-btn" type="button" id="theme" aria-label="Alternar tema" title="Alternar tema">☾</button><button class="profile" type="button">♙ &nbsp;Kauã&nbsp;⌄</button></div><div class="voice-panel" id="voicePanel" hidden><strong>Voz do Cosmo</strong><label for="voiceSelect">Escolha uma voz disponível</label><select id="voiceSelect"></select><button type="button" id="testVoice" style="margin-top:8px">▶ Testar voz</button><p>As vozes vêm do navegador ou do sistema do seu aparelho. A lista varia conforme o dispositivo; não são cópias de personagens ou atores famosos.</p></div><section class="chat-shell"><section id="chat"><div class="welcome" id="welcome"><img class="welcome-logo" src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Logo Cosmo"><h1>Olá, sou o <span>{{ bot_name }}</span>!</h1><p>Seu assistente inteligente, sempre pronto para ajudar.<br>Faça uma pergunta, tire suas dúvidas ou peça uma explicação.</p><div class="suggestions"><button class="suggestion" onclick="use('Explique um conceito de forma simples')"><strong>💡 Explique um conceito</strong><small>de forma simples</small></button><button class="suggestion" onclick="use('Resuma um texto para mim')"><strong>▤ Resuma um texto</strong><small>ou conteúdo</small></button><button class="suggestion" onclick="use('Me ajude com código e programação')"><strong>&lt;/&gt; Ajude com código</strong><small>e programação</small></button><button class="suggestion" onclick="use('Tire uma dúvida sobre qualquer assunto')"><strong>❔ Tire uma dúvida</strong><small>sobre qualquer assunto</small></button></div></div></section><div class="composer"><form id="form"><input id="input" placeholder="Digite sua mensagem..." autocomplete="off"><button class="mic" type="button" id="mic" title="Falar">🎙️</button><label class="audio-btn" title="Enviar áudio">📎<input id="audioFile" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.webm,.flac"></label><button class="send" type="submit" id="send">➤</button></form><footer>As conversas são enviadas à API configurada no servidor. Não compartilhe dados pessoais.</footer></div></section></main></div>
 <script>
+// Menu lateral no celular: deslize da borda esquerda para abrir e para a esquerda para fechar.
+let touchStartX=0,touchStartY=0;
+document.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY},{passive:true});
+document.addEventListener('touchend',e=>{
+ if(!e.changedTouches.length||window.matchMedia('(min-width: 801px)').matches)return;
+ const dx=e.changedTouches[0].clientX-touchStartX,dy=e.changedTouches[0].clientY-touchStartY;
+ if(Math.abs(dx)<65||Math.abs(dx)<Math.abs(dy)*1.3)return;
+ if(dx>0&&touchStartX<35)document.body.classList.add('mobile-menu-open');
+ else if(dx<0&&document.body.classList.contains('mobile-menu-open'))document.body.classList.remove('mobile-menu-open');
+},{passive:true});
+document.addEventListener('click',e=>{if(document.body.classList.contains('mobile-menu-open')&&e.target===document.body)document.body.classList.remove('mobile-menu-open')});
+document.querySelectorAll('.sidebar .nav button').forEach(b=>b.addEventListener('click',()=>document.body.classList.remove('mobile-menu-open')));
 const chat=document.querySelector('#chat'),input=document.querySelector('#input'),form=document.querySelector('#form'),send=document.querySelector('#send');
 let speakEnabled=localStorage.getItem('cosmo-speak')==='true';
 const STORAGE_KEY='cosmo-chat-history-v1';
