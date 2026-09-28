@@ -14,10 +14,65 @@ body.light{background-color:#eef1ff;color:#182044}body.light:before{background:r
 .voice-panel{position:absolute;top:58px;right:68px;z-index:5;width:min(310px,calc(100vw - 24px));padding:16px;border:1px solid var(--line);border-radius:14px;background:rgba(5,9,34,.97);box-shadow:0 12px 35px rgba(0,0,0,.4);color:#f4f5ff}.voice-panel[hidden]{display:none}.voice-panel label{display:block;margin:10px 0 6px;font-size:13px}.voice-panel select,.voice-panel button{width:100%;padding:10px;border-radius:9px;border:1px solid rgba(126,136,255,.5);background:#151b43;color:#fff}.voice-panel p{font-size:11px;line-height:1.4;color:#b9c0e5;margin:10px 0 0}body.light .voice-panel{background:rgba(255,255,255,.98);color:#182044}body.light .voice-panel select,body.light .voice-panel button{background:#eef0ff;color:#182044}
 @media(max-width:800px){body{padding:10px;overflow:auto}.page{height:auto;min-height:calc(100vh - 20px);grid-template-columns:1fr}.sidebar{display:none}.topbar{height:52px}.chat-shell{min-height:calc(100vh - 82px)}#chat{padding:20px 14px}.composer{padding:10px 10px 16px}.suggestions{grid-template-columns:1fr}.welcome h1{font-size:27px}.welcome-logo{width:180px}}
 
-/* Ajustes para telas pequenas e teclado virtual */
-@media(max-width:800px){body{padding:0;min-height:100dvh;overflow:hidden;background-attachment:scroll}.page{width:100%;height:100dvh;min-height:0;display:flex;flex-direction:column;gap:0}.main{height:100%;min-height:0;flex:1}.topbar{height:54px;min-height:54px;padding:0 12px;justify-content:flex-end}.chat-shell{height:calc(100dvh - 54px);min-height:0;border-radius:16px 16px 0 0;border-left:0;border-right:0;border-bottom:0}#chat{padding:18px 12px;gap:12px;overscroll-behavior:contain}.welcome{margin:auto 0;width:100%;padding:12px 0}.welcome-logo{width:145px;max-height:78px;margin-bottom:8px}.welcome h1{font-size:25px}.welcome p{font-size:14px;line-height:1.5;margin-bottom:16px;padding:0 8px}.suggestions{grid-template-columns:1fr 1fr;gap:8px}.suggestion{padding:12px 10px;min-height:70px}.suggestion strong{font-size:13px}.suggestion small{font-size:11px}.msg{max-width:90%;font-size:15px;overflow-wrap:anywhere}.composer{padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(4,8,31,.4)}form{gap:6px;padding:5px;border-radius:15px}input{font-size:16px;padding:12px 8px}.mic{width:42px;min-width:42px}.send{width:46px;min-width:46px}footer{font-size:9px;line-height:1.35;padding:5px 4px 0}}
-@media(max-width:380px){.suggestions{grid-template-columns:1fr}.suggestion{min-height:56px}.welcome-logo{width:125px}.welcome h1{font-size:23px}.profile{padding:0 11px;font-size:13px}}
-@media(max-height:520px) and (max-width:800px){.welcome-logo{display:none}.welcome p{margin-bottom:10px}.suggestions{grid-template-columns:1fr 1fr}.suggestion{min-height:52px;padding:8px}}
+/* Interface mobile: viewport, safe areas e teclado virtual */
+@media(max-width:800px){
+ html{height:100%;height:100dvh}
+ body{padding:0;width:100%;height:100%;height:100dvh;min-height:0;overflow:hidden;background-attachment:scroll}
+ .page{width:100%;height:100%;height:100dvh;min-height:0;display:flex;flex-direction:column;gap:0}
+ .sidebar{display:none}
+ .main{width:100%;height:100%;min-height:0;flex:1;overflow:hidden}
+ .topbar{height:52px;min-height:52px;padding:0 10px;gap:7px;justify-content:flex-end}
+ .icon-btn{width:40px;min-width:40px;height:40px;font-size:18px}
+ .profile{height:40px;padding:0 10px;font-size:13px;white-space:nowrap}
+ .chat-shell{flex:1;height:auto;min-height:0;min-width:0;border-radius:14px 14px 0 0;border-left:0;border-right:0;border-bottom:0}
+ #chat{min-height:0;padding:16px 12px;gap:11px;overscroll-behavior:contain}
+ .welcome{width:100%;margin:auto 0;padding:10px 0}
+ .welcome-logo{width:140px;max-height:72px;margin-bottom:6px}
+ .welcome h1{font-size:24px}
+ .welcome p{font-size:14px;line-height:1.45;margin:0 auto 14px;padding:0 6px}
+ .suggestions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .suggestion{min-width:0;min-height:66px;padding:10px;border-radius:12px}
+ .suggestion strong{font-size:12px;line-height:1.3}
+ .suggestion small{font-size:10px;line-height:1.3}
+ .msg{max-width:92%;font-size:15px;overflow-wrap:anywhere;word-break:break-word}
+ .composer{flex-shrink:0;padding:8px 9px calc(7px + env(safe-area-inset-bottom));background:rgba(4,8,31,.82)}
+ form{width:100%;min-width:0;gap:5px;padding:5px;border-radius:14px}
+ input{width:0;flex:1;min-width:0;font-size:16px;padding:11px 7px}
+ .mic{width:40px;min-width:40px;height:42px}
+ .audio-btn{width:38px;min-width:38px;height:42px;justify-content:center;padding:0}
+ .send{width:44px;min-width:44px;height:42px}
+ footer{font-size:9px;line-height:1.3;padding:5px 4px 0}
+ .voice-panel{position:fixed;top:58px;right:8px;width:min(310px,calc(100vw - 16px));max-height:calc(100dvh - 70px);overflow:auto}
+}
+@media(max-width:380px){
+ .topbar{padding:0 7px;gap:5px}
+ .icon-btn{width:36px;min-width:36px;height:38px;font-size:16px}
+ .profile{padding:0 8px;font-size:12px}
+ #chat{padding:12px 9px}
+ .welcome-logo{width:120px;max-height:62px}
+ .welcome h1{font-size:22px}
+ .suggestions{grid-template-columns:1fr}
+ .suggestion{min-height:52px;padding:9px 10px}
+ .suggestion strong{font-size:13px}
+ .suggestion small{font-size:11px}
+ .composer{padding-left:7px;padding-right:7px}
+ .mic{width:36px;min-width:36px}
+ .audio-btn{width:34px;min-width:34px}
+ .send{width:40px;min-width:40px}
+}
+@media(max-height:520px) and (max-width:800px){
+ .welcome-logo{display:none}
+ .welcome p{margin-bottom:8px}
+ .suggestions{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .suggestion{min-height:44px;padding:7px}
+}
+@media(max-width:800px) and (orientation:landscape){
+ .welcome-logo{display:none}
+ .welcome{padding:4px 0}
+ .welcome p{margin-bottom:8px}
+ .suggestions{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .suggestion{min-height:44px;padding:7px}
+}
 </style></head>
 <body><div class="page">
 <aside class="sidebar"><button class="brand" type="button" onclick="location.reload()" title="Recarregar o Cosmo"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><div class="brand-name">COSMO ✦</div></button><nav class="nav"><button class="active" type="button">▣ &nbsp; Chat</button><button type="button" onclick="info('Histórico')">◷ &nbsp; Histórico</button><button type="button" onclick="info('Configurações')">⚙ &nbsp; Configurações</button><button type="button" onclick="info('Sobre')">ⓘ &nbsp; Sobre</button></nav><div class="side-info">Seu assistente virtual<br>criado por Kauplayon</div></aside>
