@@ -140,6 +140,24 @@ button{transition:background .18s ease,border-color .18s ease,transform .18s eas
  #mobileMenuBackdrop{position:fixed!important;z-index:90!important;inset:0;display:block;background:rgba(0,0,0,.18);pointer-events:auto}
  #mobileMenuBackdrop[hidden]{display:none!important}
 }
+
+/* Ajuste da camada lateral: manter o conteúdo principal visível */
+@media(min-width:801px){
+ .page{display:grid!important;grid-template-columns:64px minmax(0,1fr)!important;overflow:visible!important}
+ .main{display:flex!important;visibility:visible!important;opacity:1!important;min-width:0!important;position:relative!important;z-index:1!important}
+ .chat-shell{display:flex!important;visibility:visible!important;opacity:1!important;min-width:0!important}
+ .sidebar{z-index:50!important}
+ .sidebar:hover,.sidebar:focus-within{position:absolute!important;left:0!important;top:0!important;bottom:0!important;z-index:50!important}
+}
+@media(max-width:800px){
+ .page{display:flex!important;position:relative!important}
+ .main{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:1!important;width:100%!important}
+ .chat-shell{display:flex!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:1!important}
+ .sidebar{display:flex!important;position:fixed!important;z-index:100!important;top:0!important;bottom:0!important;left:0!important;width:min(280px,82vw)!important;height:100dvh!important;transform:translateX(-105%);visibility:hidden;pointer-events:none}
+ body.mobile-menu-open .sidebar{transform:translateX(0)!important;visibility:visible!important;pointer-events:auto!important}
+ #mobileMenuBackdrop{position:fixed!important;inset:0!important;z-index:90!important;background:rgba(0,0,0,.12)!important;pointer-events:auto!important}
+ #mobileMenuBackdrop[hidden]{display:none!important}
+}
 </style></head>
 <body><div class="page">
 <aside class="sidebar" id="sidebar"><button class="brand" type="button" onclick="location.reload()" title="Recarregar o Cosmo"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><div class="brand-name">COSMO ✦</div></button><nav class="nav"><button class="active" type="button" onclick="showChat()" title="Chat"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Chat</span></button><button type="button" onclick="showHistory()" title="Histórico"><span class="nav-icon" aria-hidden="true">◷</span><span class="nav-label">Histórico</span></button><button type="button" onclick="showStats()" title="Estatísticas"><span class="nav-icon" aria-hidden="true">▥</span><span class="nav-label">Estatísticas</span></button><button type="button" onclick="info('Sobre')" title="Sobre"><span class="nav-icon" aria-hidden="true">ⓘ</span><span class="nav-label">Sobre</span></button></nav><section class="sidebar-recent"><div class="sidebar-section-title">Recentes</div><div id="sidebarRecent"></div></section><div class="sidebar-bottom"><button class="sidebar-settings" type="button" onclick="openSettings()" title="Configurações"><span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Configurações</span></button><button class="sidebar-account" type="button" title="Conta"><span class="account-avatar">K</span><span class="nav-label">Kauã</span></button></div></aside><div id="mobileMenuBackdrop" hidden aria-hidden="true"></div>
