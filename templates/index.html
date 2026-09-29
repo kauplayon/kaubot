@@ -217,6 +217,34 @@ button{transition:background .18s ease,border-color .18s ease,transform .18s eas
  #sidebar .new-chat-button{justify-content:flex-start;padding:0 10px}
  #sidebar .new-chat-button .nav-label{display:inline;opacity:1}
 }
+
+/* Ajustes finais para que os recursos recentes também funcionem bem no mobile */
+@media(max-width:800px){
+ html,body{width:100%;max-width:100%;overflow:hidden}
+ .page{position:relative!important;display:flex!important;flex-direction:column!important;width:100%!important;height:100dvh!important;min-height:0!important;overflow:hidden!important}
+ .main{position:relative!important;z-index:1!important;display:flex!important;flex:1 1 auto!important;flex-direction:column!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important}
+ .topbar{position:relative;z-index:2;display:flex;flex:0 0 52px;align-items:center;justify-content:flex-start;padding:0 10px}
+ .mobile-menu-btn{display:flex!important;flex:0 0 40px;align-items:center;justify-content:center}
+ .mobile-brand{display:block!important;flex:1;text-align:left}
+ .chat-shell{position:relative!important;z-index:1!important;display:flex!important;flex:1 1 auto!important;flex-direction:column!important;width:100%!important;height:auto!important;min-height:0!important;overflow:hidden!important}
+ #chat{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch}
+ .composer{position:relative;z-index:2;flex:0 0 auto;width:100%;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+ #sidebar{display:flex!important;position:fixed!important;z-index:1000!important;top:0!important;bottom:0!important;left:0!important;width:min(300px,86vw)!important;height:100dvh!important;max-height:100dvh!important;min-height:0!important;overflow:hidden!important;flex-direction:column!important;transform:translateX(-105%)!important;visibility:hidden!important;pointer-events:none!important;transition:transform .22s ease,visibility .22s ease!important;border-radius:0 16px 16px 0!important;padding:14px 12px calc(12px + env(safe-area-inset-bottom))!important;box-shadow:12px 0 35px rgba(0,0,0,.4)!important}
+ body.mobile-menu-open #sidebar{transform:translateX(0)!important;visibility:visible!important;pointer-events:auto!important}
+ #sidebar>.brand{display:flex!important;flex:0 0 auto!important;min-width:0!important;width:100%!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;padding:4px 8px 16px!important}
+ #sidebar>.brand img{display:block!important;flex:0 0 42px!important;width:42px!important;height:42px!important}
+ #sidebar>.brand .brand-name{display:block!important}
+ #sidebar>.new-chat-button{display:flex!important;flex:0 0 44px!important;min-width:0!important;width:100%!important;align-items:center!important;justify-content:flex-start!important;margin:0 0 10px!important;padding:0 10px!important}
+ #sidebar>.new-chat-button .nav-label{display:inline!important;opacity:1!important}
+ #sidebar .nav{display:flex!important;flex:0 0 auto!important;flex-direction:column!important;gap:4px!important}
+ #sidebar .nav button{display:flex!important;align-items:center!important;min-height:42px!important;height:42px!important;width:100%!important;white-space:nowrap!important}
+ #sidebar .nav-label{display:inline!important;opacity:1!important}
+ #sidebar .nav-icon{margin-right:10px!important}
+ #sidebar .sidebar-recent{display:block!important;flex:1 1 auto!important;min-height:60px!important;min-width:0!important;width:100%!important;overflow-y:auto!important;margin:12px 0!important;-webkit-overflow-scrolling:touch}
+ #sidebar .sidebar-bottom{display:flex!important;flex:0 0 auto!important;flex-direction:column!important;min-width:0!important;width:100%!important;margin-top:auto!important;padding-top:8px!important}
+ #mobileMenuBackdrop{display:block!important;position:fixed!important;z-index:999!important;inset:0!important;background:rgba(0,0,0,.16)!important;backdrop-filter:none!important;pointer-events:auto!important}
+ #mobileMenuBackdrop[hidden]{display:none!important}
+}
 </style></head>
 <body><div class="page">
 <aside class="sidebar" id="sidebar"><button class="brand" type="button" onclick="location.reload()" title="Recarregar o Cosmo"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><div class="brand-name">COSMO ✦</div></button><button class="new-chat-button" type="button" onclick="startNewChat()" title="Nova conversa" aria-label="Nova conversa"><span class="nav-icon" aria-hidden="true">＋</span><span class="nav-label">Nova conversa</span></button><nav class="nav"><button class="active" type="button" onclick="showChat()" title="Chat"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Chat</span></button><button type="button" onclick="showStats()" title="Estatísticas"><span class="nav-icon" aria-hidden="true">▥</span><span class="nav-label">Estatísticas</span></button><button type="button" onclick="info('Sobre')" title="Sobre"><span class="nav-icon" aria-hidden="true">ⓘ</span><span class="nav-label">Sobre</span></button></nav><section class="sidebar-recent"><div class="sidebar-section-title">Recentes</div><div id="sidebarRecent"></div></section><div class="sidebar-bottom"><button class="sidebar-settings" type="button" onclick="openSettings()" title="Configurações"><span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Configurações</span></button><button class="sidebar-account" type="button" title="Conta"><span class="account-avatar">K</span><span class="nav-label">Kauã</span></button></div></aside><div id="mobileMenuBackdrop" hidden aria-hidden="true"></div>
