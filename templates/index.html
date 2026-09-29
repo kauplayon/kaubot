@@ -120,6 +120,26 @@ body.light .message-actions button.selected{background:#ded9ff;color:#33247d}
 @media(max-width:560px){.about-overlay{padding:10px}.about-card{padding:16px;max-height:90dvh}.about-grid{grid-template-columns:1fr}.about-title img{width:48px;height:48px}.about-title h2{font-size:21px}}
 /* Cosmo 0.6: pequenos refinamentos */
 button{transition:background .18s ease,border-color .18s ease,transform .18s ease,opacity .18s ease}button:not(:disabled):active{transform:scale(.97)}.msg{animation:cosmoIn .18s ease-out}.message-time{display:block;margin-top:6px;font-size:10px;opacity:.62}.composer-tools{display:flex;justify-content:flex-end;gap:7px;padding:0 2px 6px}.composer-tools button{border:1px solid rgba(126,136,255,.35);background:rgba(44,52,88,.65);color:inherit;border-radius:8px;padding:5px 9px;font-size:11px;cursor:pointer}body.light .composer-tools button{background:#eef0ff;color:#182044;border-color:#c9cffa}body.light .composer{background:rgba(255,255,255,.94)}body.light form{background:rgba(255,255,255,.96);border-color:#c9cffa;box-shadow:0 3px 16px rgba(44,53,110,.10)}body.light .attach-btn{color:#26305e}body.light .mic{background:#eef0ff;color:#26305e;border:1px solid #c9cffa}body.light .mic,body.light .audio-btn{background:#eef0ff;color:#26305e;border:1px solid #c9cffa}body.light .send{background:linear-gradient(135deg,#6653e8,#4e63d9);color:#fff}body.light .suggestion:hover{background:#e9eaff;border-color:#9588ef}body.light .history-delete{border-color:#d7a5a5;color:#9f3030;background:#fff0f0}body.light .msg.user{color:#fff}body.light .message-actions button:hover{background:#dedfff;color:#25205a}body.light .typing-indicator{border-color:#d7dcf5}body.light .stats-chart small{color:#59638e}@keyframes cosmoIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* Correção final da barra lateral e sobreposição do chat */
+@media(min-width:801px){
+ .page{grid-template-columns:64px minmax(0,1fr);overflow:visible}
+ .sidebar{z-index:50;align-self:stretch}
+ .sidebar:hover,.sidebar:focus-within{z-index:50}
+ .main{z-index:1;min-width:0}
+}
+@media(max-width:800px){
+ .page{position:relative;display:flex;flex-direction:column}
+ .main{position:relative;z-index:1;display:flex;flex-direction:column;min-width:0}
+ .sidebar{display:flex!important;position:fixed!important;z-index:100;top:0;bottom:0;left:0;width:min(280px,82vw);height:100dvh;max-height:100dvh;transform:translateX(-105%);visibility:hidden;pointer-events:none;transition:transform .25s ease,visibility .25s ease;overflow:hidden;border-radius:0 16px 16px 0;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}
+ body.mobile-menu-open .sidebar{transform:translateX(0);visibility:visible;pointer-events:auto}
+ .sidebar .nav-label{opacity:1}
+ .sidebar .nav-icon{margin-right:10px}
+ .sidebar-recent{display:block;min-height:0;flex:1}
+ .sidebar-bottom{display:flex;min-width:0;margin-top:auto}
+ #mobileMenuBackdrop{position:fixed!important;z-index:90!important;inset:0;display:block;background:rgba(0,0,0,.18);pointer-events:auto}
+ #mobileMenuBackdrop[hidden]{display:none!important}
+}
 </style></head>
 <body><div class="page">
 <aside class="sidebar" id="sidebar"><button class="brand" type="button" onclick="location.reload()" title="Recarregar o Cosmo"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><div class="brand-name">COSMO ✦</div></button><nav class="nav"><button class="active" type="button" onclick="showChat()" title="Chat"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Chat</span></button><button type="button" onclick="showHistory()" title="Histórico"><span class="nav-icon" aria-hidden="true">◷</span><span class="nav-label">Histórico</span></button><button type="button" onclick="showStats()" title="Estatísticas"><span class="nav-icon" aria-hidden="true">▥</span><span class="nav-label">Estatísticas</span></button><button type="button" onclick="info('Sobre')" title="Sobre"><span class="nav-icon" aria-hidden="true">ⓘ</span><span class="nav-label">Sobre</span></button></nav><section class="sidebar-recent"><div class="sidebar-section-title">Recentes</div><div id="sidebarRecent"></div></section><div class="sidebar-bottom"><button class="sidebar-settings" type="button" onclick="openSettings()" title="Configurações"><span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Configurações</span></button><button class="sidebar-account" type="button" title="Conta"><span class="account-avatar">K</span><span class="nav-label">Kauã</span></button></div></aside><div id="mobileMenuBackdrop" hidden aria-hidden="true"></div>
