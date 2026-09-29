@@ -178,7 +178,14 @@ function showStats(){
  '<article class="stat-card"><span class="stat-icon">🤖</span><span class="stat-label">Respostas do Cosmo</span><strong>'+botMsgs+'</strong><small>Respostas guardadas no histórico</small></article></div>'+
  '<section class="stats-detail"><div><span class="stats-detail-icon">🕒</span><div><strong>Atividade mais recente</strong><p>'+(latest?escapeHtml(latest.title||'Conversa'):'Ainda não há conversas salvas')+'</p><small>'+date+'</small></div></div><span class="stats-badge">'+(total?'Histórico ativo':'Comece uma conversa')+'</span></section>'+
  '<p class="stats-disclaimer">ℹ️ Os números são calculados somente com as conversas salvas neste navegador. Eles não representam o uso total do site.</p>';
- chat.innerHTML='';chat.appendChild(panel);panel.querySelector('#statsBack').onclick=renderMessages;document.body.classList.remove('mobile-menu-open')
+ chat.innerHTML='';chat.appendChild(panel);panel.querySelector('#statsBack').onclick=renderMessages;
+ const refresh=document.createElement('button');refresh.type='button';refresh.className='stats-back';refresh.textContent='↻ Atualizar';refresh.style.margin='0 0 12px 8px';refresh.onclick=showStats;panel.querySelector('.stats-heading').appendChild(refresh);
+ const activity=document.createElement('section');activity.className='stats-detail';activity.innerHTML='<div><strong>Mensagens por dia</strong><p>Atividade registrada nas conversas salvas.</p></div><div class="stats-chart" aria-label="Gráfico de mensagens por dia"></div>';panel.appendChild(activity);
+ const chart=activity.querySelector('.stats-chart'),days=[];for(let i=6;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);days.push({date:d,count:0})}
+ conversations.forEach(c=>c.messages.forEach(m=>{if(!m.createdAt)return;const stamp=new Date(m.createdAt);stamp.setHours(0,0,0,0);const day=days.find(x=>x.date.getTime()===stamp.getTime());if(day)day.count++}));
+ const max=Math.max(1,...days.map(x=>x.count));chart.style.cssText='display:flex;align-items:end;gap:8px;height:110px;min-width:180px;padding:8px 0';
+ days.forEach(x=>{const col=document.createElement('div');col.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;height:100%;gap:4px';const bar=document.createElement('div');bar.title=x.count+' mensagem(ns)';bar.style.cssText='width:100%;max-width:28px;height:'+Math.max(3,x.count/max*78)+'px;background:var(--accent,#725dff);border-radius:5px 5px 0 0';const label=document.createElement('small');label.textContent=x.date.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','');label.style.fontSize='9px';const value=document.createElement('small');value.textContent=x.count;value.style.fontSize='9px';col.append(value,bar,label);chart.appendChild(col)});
+ document.body.classList.remove('mobile-menu-open')
 }
 let conversations=[];let activeConversationId=null;let messages=[];
 try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');if(Array.isArray(saved))conversations=saved.filter(c=>c&&typeof c.id==='string'&&Array.isArray(c.messages)).slice(-50)}catch{conversations=[]}
