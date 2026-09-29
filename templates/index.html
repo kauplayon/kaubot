@@ -188,6 +188,21 @@ button{transition:background .18s ease,border-color .18s ease,transform .18s eas
  .sidebar .brand{width:100%;min-width:0;justify-content:flex-start;align-items:center;gap:10px}
  .sidebar .brand-name{display:block}
 }
+
+/* Alinhamento do logo na barra recolhida e expandida */
+@media(min-width:801px){
+ #sidebar>.brand{width:100%;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;padding:4px 0 20px;text-align:center}
+ #sidebar>.brand img{display:block;flex:0 0 38px;width:38px;height:38px;margin:0 auto;object-fit:contain}
+ #sidebar>.brand .brand-name{display:none}
+ #sidebar:hover>.brand,#sidebar:focus-within>.brand{width:100%;min-width:0;flex-direction:row;justify-content:flex-start;gap:10px;padding:4px 8px 24px;text-align:left}
+ #sidebar:hover>.brand img,#sidebar:focus-within>.brand img{flex:0 0 48px;width:48px;height:48px;margin:0}
+ #sidebar:hover>.brand .brand-name,#sidebar:focus-within>.brand .brand-name{display:block}
+}
+@media(max-width:800px){
+ #sidebar>.brand{width:100%;min-width:0;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding:4px 8px 24px}
+ #sidebar>.brand img{flex:0 0 48px;width:48px;height:48px;margin:0;object-fit:contain}
+ #sidebar>.brand .brand-name{display:block}
+}
 </style></head>
 <body><div class="page">
 <aside class="sidebar" id="sidebar"><button class="brand" type="button" onclick="location.reload()" title="Recarregar o Cosmo"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><div class="brand-name">COSMO ✦</div></button><nav class="nav"><button class="active" type="button" onclick="showChat()" title="Chat"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Chat</span></button><button type="button" onclick="showStats()" title="Estatísticas"><span class="nav-icon" aria-hidden="true">▥</span><span class="nav-label">Estatísticas</span></button><button type="button" onclick="info('Sobre')" title="Sobre"><span class="nav-icon" aria-hidden="true">ⓘ</span><span class="nav-label">Sobre</span></button></nav><section class="sidebar-recent"><div class="sidebar-section-title">Recentes</div><div id="sidebarRecent"></div></section><div class="sidebar-bottom"><button class="sidebar-settings" type="button" onclick="openSettings()" title="Configurações"><span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Configurações</span></button><button class="sidebar-account" type="button" title="Conta"><span class="account-avatar">K</span><span class="nav-label">Kauã</span></button></div></aside><div id="mobileMenuBackdrop" hidden aria-hidden="true"></div>
