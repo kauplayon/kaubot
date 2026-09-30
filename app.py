@@ -10,6 +10,7 @@ app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
 api_token = os.getenv("CLOUDFLARE_API_TOKEN")
 account_id = os.getenv("CLOUDFLARE_ACCOUNT_ID")
 client_configured = bool(api_token and account_id)
+VISION_MODEL = os.getenv("CLOUDFLARE_VISION_MODEL", "@cf/meta/llama-4-scout-17b-16e-instruct")
 
 BOT_NAME = os.getenv("BOT_NAME", "Cosmo")
 BOT_PERSONALITY = os.getenv(
@@ -37,7 +38,12 @@ def index():
 
 @app.get("/health")
 def health():
-    return jsonify({"status": "ok", "ai_configured": client_configured})
+    return jsonify({
+        "status": "ok",
+        "ai_configured": client_configured,
+        "vision_configured": client_configured,
+        "version": "0.9 — Em desenvolvimento"
+    })
 
 @app.post("/chat")
 def chat():
@@ -76,7 +82,7 @@ def chat():
     if memory:
         system_prompt += "\nPreferências que o usuário escolheu salvar: " + memory
     conversation = [{"role": "system", "content": system_prompt}]
-    for item in messages[-30:]:
+    for item in messages[-24:]:
         if not isinstance(item, dict):
             continue
         role = "user" if item.get("role") == "user" else "assistant"
@@ -118,6 +124,76 @@ def chat():
     return jsonify({"reply": local_reply(conversation[-1]["content"])})
 
 
+def _cloudflare_vision(image_data_url, prompt, max_tokens=1400, timeout=60):
+    """Analisa uma imagem com um modelo multimodal do Workers AI."""
+    if not client_configured:
+        raise RuntimeError("A análise de imagens precisa da API da Cloudflare configurada.")
+    url = (
+        f"https://api.cloudflare.com/client/v4/accounts/"
+        f"{account_id}/ai/run/{VISION_MODEL}"
+    )
+    response = requests.post(
+        url,
+        headers={"Authorization": f"Bearer {api_token}"},
+        json={
+            "messages": [
+                {"role": "system", "content": "Você é o Cosmo Vision. Analise imagens com atenção. Leia textos visíveis, preserve números e dados importantes e deixe claro quando algo estiver ilegível. Responda em português do Brasil."},
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {"type": "image_url", "image_url": {"url": image_data_url}},
+                    ],
+                },
+            ],
+            "max_tokens": max_tokens,
+            "temperature": 0.15,
+        },
+        timeout=timeout,
+    )
+    response.raise_for_status()
+    result = response.json().get("result") or {}
+    reply = result.get("response") or result.get("text")
+    if not reply:
+        raise ValueError("A Cloudflare não retornou uma análise da imagem.")
+    return str(reply).strip()
+
+
+@app.post("/analyze-image")
+def analyze_image():
+    file = request.files.get("file")
+    if not client_configured:
+        return jsonify({"error": "A análise de imagens precisa da API da Cloudflare configurada."}), 503
+    if not file or not file.filename:
+        return jsonify({"error": "Selecione uma imagem."}), 400
+
+    allowed = {
+        "image/jpeg", "image/png", "image/webp", "image/gif",
+        "image/bmp", "image/tiff"
+    }
+    mimetype = (file.mimetype or "").lower()
+    if mimetype not in allowed:
+        return jsonify({"error": "Formato de imagem não suportado. Use JPG, PNG, WEBP, GIF, BMP ou TIFF."}), 415
+
+    raw = file.read(8 * 1024 * 1024 + 1)
+    if not raw:
+        return jsonify({"error": "A imagem está vazia."}), 400
+    if len(raw) > 8 * 1024 * 1024:
+        return jsonify({"error": "A imagem deve ter no máximo 8 MB."}), 413
+
+    try:
+        import base64
+        data_url = f"data:{mimetype};base64,{base64.b64encode(raw).decode('ascii')}"
+        prompt = str(request.form.get("prompt", "")).strip()[:2000]
+        if not prompt:
+            prompt = "Analise esta imagem. Descreva o que aparece nela, leia textos importantes e destaque informações úteis."
+        reply = _cloudflare_vision(data_url, prompt)
+        return jsonify({"reply": reply, "filename": file.filename})
+    except Exception:
+        app.logger.exception("Erro ao analisar imagem")
+        return jsonify({"error": "Não consegui analisar essa imagem. Verifique o arquivo e a configuração da IA visual."}), 502
+
+
 @app.post("/extract-pdf")
 def extract_pdf():
     file = request.files.get("file")
@@ -132,17 +208,62 @@ def extract_pdf():
         return jsonify({"error": "O PDF deve ter no máximo 8 MB."}), 413
     try:
         import io
+        import base64
+        import fitz
         from pypdf import PdfReader
         reader = PdfReader(io.BytesIO(raw))
         if len(reader.pages) > 40:
             return jsonify({"error": "O PDF pode ter no máximo 40 páginas."}), 413
-        extracted = "\n".join(page.extract_text() or "" for page in reader.pages).strip()
+
+        parts = []
+        for page in reader.pages:
+            try:
+                text = page.extract_text(extraction_mode="layout") or ""
+            except TypeError:
+                text = page.extract_text() or ""
+            parts.append(text)
+        extracted = "\n".join(parts).strip()
+
+        # PDF escaneado: usa visão/OCR para interpretar as primeiras páginas.
         if not extracted:
-            return jsonify({"error": "Não encontrei texto. PDFs digitalizados como imagem não são compatíveis nesta versão."}), 422
-        return jsonify({"text": extracted[:24000], "pages": len(reader.pages), "truncated": len(extracted) > 24000})
+            if not client_configured:
+                return jsonify({"error": "Este PDF parece ser escaneado. A leitura visual precisa da API da Cloudflare configurada."}), 503
+            doc = fitz.open(stream=raw, filetype="pdf")
+            limit = min(len(doc), 6)
+            ocr_parts = []
+            for index in range(limit):
+                page = doc.load_page(index)
+                pix = page.get_pixmap(matrix=fitz.Matrix(1.15, 1.15), alpha=False)
+                image_bytes = pix.tobytes("png")
+                data_url = "data:image/png;base64," + base64.b64encode(image_bytes).decode("ascii")
+                page_text = _cloudflare_vision(
+                    data_url,
+                    f"Faça OCR desta página {index + 1}. Reproduza o texto legível, mantenha números, títulos e tabelas em uma estrutura de texto compreensível. Não invente conteúdo.",
+                    max_tokens=2200,
+                    timeout=45,
+                )
+                ocr_parts.append(f"[Página {index + 1}]\n{page_text}")
+            doc.close()
+            if not ocr_parts:
+                return jsonify({"error": "Não consegui ler as páginas do PDF escaneado."}), 422
+            extracted = "\n\n".join(ocr_parts)
+            return jsonify({
+                "text": extracted[:24000],
+                "pages": len(reader.pages),
+                "truncated": len(extracted) > 24000,
+                "ocr": True,
+                "ocr_pages": limit,
+            })
+
+        return jsonify({
+            "text": extracted[:24000],
+            "pages": len(reader.pages),
+            "truncated": len(extracted) > 24000,
+            "ocr": False,
+        })
     except Exception:
         app.logger.exception("Erro ao extrair texto do PDF")
-        return jsonify({"error": "Não consegui ler o PDF. Verifique se não está protegido ou danificado."}), 422
+        return jsonify({"error": "Não consegui ler o PDF. Verifique se não está protegido, danificado ou em um formato incompatível."}), 422
 
 
 @app.post("/transcribe")
