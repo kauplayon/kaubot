@@ -7,11 +7,15 @@ services:
     startCommand: gunicorn app:app
     healthCheckPath: /health
     envVars:
-      - key: GEMINI_API_KEY
+      - key: CLOUDFLARE_API_TOKEN
         sync: false
+      - key: CLOUDFLARE_ACCOUNT_ID
+        sync: false
+      - key: CLOUDFLARE_MODEL
+        value: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+      - key: CLOUDFLARE_VISION_MODEL
+        value: "@cf/meta/llama-4-scout-17b-16e-instruct"
       - key: BOT_NAME
         value: Cosmo
       - key: BOT_PERSONALITY
         value: "Amigável, paciente, curioso e didático. Use linguagem simples e natural."
-      - key: GEMINI_MODEL
-        value: gemini-2.5-flash
