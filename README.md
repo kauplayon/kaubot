@@ -50,7 +50,8 @@ A leitura visual depende da disponibilidade e configuração do modelo multimoda
 - HTML, CSS e JavaScript
 - Cloudflare Workers AI
 - PyPDF
-- PyMuPDF
+- pypdfium2
+- Pillow
 
 ## Aviso
 O Cosmo pode cometer erros. Confira informações importantes em fontes confiáveis. Não envie dados pessoais, senhas, chaves de API ou informações confidenciais nas conversas.
