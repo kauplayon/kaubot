@@ -252,6 +252,495 @@ button{transition:background .18s ease,border-color .18s ease,transform .18s eas
 .quick-actions{display:flex;gap:6px;padding:0 2px 6px;overflow-x:auto;scrollbar-width:none}.quick-actions::-webkit-scrollbar{display:none}.quick-actions button{flex:0 0 auto;border:1px solid rgba(126,136,255,.28);background:rgba(44,52,88,.45);color:#dce2ff;border-radius:999px;padding:6px 10px;font-size:11px;cursor:pointer}.quick-actions button:hover{background:rgba(113,91,255,.2);border-color:rgba(126,136,255,.55)}body.light .quick-actions button{background:#eef0ff;color:#28325e;border-color:#c9cffa}
 .new-chat-flash{animation:newChatPulse .35s ease-out}@keyframes newChatPulse{0%{opacity:.45;transform:scale(.99)}100%{opacity:1;transform:scale(1)}}
 @media(max-width:800px){.quick-actions{padding-left:1px;padding-right:1px}.quick-actions button{font-size:10px;padding:6px 9px}.history-search{font-size:13px;padding:10px}}
+
+/* =========================================================
+   COSMO 0.7 — VISUAL EVOLUTION
+   Identidade: espacial, premium, limpa e responsiva
+   ========================================================= */
+:root{
+  --bg:#050817;
+  --surface:rgba(8,13,38,.72);
+  --surface-strong:rgba(10,16,47,.92);
+  --surface-soft:rgba(26,33,76,.52);
+  --line:rgba(101,123,255,.38);
+  --line-strong:rgba(132,116,255,.72);
+  --accent:#7c63ff;
+  --accent-2:#31c8ff;
+  --text:#f5f7ff;
+  --muted:#aab4d7;
+  --shadow:0 24px 80px rgba(0,0,0,.34);
+}
+
+html{background:var(--bg)}
+body{
+  color:var(--text);
+  background:#050817 url("/static/fundo-cosmo.jpg") center/cover fixed no-repeat;
+  letter-spacing:.01em;
+}
+body:before{
+  background:
+    radial-gradient(circle at 15% 20%,rgba(62,103,255,.14),transparent 30%),
+    radial-gradient(circle at 80% 70%,rgba(151,70,255,.16),transparent 33%),
+    linear-gradient(180deg,rgba(2,4,18,.16),rgba(2,4,18,.58));
+}
+body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(120deg,transparent 0 35%,rgba(108,116,255,.035) 50%,transparent 65%);
+  mix-blend-mode:screen;
+}
+
+.page{gap:14px}
+.sidebar{
+  border:1px solid rgba(113,126,255,.34)!important;
+  background:linear-gradient(180deg,rgba(7,12,36,.94),rgba(4,8,27,.88))!important;
+  box-shadow:0 12px 40px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.04);
+  backdrop-filter:blur(22px)!important;
+}
+.sidebar:after{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent-2),var(--accent),transparent);
+  opacity:.65;
+  pointer-events:none;
+}
+.brand{border-radius:14px}
+.brand img{
+  filter:drop-shadow(0 0 14px rgba(69,158,255,.28)) drop-shadow(0 0 18px rgba(140,83,255,.18));
+}
+.brand-name{
+  background:linear-gradient(90deg,#fff 0%,#b9ddff 48%,#ad7cff 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.nav{gap:7px}
+.nav button{
+  color:#dfe5ff;
+  background:transparent;
+  border-color:transparent;
+  transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.nav button:hover{
+  transform:translateX(2px);
+  background:linear-gradient(90deg,rgba(83,90,207,.24),rgba(82,64,160,.10));
+  border-color:rgba(111,121,255,.34);
+}
+.nav button.active{
+  background:linear-gradient(90deg,rgba(100,87,238,.32),rgba(63,180,255,.08));
+  border-color:rgba(122,118,255,.58);
+  box-shadow:inset 3px 0 0 #7b66ff,0 8px 25px rgba(74,62,190,.16);
+}
+.nav-icon{color:#c9d3ff}
+
+.sidebar-recent{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(118,111,255,.48) transparent;
+}
+.sidebar-section-title{
+  color:#7f8bb8;
+  text-transform:uppercase;
+  letter-spacing:1.6px;
+  font-weight:700;
+  font-size:10px;
+}
+.history-search{
+  background:rgba(4,9,31,.56)!important;
+  border-color:rgba(112,125,255,.25)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+.history-search:focus{
+  box-shadow:0 0 0 3px rgba(108,91,255,.12),0 0 24px rgba(77,122,255,.08);
+}
+.history-item .history-open{
+  border-color:transparent!important;
+  background:transparent!important;
+  padding:8px 7px!important;
+  color:#e3e8ff!important;
+}
+.history-item .history-open:hover{
+  background:rgba(94,84,210,.18)!important;
+}
+.history-menu-btn:hover{color:#fff!important}
+.sidebar-bottom{
+  border-top:1px solid rgba(112,125,255,.18)!important;
+}
+.sidebar-settings,.sidebar-account{
+  border:1px solid transparent!important;
+}
+.sidebar-settings:hover,.sidebar-account:hover{
+  background:rgba(91,72,220,.16)!important;
+  border-color:rgba(126,136,255,.24)!important;
+}
+.account-avatar{
+  box-shadow:0 0 0 3px rgba(96,106,255,.12),0 6px 18px rgba(60,50,180,.18);
+}
+
+.main{min-width:0}
+.topbar{
+  height:56px;
+  padding:0 6px 0 2px;
+}
+.icon-btn{
+  border-color:rgba(111,126,255,.35)!important;
+  background:rgba(6,10,32,.58)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 25px rgba(0,0,0,.16);
+}
+.icon-btn:hover{
+  background:rgba(73,82,170,.28)!important;
+  border-color:rgba(133,125,255,.72)!important;
+  transform:translateY(-1px);
+}
+
+.chat-shell{
+  position:relative;
+  border:1px solid rgba(104,123,255,.40)!important;
+  border-radius:24px!important;
+  background:
+    radial-gradient(circle at 50% 30%,rgba(66,73,172,.10),transparent 35%),
+    linear-gradient(145deg,rgba(5,9,34,.84),rgba(7,12,39,.60))!important;
+  box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.04),0 0 0 1px rgba(111,86,255,.05);
+  backdrop-filter:blur(18px)!important;
+}
+.chat-shell:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 88% 12%,rgba(52,186,255,.09),transparent 25%),
+    radial-gradient(circle at 14% 82%,rgba(148,71,255,.09),transparent 26%);
+}
+#chat{position:relative;z-index:1}
+.welcome{
+  max-width:760px;
+  padding:24px 18px;
+}
+.welcome-logo{
+  width:235px!important;
+  max-height:118px!important;
+  filter:drop-shadow(0 0 18px rgba(65,157,255,.28)) drop-shadow(0 0 32px rgba(131,79,255,.18))!important;
+}
+.welcome h1{
+  font-size:38px!important;
+  letter-spacing:-.8px;
+}
+.welcome h1 span{
+  background:linear-gradient(90deg,#37c9ff,#8f6cff 55%,#c16cff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent!important;
+}
+.welcome p{
+  color:#b8c2e2!important;
+  font-size:15px;
+}
+.suggestions{gap:11px!important}
+.suggestion{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(105,114,255,.30)!important;
+  border-radius:16px!important;
+  background:linear-gradient(145deg,rgba(18,27,67,.74),rgba(10,15,43,.60))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 8px 25px rgba(0,0,0,.12);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.suggestion:before{
+  content:"";
+  position:absolute;
+  inset:auto -30% -65% -30%;
+  height:85%;
+  background:radial-gradient(circle,rgba(109,90,255,.22),transparent 65%);
+  pointer-events:none;
+}
+.suggestion:hover{
+  transform:translateY(-2px);
+  border-color:rgba(115,134,255,.62)!important;
+  box-shadow:0 12px 35px rgba(20,25,75,.26);
+  background:linear-gradient(145deg,rgba(28,35,93,.82),rgba(12,17,48,.68))!important;
+}
+.suggestion strong{position:relative;font-size:14px!important}
+.suggestion small{position:relative;color:#9fadd6!important}
+
+.msg{
+  box-shadow:0 10px 25px rgba(0,0,0,.10);
+  transition:transform .15s ease;
+}
+.msg.bot{
+  background:linear-gradient(145deg,rgba(24,31,70,.88),rgba(18,24,58,.77))!important;
+  border-color:rgba(102,117,180,.25)!important;
+}
+.msg.user{
+  background:linear-gradient(135deg,#6352e8 0%,#4f7cf4 60%,#3fa9ff 100%)!important;
+  box-shadow:0 10px 30px rgba(62,74,205,.20);
+}
+.message-actions button,.speak-btn{
+  transition:transform .16s ease,background .16s ease,border-color .16s ease;
+}
+.message-actions button:hover,.speak-btn:hover{transform:translateY(-1px)}
+
+.composer{
+  position:relative;
+  z-index:2;
+  padding:12px 28px 20px!important;
+  background:linear-gradient(180deg,rgba(4,8,28,0),rgba(4,8,28,.28));
+}
+.quick-actions{gap:7px!important}
+.quick-actions button{
+  border-color:rgba(106,121,255,.30)!important;
+  background:rgba(15,22,57,.58)!important;
+  color:#cfd8ff!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+.quick-actions button:hover{
+  transform:translateY(-1px);
+  background:rgba(61,64,146,.34)!important;
+}
+form{
+  border:1px solid rgba(130,107,255,.78)!important;
+  border-radius:20px!important;
+  background:linear-gradient(145deg,rgba(5,9,34,.90),rgba(10,16,48,.76))!important;
+  box-shadow:0 0 0 1px rgba(70,131,255,.04),0 0 32px rgba(92,72,255,.13),inset 0 1px 0 rgba(255,255,255,.045);
+}
+form:focus-within{
+  border-color:rgba(86,173,255,.92)!important;
+  box-shadow:0 0 0 3px rgba(75,128,255,.10),0 0 36px rgba(92,72,255,.18),inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+.attach-btn{
+  background:rgba(84,76,165,.12)!important;
+  border:1px solid rgba(111,120,255,.18)!important;
+}
+.attach-btn:hover{background:rgba(106,94,226,.24)!important}
+.attach-menu{
+  background:rgba(8,13,40,.98)!important;
+  border-color:rgba(116,127,255,.38)!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.42)!important;
+}
+.mic{
+  background:rgba(36,45,88,.82)!important;
+  border:1px solid rgba(103,116,183,.25)!important;
+}
+.mic:hover{background:rgba(51,63,123,.92)!important}
+.send{
+  background:linear-gradient(135deg,#6a58ee,#4d8df7)!important;
+  box-shadow:0 8px 20px rgba(79,103,236,.24);
+}
+.send:hover{filter:brightness(1.07);transform:translateY(-1px)}
+
+.typing-indicator{
+  background:linear-gradient(145deg,rgba(27,35,77,.90),rgba(18,23,58,.78))!important;
+  border-color:rgba(106,121,185,.25)!important;
+  box-shadow:0 8px 26px rgba(0,0,0,.10);
+}
+
+.about-overlay{
+  background:rgba(2,5,17,.76)!important;
+  backdrop-filter:blur(14px)!important;
+}
+.about-card{
+  border-color:rgba(112,126,255,.45)!important;
+  border-radius:24px!important;
+  background:linear-gradient(145deg,rgba(8,13,42,.98),rgba(9,14,46,.95))!important;
+  box-shadow:0 30px 110px rgba(0,0,0,.58),inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+.about-tagline{
+  color:#82cfff!important;
+}
+.about-section{
+  background:linear-gradient(145deg,rgba(26,34,78,.52),rgba(17,23,61,.38))!important;
+  border-color:rgba(107,121,188,.22)!important;
+}
+.about-section:hover{
+  border-color:rgba(117,127,224,.36)!important;
+}
+.stats-panel,.history-panel{
+  position:relative;
+  z-index:1;
+}
+.stats-back,.history-head button{
+  background:linear-gradient(135deg,rgba(83,72,176,.38),rgba(50,88,160,.22))!important;
+  border-color:rgba(112,126,255,.38)!important;
+}
+.stat-card{
+  background:linear-gradient(145deg,rgba(29,39,91,.72),rgba(12,18,52,.70))!important;
+  border-color:rgba(107,121,202,.25)!important;
+}
+.history-open{
+  background:linear-gradient(145deg,rgba(26,34,77,.64),rgba(13,19,49,.62))!important;
+  border-color:rgba(103,118,192,.22)!important;
+}
+
+/* tema claro: branco limpo sem perder a identidade Cosmo */
+body.light{
+  background:#eaf0ff url("/static/fundo-cosmo.jpg") center/cover fixed no-repeat;
+}
+body.light:before{
+  background:
+    radial-gradient(circle at 10% 10%,rgba(58,125,255,.11),transparent 30%),
+    radial-gradient(circle at 86% 72%,rgba(131,78,255,.10),transparent 30%),
+    linear-gradient(180deg,rgba(245,248,255,.48),rgba(232,238,255,.76));
+}
+body.light .sidebar{
+  background:linear-gradient(180deg,rgba(255,255,255,.90),rgba(242,246,255,.86))!important;
+  border-color:rgba(91,111,197,.22)!important;
+  box-shadow:0 20px 60px rgba(54,72,125,.14);
+}
+body.light .chat-shell{
+  background:linear-gradient(145deg,rgba(255,255,255,.74),rgba(242,246,255,.76))!important;
+  border-color:rgba(91,111,197,.25)!important;
+  box-shadow:0 20px 65px rgba(47,66,128,.14),inset 0 1px 0 rgba(255,255,255,.75);
+}
+body.light .nav button{color:#25305d!important}
+body.light .nav button.active{
+  background:linear-gradient(90deg,rgba(100,89,225,.14),rgba(61,166,238,.08))!important;
+  border-color:rgba(91,105,206,.25)!important;
+}
+body.light .welcome p{color:#5c678e!important}
+body.light .suggestion{
+  background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(238,242,255,.88))!important;
+  border-color:rgba(93,111,193,.22)!important;
+}
+body.light .suggestion:hover{background:#f7f8ff!important}
+body.light .msg.bot{
+  background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(241,245,255,.90))!important;
+  box-shadow:0 10px 26px rgba(56,74,135,.10);
+}
+body.light .composer{
+  background:linear-gradient(180deg,rgba(248,250,255,0),rgba(229,236,255,.45));
+}
+body.light form{
+  background:rgba(255,255,255,.94)!important;
+  border-color:rgba(91,102,219,.45)!important;
+}
+body.light form:focus-within{
+  border-color:rgba(74,145,239,.82)!important;
+}
+body.light .quick-actions button{
+  background:rgba(255,255,255,.82)!important;
+  color:#33406f!important;
+}
+body.light .send{box-shadow:0 8px 20px rgba(72,93,205,.20)}
+body.light .about-card{
+  background:linear-gradient(145deg,rgba(255,255,255,.99),rgba(245,247,255,.98))!important;
+  box-shadow:0 30px 90px rgba(34,48,92,.22)!important;
+}
+body.light .about-section{
+  background:linear-gradient(145deg,#f8f9ff,#eef2ff)!important;
+}
+body.light .history-open{background:rgba(255,255,255,.78)!important}
+
+/* desktop: barra recolhida elegante; expandida sem roubar o chat */
+@media(min-width:801px){
+  .sidebar{
+    border-radius:18px!important;
+  }
+  .sidebar:hover,.sidebar:focus-within{
+    box-shadow:22px 0 60px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.04)!important;
+  }
+}
+
+/* mobile 0.7 */
+@media(max-width:800px){
+  html,body{background-attachment:scroll!important}
+  .topbar{
+    height:58px!important;
+    min-height:58px!important;
+    padding:0 10px!important;
+    background:linear-gradient(180deg,rgba(3,7,24,.80),rgba(3,7,24,.18))!important;
+    border-bottom:1px solid rgba(106,121,220,.12);
+    backdrop-filter:blur(16px);
+  }
+  .mobile-menu-btn{
+    border:1px solid rgba(111,126,255,.30)!important;
+    background:rgba(8,13,40,.68)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 24px rgba(0,0,0,.16);
+  }
+  .mobile-brand{
+    font-size:16px!important;
+    letter-spacing:1.7px!important;
+    background:linear-gradient(90deg,#fff,#b8d8ff 48%,#a878ff)!important;
+    -webkit-background-clip:text!important;
+    background-clip:text!important;
+    color:transparent!important;
+  }
+  .chat-shell{
+    border-radius:18px 18px 0 0!important;
+    background:
+      radial-gradient(circle at 50% 18%,rgba(66,73,172,.08),transparent 34%),
+      linear-gradient(145deg,rgba(5,9,34,.90),rgba(7,12,39,.74))!important;
+  }
+  #chat{padding:15px 11px 12px!important;gap:10px!important}
+  .welcome{padding:16px 4px!important}
+  .welcome-logo{
+    width:155px!important;
+    max-height:78px!important;
+    margin-bottom:7px!important;
+  }
+  .welcome h1{font-size:26px!important;letter-spacing:-.5px}
+  .welcome p{font-size:13px!important}
+  .suggestions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .suggestion{
+    min-height:72px!important;
+    padding:10px!important;
+    border-radius:14px!important;
+  }
+  .suggestion strong{font-size:12px!important}
+  .suggestion small{font-size:10px!important}
+  .composer{
+    padding:7px 8px calc(8px + env(safe-area-inset-bottom))!important;
+    background:linear-gradient(180deg,rgba(4,8,28,0),rgba(4,8,28,.46))!important;
+  }
+  .quick-actions{
+    padding:0 1px 6px!important;
+  }
+  .quick-actions button{
+    padding:6px 10px!important;
+    font-size:10px!important;
+  }
+  form{
+    border-radius:18px!important;
+    padding:5px!important;
+  }
+  #input{font-size:16px!important;min-height:42px!important;max-height:120px!important}
+  .attach-btn{width:40px;height:40px;font-size:25px}
+  .mic{width:40px!important;min-width:40px!important;height:40px!important}
+  .send{width:44px!important;min-width:44px!important;height:40px!important}
+  footer{font-size:8.5px!important;padding-top:4px!important}
+  #sidebar{
+    width:min(310px,88vw)!important;
+    border-right:1px solid rgba(119,129,255,.34)!important;
+    background:linear-gradient(180deg,rgba(7,12,36,.985),rgba(4,8,27,.975))!important;
+    box-shadow:18px 0 55px rgba(0,0,0,.52)!important;
+    backdrop-filter:blur(24px)!important;
+  }
+  #mobileMenuBackdrop{
+    background:rgba(1,4,15,.22)!important;
+    backdrop-filter:blur(2px);
+  }
+  body.light .topbar{background:linear-gradient(180deg,rgba(247,249,255,.92),rgba(247,249,255,.54))!important}
+  body.light .chat-shell{
+    background:linear-gradient(145deg,rgba(255,255,255,.84),rgba(244,247,255,.90))!important;
+  }
+  body.light .composer{
+    background:linear-gradient(180deg,rgba(248,250,255,0),rgba(230,236,253,.60))!important;
+  }
+  body.light #sidebar{
+    background:linear-gradient(180deg,rgba(255,255,255,.985),rgba(243,247,255,.98))!important;
+    box-shadow:18px 0 55px rgba(42,60,110,.18)!important;
+  }
+}
+@media(max-width:380px){
+  .welcome h1{font-size:23px!important}
+  .welcome-logo{width:130px!important}
+  .suggestions{grid-template-columns:1fr!important}
+  .suggestion{min-height:58px!important}
+  .quick-actions button{font-size:9.5px!important;padding:6px 8px!important}
+}
 </style></head>
 <body><div class="page">
 <aside class="sidebar" id="sidebar"><button class="brand" type="button" onclick="location.reload()" title="Recarregar o Cosmo"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><div class="brand-name">COSMO ✦</div></button><button class="new-chat-button" type="button" onclick="startNewChat()" title="Nova conversa" aria-label="Nova conversa"><span class="nav-icon" aria-hidden="true">＋</span><span class="nav-label">Nova conversa</span></button><nav class="nav"><button class="active" type="button" onclick="showChat()" title="Chat"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Chat</span></button><button type="button" onclick="showStats()" title="Estatísticas"><span class="nav-icon" aria-hidden="true">▥</span><span class="nav-label">Estatísticas</span></button><button type="button" onclick="info('Sobre')" title="Sobre"><span class="nav-icon" aria-hidden="true">ⓘ</span><span class="nav-label">Sobre</span></button></nav><section class="sidebar-recent"><div class="sidebar-section-title">Recentes</div><input id="historySearch" class="history-search" type="search" placeholder="🔎 Pesquisar conversas..." aria-label="Pesquisar conversas"><div id="sidebarRecent"></div></section><div class="sidebar-bottom"><button class="sidebar-settings" type="button" onclick="openSettings()" title="Configurações"><span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Configurações</span></button><button class="sidebar-account" type="button" title="Conta"><span class="account-avatar">K</span><span class="nav-label">Kauã</span></button></div></aside><div id="mobileMenuBackdrop" hidden aria-hidden="true"></div>
