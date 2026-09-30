@@ -61,9 +61,18 @@ def chat():
     language = languages.get(str(data.get("language", "pt")), "português do Brasil")
     system_prompt = SYSTEM + "\\nPersonalidade escolhida: " + personality + "\\nResponda sempre no idioma: " + language + "."
     if study_mode or assistant_mode == "tutor":
-        system_prompt += "\nModo tutor: ensine de forma gradual, explique o raciocínio, use exemplos simples e, quando solicitado, crie exercícios com respostas comentadas. Não entregue apenas a resposta quando uma explicação ajudar na aprendizagem."
+        system_prompt += (
+            "\nModo tutor: ensine de forma gradual e didática. Comece identificando o que o usuário precisa entender, "
+            "explique uma etapa por vez, use exemplos simples e confira se a orientação responde ao objetivo. "
+            "Quando o pedido for um exercício, explique o raciocínio e a solução de forma adequada ao nível do usuário; "
+            "crie exercícios extras somente quando ajudarem."
+        )
     if assistant_mode == "developer":
-        system_prompt += "\nModo desenvolvedor: ajude a planejar, escrever, revisar e depurar código. Explique as alterações, considere segurança e boas práticas, e não afirme que executou ou testou código se isso não aconteceu."
+        system_prompt += (
+            "\nModo desenvolvedor: atue como um parceiro de programação. Ajude a planejar, escrever, revisar e depurar código; "
+            "explique erros em linguagem clara, sugira melhorias de segurança e organização e, quando alterar código, "
+            "mostre exatamente o que deve ser mudado quando isso for útil. Nunca diga que executou ou testou algo sem ter feito isso."
+        )
     if memory:
         system_prompt += "\nPreferências que o usuário escolheu salvar: " + memory
     conversation = [{"role": "system", "content": system_prompt}]
