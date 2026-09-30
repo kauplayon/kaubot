@@ -209,7 +209,7 @@ def extract_pdf():
     try:
         import io
         import base64
-        import fitz
+        import pypdfium2 as pdfium
         from pypdf import PdfReader
         reader = PdfReader(io.BytesIO(raw))
         if len(reader.pages) > 40:
@@ -228,13 +228,16 @@ def extract_pdf():
         if not extracted:
             if not client_configured:
                 return jsonify({"error": "Este PDF parece ser escaneado. A leitura visual precisa da API da Cloudflare configurada."}), 503
-            doc = fitz.open(stream=raw, filetype="pdf")
+            doc = pdfium.PdfDocument(raw)
             limit = min(len(doc), 6)
             ocr_parts = []
             for index in range(limit):
-                page = doc.load_page(index)
-                pix = page.get_pixmap(matrix=fitz.Matrix(1.15, 1.15), alpha=False)
-                image_bytes = pix.tobytes("png")
+                page = doc[index]
+                bitmap = page.render(scale=1.15)
+                image = bitmap.to_pil()
+                image_buffer = io.BytesIO()
+                image.save(image_buffer, format="PNG", optimize=True)
+                image_bytes = image_buffer.getvalue()
                 data_url = "data:image/png;base64," + base64.b64encode(image_bytes).decode("ascii")
                 page_text = _cloudflare_vision(
                     data_url,
@@ -243,6 +246,8 @@ def extract_pdf():
                     timeout=45,
                 )
                 ocr_parts.append(f"[Página {index + 1}]\n{page_text}")
+                bitmap.close()
+                page.close()
             doc.close()
             if not ocr_parts:
                 return jsonify({"error": "Não consegui ler as páginas do PDF escaneado."}), 422
