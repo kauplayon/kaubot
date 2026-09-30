@@ -783,7 +783,15 @@ clearChatButton.addEventListener('click',()=>{if(!messages.length){newConversati
 stopReplyButton.addEventListener('click',()=>{if(activeRequest)activeRequest.abort()});
 function resizeComposer(){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,window.matchMedia('(max-width:800px)').matches?120:160)+'px';input.style.overflowY=input.scrollHeight>(window.matchMedia('(max-width:800px)').matches?120:160)?'auto':'hidden'}
 input.addEventListener('input',resizeComposer);window.addEventListener('resize',resizeComposer);
-input.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey){e.preventDefault();form.requestSubmit()}});
+input.addEventListener('keydown',e=>{
+ if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){
+  e.preventDefault();
+  if(!send.disabled)form.requestSubmit();
+ }else if(e.key==='Enter'&&e.ctrlKey){
+  e.preventDefault();
+  if(!send.disabled)form.requestSubmit();
+ }
+});
 let speakEnabled=localStorage.getItem('cosmo-speak')==='true';
 const STORAGE_KEY='cosmo-conversations-v1';
 const personalitySelect=document.querySelector('#personalitySelect'),languageSelect=document.querySelector('#languageSelect'),colorSelect=document.querySelector('#colorSelect'),memoryInput=document.querySelector('#memoryInput');
