@@ -95,10 +95,40 @@ def chat():
     document_context = str(data.get("document_context", ""))[:12000].strip()
     if document_context:
         system_prompt += "\n\nCONTEÚDO DE ARQUIVO FORNECIDO PELO USUÁRIO. Use esse conteúdo para responder ao pedido sobre o arquivo; não diga que não recebeu o arquivo:\n" + document_context
+    last_user_text = str(messages[-1].get("content", "")) if isinstance(messages[-1], dict) else ""
     tool_context, tool_used = build_tool_context(
-        str(messages[-1].get("content", "")) if isinstance(messages[-1], dict) else "",
+        last_user_text,
         force_search=assistant_mode == "agent"
     )
+
+    # Perguntas objetivas sobre o dólar recebem o valor da ferramenta diretamente,
+    # evitando que o modelo responda com conhecimento antigo.
+    currency_tool = next((item for item in tool_used if item.get("tool") == "currency"), None)
+    if currency_tool and any(
+        phrase in last_user_text.lower()
+        for phrase in ("dólar", "cotação usd", "usd/brl", "usd para brl")
+    ):
+        bid = currency_tool.get("bid")
+        ask = currency_tool.get("ask")
+        high = currency_tool.get("high")
+        low = currency_tool.get("low")
+        pct = currency_tool.get("pctChange")
+        updated = currency_tool.get("updated") or "última atualização disponível"
+        reply = (
+            "💵 Cotação do dólar (USD/BRL)\n\n"
+            f"**Compra:** R$ {bid}\n"
+            f"**Venda:** R$ {ask}\n"
+            f"**Máxima:** R$ {high}\n"
+            f"**Mínima:** R$ {low}\n"
+            f"**Variação:** {pct}%\n"
+            f"**Atualização:** {updated}\n\n"
+            "Fonte: AwesomeAPI."
+        )
+        return jsonify({
+            "reply": reply,
+            "tools_used": tool_used,
+            "memory_used": bool(memory)
+        })
     if assistant_mode == "agent":
         system_prompt += (
             "\nModo agente: você pode aproveitar as ferramentas do Cosmo quando houver dados fornecidos por elas. "
