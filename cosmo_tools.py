@@ -246,6 +246,10 @@ def build_tool_context(text: str, force_search: bool = False) -> tuple[str, list
             "quanto está o dólar",
             "quanto vale o dólar",
             "preço do dólar",
+            "valor do dólar",
+            "valor dólar",
+            "qual é o valor do dólar",
+            "qual o valor do dólar",
         )
     )
     fx_found = False
