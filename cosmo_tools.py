@@ -199,6 +199,19 @@ def build_tool_context(text: str, force_search: bool = False) -> tuple[str, list
             "busque na web",
             "pesquise na internet",
             "pesquise na web",
+            "cotação atual",
+            "cotação do dólar",
+            "dólar hoje",
+            "último jogo",
+            "último resultado",
+            "resultado de hoje",
+            "jogo de hoje",
+            "notícias de hoje",
+            "notícia de hoje",
+            "hoje",
+            "agora",
+            "atual",
+            "atualmente",
         )
     )
     if wants_search:
