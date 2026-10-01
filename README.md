@@ -1,57 +1,64 @@
-# Cosmo — chatbot de Kauplayon
+# Cosmo — assistente de IA de Kauplayon
 
-Chatbot web em português com IA Cloudflare Workers AI, histórico local, voz, memória personalizada e leitura de arquivos.
+Versão: 1.0 — Em desenvolvimento
 
-## O que ele faz
-- Responde perguntas gerais usando o modelo configurado em CLOUDFLARE_MODEL.
-- Permite conversar por texto e, em navegadores compatíveis, por voz.
-- Mantém as últimas mensagens de cada conversa no histórico local.
-- Oferece modos Normal, Estudos, Tutor e Desenvolvedor.
-- Permite editar, regenerar, continuar, copiar e compartilhar respostas.
-- Mantém memória personalizada opcional no navegador.
-- Lê PDFs com extração de texto e usa visão/OCR para PDFs escaneados quando a IA visual está configurada.
-- Analisa imagens enviadas usando um modelo multimodal do Cloudflare Workers AI.
-- Transcreve áudio usando Cloudflare Workers AI Whisper.
-- Possui interface responsiva para desktop e mobile.
-- Endpoint de saúde em /health.
+Cosmo é um assistente web com IA Cloudflare Workers AI, memória, contexto de conversa, visão, arquivos, ferramentas, pesquisa na web, modo agente, produtividade local e suporte PWA.
 
-## Configuração local
-1. Use Python 3.10 ou superior.
-2. Instale as dependências: pip install -r requirements.txt.
-3. Copie .env.example para .env.
-4. Preencha CLOUDFLARE_API_TOKEN e CLOUDFLARE_ACCOUNT_ID.
-5. Execute python app.py e abra http://127.0.0.1:5000.
+## 1.0 Alpha — Cosmo Core
+- Memória personalizada opcional.
+- Contexto das conversas recentes.
+- Ferramentas de calculadora, hora, clima e pesquisa.
+- Análise de imagens com modelo multimodal.
+- Leitura de PDFs e OCR de PDFs escaneados.
+- Transcrição de áudio.
 
-A visão usa o modelo definido em CLOUDFLARE_VISION_MODEL. O padrão do projeto é @cf/meta/llama-4-scout-17b-16e-instruct.
+## 1.0 Beta — Cosmo Assistant
+- Modo Agente com roteamento de ferramentas.
+- Pesquisa na web e contexto de fontes.
+- Voz por entrada de áudio e leitura de respostas.
+- Tarefas e notas locais.
 
-Sem as credenciais da Cloudflare, o Cosmo usa apenas o fallback local simples; recursos de IA, visão e transcrição ficam indisponíveis.
+## 1.0 Release — Cosmo 1.0
+- Interface desktop e mobile.
+- PWA instalável.
+- Perfil local e backup/restauração dos dados.
+- Sincronização local entre abas do mesmo navegador.
+- Histórico, preferências e memória persistidos no navegador.
 
-## Publicar no Render
-Este repositório inclui render.yaml. O serviço usa pip install -r requirements.txt e gunicorn app:app.
+## Configuração
+Use Python 3.10 ou superior.
 
-No Render, configure:
-- CLOUDFLARE_API_TOKEN
-- CLOUDFLARE_ACCOUNT_ID
-- CLOUDFLARE_MODEL
-- CLOUDFLARE_VISION_MODEL
+Instale:
 
-Não publique tokens, chaves ou outros segredos no GitHub.
+    pip install -r requirements.txt
 
-## Arquivos e IA visual
-Imagens podem ter até 8 MB. O Cosmo pode descrever a imagem, responder perguntas sobre ela e extrair textos visíveis.
+Copie `.env.example` para `.env` e configure:
 
-PDFs continuam limitados a 8 MB e 40 páginas. PDFs com texto usam extração em modo de layout quando disponível. PDFs totalmente escaneados podem usar OCR visual nas primeiras páginas para transformar o conteúdo em texto.
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_MODEL`
+- `CLOUDFLARE_VISION_MODEL`
+- `BOT_NAME`
+- `BOT_PERSONALITY`
 
-A leitura visual depende da disponibilidade e configuração do modelo multimodal no Workers AI.
+O projeto usa Cloudflare Workers AI. O modelo visual padrão é `@cf/meta/llama-4-scout-17b-16e-instruct`, que atualmente é listado pela Cloudflare como modelo multimodal com suporte a visão e function calling. citeturn437991search0turn437991search1
 
-## Tecnologias
-- Python
-- Flask
-- HTML, CSS e JavaScript
-- Cloudflare Workers AI
-- PyPDF
-- pypdfium2
-- Pillow
+## Pesquisa na web
+O modo Agente pode buscar dados usando uma camada de ferramentas do próprio Cosmo. Os resultados podem ser usados como contexto adicional para a resposta.
+
+## Arquivos
+- Imagens: até 8 MB.
+- PDFs: até 8 MB e 40 páginas.
+- PDFs com texto: extração com PyPDF.
+- PDFs escaneados: OCR visual limitado às primeiras páginas para controlar custo e processamento.
+
+## PWA e dados
+O Cosmo pode ser instalado como PWA em navegadores compatíveis. Conversas, memória, tarefas, notas e preferências ficam no navegador por padrão.
+
+O backup JSON permite transferir manualmente os dados para outro dispositivo. A versão atual não possui autenticação com conta de servidor nem sincronização em nuvem entre dispositivos; isso depende de um backend persistente de autenticação e banco de dados, que fica planejado para uma próxima etapa.
+
+## Segurança
+Não publique tokens, chaves de API, senhas ou dados pessoais no GitHub.
 
 ## Aviso
-O Cosmo pode cometer erros. Confira informações importantes em fontes confiáveis. Não envie dados pessoais, senhas, chaves de API ou informações confidenciais nas conversas.
+O Cosmo pode cometer erros. Confira informações importantes em fontes confiáveis.
