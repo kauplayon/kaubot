@@ -82,7 +82,10 @@ def chat():
         )
     if memory:
         system_prompt += "\nPreferências que o usuário escolheu salvar: " + memory
-    tool_context, tool_used = build_tool_context(str(messages[-1].get("content", "")) if isinstance(messages[-1], dict) else "")
+    tool_context, tool_used = build_tool_context(
+        str(messages[-1].get("content", "")) if isinstance(messages[-1], dict) else "",
+        force_search=assistant_mode == "agent"
+    )
     if assistant_mode == "agent":
         system_prompt += (
             "\nModo agente: você pode aproveitar as ferramentas do Cosmo quando houver dados fornecidos por elas. "
