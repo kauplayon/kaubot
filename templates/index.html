@@ -1275,7 +1275,7 @@ form.addEventListener('submit',async e=>{
  saveMessages();
  send.disabled=true;
  try{
-   let reply='';let memoryUsed=false;
+   let reply='';let memoryUsed=false;let toolsUsed=[];
    if(hasImage){
      const d=await requestImageAnalysis(attachment.file,prompt||'Analise esta imagem com atenção. Descreva o que aparece, leia textos e destaque as informações importantes.');
      reply=d.reply;
@@ -1283,7 +1283,7 @@ form.addEventListener('submit',async e=>{
      const d=await requestCosmo(messages);
      reply=d.reply;
      memoryUsed=d.memoryUsed;
-     const toolsUsed=d.toolsUsed||[];
+     toolsUsed=d.toolsUsed||[];
    }
    messages.push({role:'assistant',content:reply,createdAt:Date.now(),memoryUsed,toolsUsed});
    bubble(reply,'bot',{memoryUsed,messageIndex:messages.length-1,toolsUsed});
