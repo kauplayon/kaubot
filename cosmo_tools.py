@@ -151,7 +151,7 @@ def detect_calculation(text: str) -> str | None:
     return None
 
 
-def build_tool_context(text: str) -> tuple[str, list[dict[str, Any]]]:
+def build_tool_context(text: str, force_search: bool = False) -> tuple[str, list[dict[str, Any]]]:
     lower = text.lower().strip()
     context: list[str] = []
     used: list[dict[str, Any]] = []
@@ -188,7 +188,7 @@ def build_tool_context(text: str) -> tuple[str, list[dict[str, Any]]]:
         except requests.RequestException:
             pass
 
-    wants_search = any(
+    wants_search = force_search or any(
         phrase in lower
         for phrase in (
             "pesquise ",
