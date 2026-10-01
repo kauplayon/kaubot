@@ -248,9 +248,11 @@ def build_tool_context(text: str, force_search: bool = False) -> tuple[str, list
             "preço do dólar",
         )
     )
+    fx_found = False
     if wants_fx:
         try:
             quote = exchange_rate("USD-BRL")
+            fx_found = True
             context.append(
                 "COTAÇÃO ONLINE DO DÓLAR (USD/BRL): "
                 f"compra R$ {quote.get('bid')}, venda R$ {quote.get('ask')}, "
@@ -289,7 +291,7 @@ def build_tool_context(text: str, force_search: bool = False) -> tuple[str, list
             "atualmente",
         )
     )
-    if wants_search:
+    if wants_search and not fx_found:
         query = re.sub(
             r"^(pesquise|pesquisa|procure na internet|procure na web|busque na internet|busque na web|pesquise na internet|pesquise na web)[: ]*",
             "",
