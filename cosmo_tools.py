@@ -261,7 +261,17 @@ def build_tool_context(text: str, force_search: bool = False) -> tuple[str, list
                 f"{quote.get('create_date') or quote.get('timestamp')}. "
                 "Fonte: AwesomeAPI."
             )
-            used.append({"tool": "currency", "label": "Dólar USD/BRL", "source": "AwesomeAPI"})
+            used.append({
+                "tool": "currency",
+                "label": "Dólar USD/BRL",
+                "source": "AwesomeAPI",
+                "bid": quote.get("bid"),
+                "ask": quote.get("ask"),
+                "high": quote.get("high"),
+                "low": quote.get("low"),
+                "pctChange": quote.get("pctChange"),
+                "updated": quote.get("create_date") or quote.get("timestamp")
+            })
         except (requests.RequestException, ValueError):
             pass
 
