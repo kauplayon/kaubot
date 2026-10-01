@@ -9,6 +9,8 @@ import requests
 
 
 SEARCH_URL = "https://api.duckduckgo.com/"
+NEWS_RSS_URL = "https://news.google.com/rss/search"
+FX_URL = "https://economia.awesomeapi.com.br/json/last"
 GEOCODE_URL = "https://geocoding-api.open-meteo.com/v1/search"
 FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
 
@@ -96,6 +98,50 @@ def web_search(query: str, limit: int = 5) -> dict[str, Any]:
     summary = abstract or (sources[0]["snippet"] if sources else "")
     return {"summary": summary[:4000], "sources": sources[:limit]}
 
+
+
+def exchange_rate(pair: str = "USD-BRL") -> dict[str, Any]:
+    """Busca a última cotação do par cambial usando a AwesomeAPI."""
+    import os as _os
+    api_key = _os.getenv("AWESOMEAPI_KEY", "").strip()
+    headers = {"User-Agent": "Cosmo/1.0"}
+    if api_key:
+        headers["x-api-key"] = api_key
+    response = requests.get(
+        f"{FX_URL}/{pair}",
+        headers=headers,
+        timeout=8,
+    )
+    response.raise_for_status()
+    data = response.json()
+    quote = data.get(pair.replace("-", "")) or {}
+    if not quote:
+        raise ValueError(f"Cotação não encontrada para {pair}.")
+    return quote
+
+
+def current_news_search(query: str, limit: int = 5) -> dict[str, Any]:
+    """Fallback de pesquisa atual usando Google News RSS, sem chave de API."""
+    response = requests.get(
+        NEWS_RSS_URL,
+        params={"q": query[:180], "hl": "pt-BR", "gl": "BR", "ceid": "BR:pt-419"},
+        headers={"User-Agent": "Cosmo/1.0"},
+        timeout=10,
+    )
+    response.raise_for_status()
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(response.text)
+    items = []
+    for item in root.findall(".//item")[:limit]:
+        title = (item.findtext("title") or "").strip()
+        link = (item.findtext("link") or "").strip()
+        description = re.sub(r"<[^>]+>", " ", item.findtext("description") or "")
+        description = re.sub(r"\s+", " ", description).strip()
+        pub_date = (item.findtext("pubDate") or "").strip()
+        if title or link:
+            items.append({"title": title, "url": link, "snippet": description[:500], "published": pub_date})
+    summary = " ".join(x["snippet"] for x in items if x["snippet"])[:4000]
+    return {"summary": summary, "sources": items}
 
 def weather(city: str) -> dict[str, Any]:
     city = city.strip()[:100]
@@ -188,6 +234,35 @@ def build_tool_context(text: str, force_search: bool = False) -> tuple[str, list
         except requests.RequestException:
             pass
 
+    wants_fx = any(
+        phrase in lower
+        for phrase in (
+            "cotação do dólar",
+            "cotação atual do dólar",
+            "dólar hoje",
+            "dólar agora",
+            "usd para brl",
+            "usd/brl",
+            "quanto está o dólar",
+            "quanto vale o dólar",
+            "preço do dólar",
+        )
+    )
+    if wants_fx:
+        try:
+            quote = exchange_rate("USD-BRL")
+            context.append(
+                "COTAÇÃO ONLINE DO DÓLAR (USD/BRL): "
+                f"compra R$ {quote.get('bid')}, venda R$ {quote.get('ask')}, "
+                f"máxima R$ {quote.get('high')}, mínima R$ {quote.get('low')}, "
+                f"variação {quote.get('pctChange')}%, atualização "
+                f"{quote.get('create_date') or quote.get('timestamp')}. "
+                "Fonte: AwesomeAPI."
+            )
+            used.append({"tool": "currency", "label": "Dólar USD/BRL", "source": "AwesomeAPI"})
+        except (requests.RequestException, ValueError):
+            pass
+
     wants_search = force_search or any(
         phrase in lower
         for phrase in (
@@ -223,15 +298,17 @@ def build_tool_context(text: str, force_search: bool = False) -> tuple[str, list
         ).strip()
         try:
             data = web_search(query)
+            if not data["summary"] and not data["sources"]:
+                data = current_news_search(query)
             if data["summary"]:
-                context.append("PESQUISA NA WEB: " + data["summary"])
+                context.append("PESQUISA ATUAL: " + data["summary"])
             if data["sources"]:
                 source_text = "; ".join(
                     f"{s['title']} — {s['url']}" for s in data["sources"] if s.get("url")
                 )
                 context.append("FONTES DA PESQUISA: " + source_text)
             if data["summary"] or data["sources"]:
-                used.append({"tool": "web", "label": "Pesquisa na web", "sources": data["sources"]})
+                used.append({"tool": "web", "label": "Pesquisa atual na web", "sources": data["sources"]})
         except requests.RequestException:
             pass
 
