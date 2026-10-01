@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from dotenv import load_dotenv
 from cosmo_tools import build_tool_context
 
@@ -36,6 +36,16 @@ Não peça nem revele senhas, chaves de API ou outros dados secretos."""
 @app.get("/")
 def index():
     return render_template("index.html", bot_name=BOT_NAME)
+
+@app.get("/manifest.json")
+def manifest():
+    return app.send_static_file("manifest.json")
+
+
+@app.get("/service-worker.js")
+def service_worker():
+    return send_from_directory(app.static_folder, "service-worker.js", mimetype="application/javascript", max_age=0)
+
 
 @app.get("/health")
 def health():
