@@ -41,7 +41,7 @@ Copie `.env.example` para `.env` e configure:
 - `BOT_NAME`
 - `BOT_PERSONALITY`
 
-O projeto usa Cloudflare Workers AI. O modelo visual padrão é `@cf/meta/llama-4-scout-17b-16e-instruct`, que atualmente é listado pela Cloudflare como modelo multimodal com suporte a visão e function calling. citeturn437991search0turn437991search1
+O projeto usa Cloudflare Workers AI. O modelo visual padrão é `@cf/meta/llama-4-scout-17b-16e-instruct`.
 
 ## Pesquisa na web
 O modo Agente pode buscar dados usando uma camada de ferramentas do próprio Cosmo. Os resultados podem ser usados como contexto adicional para a resposta.
