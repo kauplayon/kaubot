@@ -2,6 +2,7 @@ import os
 import requests
 from flask import Flask, render_template, request, jsonify
 from dotenv import load_dotenv
+from cosmo_tools import build_tool_context
 
 load_dotenv()
 app = Flask(__name__)
@@ -42,7 +43,7 @@ def health():
         "status": "ok",
         "ai_configured": client_configured,
         "vision_configured": client_configured,
-        "version": "0.9 — Em desenvolvimento"
+        "version": "1.0 — Em desenvolvimento"
     })
 
 @app.post("/chat")
@@ -81,6 +82,14 @@ def chat():
         )
     if memory:
         system_prompt += "\nPreferências que o usuário escolheu salvar: " + memory
+    tool_context, tool_used = build_tool_context(str(messages[-1].get("content", "")) if isinstance(messages[-1], dict) else "")
+    if assistant_mode == "agent":
+        system_prompt += (
+            "\nModo agente: você pode aproveitar as ferramentas do Cosmo quando houver dados fornecidos por elas. "
+            "Explique brevemente quando uma ferramenta foi usada e não invente resultados."
+        )
+    if tool_context:
+        system_prompt += "\n\n" + tool_context
     conversation = [{"role": "system", "content": system_prompt}]
     for item in messages[-24:]:
         if not isinstance(item, dict):
@@ -114,14 +123,14 @@ def chat():
             reply = (result.get("result") or {}).get("response")
             if not reply:
                 raise ValueError("A Cloudflare não retornou uma resposta.")
-            return jsonify({"reply": reply})
+            return jsonify({"reply": reply, "tools_used": tool_used})
         except Exception:
             app.logger.exception("Erro na API Cloudflare Workers AI")
             return jsonify({
                 "reply": "Não consegui acessar a IA agora. Verifique a configuração da Cloudflare e tente novamente."
             }), 502
 
-    return jsonify({"reply": local_reply(conversation[-1]["content"])})
+    return jsonify({"reply": local_reply(conversation[-1]["content"]), "tools_used": tool_used})
 
 
 def _cloudflare_vision(image_data_url, prompt, max_tokens=1400, timeout=60):
