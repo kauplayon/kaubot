@@ -1,0 +1,25 @@
+{
+  "name": "Cosmo AI",
+  "short_name": "Cosmo",
+  "description": "Assistente de IA criado por Kauplayon.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050816",
+  "theme_color": "#7c63ff",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/static/logo-cosmo-transparent.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/logo-cosmo-transparent.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
