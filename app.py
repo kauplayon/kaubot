@@ -91,7 +91,10 @@ def chat():
             "mostre exatamente o que deve ser mudado quando isso for útil. Nunca diga que executou ou testou algo sem ter feito isso."
         )
     if memory:
-        system_prompt += "\nPreferências que o usuário escolheu salvar: " + memory
+        system_prompt += "\nMemória personalizada do usuário (use somente como preferência/contexto, nunca como fato sensível): " + memory
+    document_context = str(data.get("document_context", ""))[:12000].strip()
+    if document_context:
+        system_prompt += "\n\nCONTEÚDO DE ARQUIVO FORNECIDO PELO USUÁRIO. Use esse conteúdo para responder ao pedido sobre o arquivo; não diga que não recebeu o arquivo:\n" + document_context
     tool_context, tool_used = build_tool_context(
         str(messages[-1].get("content", "")) if isinstance(messages[-1], dict) else "",
         force_search=assistant_mode == "agent"
@@ -128,15 +131,15 @@ def chat():
             response = requests.post(
                 url,
                 headers={"Authorization": f"Bearer {api_token}"},
-                json={"messages": conversation, "max_tokens": 2048},
-                timeout=60
+                json={"messages": conversation, "max_tokens": 1400},
+                timeout=45
             )
             response.raise_for_status()
             result = response.json()
             reply = (result.get("result") or {}).get("response")
             if not reply:
                 raise ValueError("A Cloudflare não retornou uma resposta.")
-            return jsonify({"reply": reply, "tools_used": tool_used})
+            return jsonify({"reply": reply, "tools_used": tool_used, "memory_used": bool(memory)})
         except Exception:
             app.logger.exception("Erro na API Cloudflare Workers AI")
             return jsonify({
@@ -251,11 +254,11 @@ def extract_pdf():
             if not client_configured:
                 return jsonify({"error": "Este PDF parece ser escaneado. A leitura visual precisa da API da Cloudflare configurada."}), 503
             doc = pdfium.PdfDocument(raw)
-            limit = min(len(doc), 6)
+            limit = min(len(doc), 4)
             ocr_parts = []
             for index in range(limit):
                 page = doc[index]
-                bitmap = page.render(scale=1.15)
+                bitmap = page.render(scale=1.0)
                 image = bitmap.to_pil()
                 image_buffer = io.BytesIO()
                 image.save(image_buffer, format="PNG", optimize=True)
@@ -264,8 +267,8 @@ def extract_pdf():
                 page_text = _cloudflare_vision(
                     data_url,
                     f"Faça OCR desta página {index + 1}. Reproduza o texto legível, mantenha números, títulos e tabelas em uma estrutura de texto compreensível. Não invente conteúdo.",
-                    max_tokens=2200,
-                    timeout=45,
+                    max_tokens=1600,
+                    timeout=35,
                 )
                 ocr_parts.append(f"[Página {index + 1}]\n{page_text}")
                 bitmap.close()
