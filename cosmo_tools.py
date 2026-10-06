@@ -313,7 +313,17 @@ def build_tool_context(text: str, force_search: bool = False) -> tuple[str, list
             flags=re.I,
         ).strip()
         try:
-            data = web_search(query)
+            news_intent = any(
+                phrase in lower
+                for phrase in (
+                    "último jogo", "ultimo jogo", "último resultado", "ultimo resultado",
+                    "resultado de hoje", "jogo de hoje", "notícias de hoje",
+                    "noticia de hoje", "notícias", "noticias", "resultado",
+                )
+            )
+            # Para fatos recentes (jogos, resultados e notícias), o RSS do
+            # Google News é mais apropriado que o Instant Answer do DuckDuckGo.
+            data = current_news_search(query) if news_intent else web_search(query)
             if not data["summary"] and not data["sources"]:
                 data = current_news_search(query)
             if data["summary"]:
