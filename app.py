@@ -65,6 +65,7 @@ def chat():
 
     study_mode = bool(data.get("study_mode"))
     assistant_mode = str(data.get("assistant_mode", "normal"))
+    jarvis_mode = bool(data.get("jarvis_mode"))
     memory = str(data.get("memory", ""))[:1500].strip()
     personalities = {
         "amigavel": "Amigável e acolhedor, com linguagem simples.",
@@ -77,6 +78,14 @@ def chat():
     languages = {"pt": "português do Brasil", "en": "English", "es": "español", "fr": "français"}
     language = languages.get(str(data.get("language", "pt")), "português do Brasil")
     system_prompt = SYSTEM + "\\nPersonalidade escolhida: " + personality + "\\nResponda sempre no idioma: " + language + "."
+    if jarvis_mode:
+        system_prompt += (
+            "\\nModo JARVIS ativado: você é o Cosmo em uma experiência de assistente pessoal inspirada em interfaces futuristas. "
+            "Seja proativo, preciso, calmo e conciso; organize respostas em status, opções e próximos passos quando isso ajudar. "
+            "Use somente ferramentas e dados realmente disponíveis no contexto. Não afirme que controlou o computador, abriu aplicativos externos, "
+            "alterou arquivos ou executou ações que não foram realizadas. Para ações no próprio Cosmo, oriente o usuário a usar os comandos suportados. "
+            "Peça confirmação antes de ações importantes, destrutivas ou que afetem dados. Preserve privacidade e nunca solicite segredos."
+        )
     if study_mode or assistant_mode == "tutor":
         system_prompt += (
             "\nModo tutor: ensine de forma gradual e didática. Comece identificando o que o usuário precisa entender, "
