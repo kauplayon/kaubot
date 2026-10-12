@@ -98,6 +98,3 @@ def get_or_create_data(db, user: User) -> UserData:
     return row
 
 
-# Initialize only when a persistent DATABASE_URL was supplied. A failed connection
-# leaves the app usable in local-only mode and is reported by /health.
-configure_storage()
