@@ -1232,7 +1232,7 @@ languageSelect.value=localStorage.getItem('cosmo-language')||'pt';
 colorSelect.value=localStorage.getItem('cosmo-color')||'#725dff';
 memoryInput.value=localStorage.getItem('cosmo-memory')||'';profileNameInput.value=localStorage.getItem('cosmo-profile-name')||'Kauã';if(sidebarAccountLabel)sidebarAccountLabel.textContent=profileNameInput.value;const memoryEnabled=document.querySelector('#memoryEnabled');const forgetMemory=document.querySelector('#forgetMemory');const memoryStatus=document.querySelector('#memoryStatus');memoryEnabled.checked=memoryIsEnabled();function updateMemoryStatus(){const has=!!(memoryInput.value.trim());memoryStatus.textContent=memoryEnabled.checked?(has?'🧠 Memória ativa e disponível para as respostas.':'Nenhuma informação de memória salva.'):'Memória desativada. Ela não será enviada ao Cosmo.'}updateMemoryStatus();
 function applyAccent(){document.documentElement.style.setProperty('--line',colorSelect.value+'88');document.documentElement.style.setProperty('--accent',colorSelect.value);document.querySelectorAll('.send').forEach(b=>b.style.background=colorSelect.value);document.querySelectorAll('form').forEach(f=>f.style.borderColor=colorSelect.value)}
-function savePreferences(){localStorage.setItem('cosmo-profile-name',profileNameInput.value.trim()||'Kauã');if(sidebarAccountLabel)sidebarAccountLabel.textContent=profileNameInput.value.trim()||'Kauã';localStorage.setItem('cosmo-personality',personalitySelect.value);localStorage.setItem('cosmo-language',languageSelect.value);localStorage.setItem('cosmo-color',colorSelect.value);localStorage.setItem('cosmo-memory',memoryInput.value.trim());localStorage.setItem('cosmo-memory-enabled',String(memoryEnabled.checked));localStorage.setItem('cosmo-theme',themeSelect.value);localStorage.setItem('cosmo-voice',voiceSelect.value||'');applyAccent();updateMemoryStatus();broadcastSync('preferences')}
+function savePreferences(){localStorage.setItem('cosmo-profile-name',profileNameInput.value.trim()||'Kauã');if(sidebarAccountLabel)sidebarAccountLabel.textContent=profileNameInput.value.trim()||'Kauã';localStorage.setItem('cosmo-personality',personalitySelect.value);localStorage.setItem('cosmo-language',languageSelect.value);localStorage.setItem('cosmo-color',colorSelect.value);localStorage.setItem('cosmo-memory',memoryInput.value.trim());localStorage.setItem('cosmo-memory-enabled',String(memoryEnabled.checked));localStorage.setItem('cosmo-theme',themeSelect.value);localStorage.setItem('cosmo-voice',voiceSelect.value||'');applyAccent();updateMemoryStatus();broadcastSync('preferences');if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync()}
 [personalitySelect,languageSelect,colorSelect,memoryInput,document.querySelector('#themeSelect'),profileNameInput].forEach(el=>el.addEventListener('change',()=>{savePreferences();applyAccent()}));
 memoryInput.addEventListener('input',savePreferences);profileNameInput.addEventListener('input',()=>{savePreferences()});memoryEnabled.addEventListener('change',()=>{savePreferences();notify(memoryEnabled.checked?'Memória ativada':'Memória desativada')});forgetMemory.addEventListener('click',()=>{memoryInput.value='';localStorage.removeItem('cosmo-memory');updateMemoryStatus();notify('Memória esquecida')});
 applyAccent();
@@ -1246,7 +1246,7 @@ colorSelect.addEventListener('change',applyAccent);
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function workspaceStore(key,fallback){try{const v=JSON.parse(localStorage.getItem(key)||'null');return Array.isArray(v)?v:fallback}catch{return fallback}}
 let cosmoTasks=workspaceStore('cosmo-tasks-v1',[]);let cosmoNotes=workspaceStore('cosmo-notes-v1',[]);
-function saveWorkspace(){localStorage.setItem('cosmo-tasks-v1',JSON.stringify(cosmoTasks));localStorage.setItem('cosmo-notes-v1',JSON.stringify(cosmoNotes));}
+function saveWorkspace(){localStorage.setItem('cosmo-tasks-v1',JSON.stringify(cosmoTasks));localStorage.setItem('cosmo-notes-v1',JSON.stringify(cosmoNotes));if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync()}
 function showWorkspace(){
  closeMobileMenu();
  const panel=document.createElement('div');panel.className='workspace-panel';
@@ -1299,7 +1299,7 @@ const syncChannel='BroadcastChannel' in window?new BroadcastChannel('cosmo-sync-
 function broadcastSync(type){try{syncChannel?.postMessage({type,time:Date.now()})}catch{}}
 if(syncChannel)syncChannel.onmessage=()=>{try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');if(Array.isArray(saved))conversations=saved.filter(c=>c&&typeof c.id==='string'&&Array.isArray(c.messages)).slice(0,50);renderSidebarRecent();notify('Dados sincronizados nesta aba')}catch{}};
 window.addEventListener('storage',e=>{if(e.key&&e.key.startsWith('cosmo-')){renderSidebarRecent();}});
-function persistConversations(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(conversations.slice(0,50)));renderSidebarRecent();broadcastSync('conversations')}catch{bubble('O armazenamento do navegador está cheio. Apague conversas antigas.','bot')}}
+function persistConversations(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(conversations.slice(0,50)));renderSidebarRecent();broadcastSync('conversations');if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync()}catch{bubble('O armazenamento do navegador está cheio. Apague conversas antigas.','bot')}}
 function createWelcome(){const w=document.createElement('div');w.className='welcome';w.id='welcome';w.innerHTML='<img class="welcome-logo" src="{{ url_for("static", filename="logo-cosmo-transparent.png") }}" alt="Logo Cosmo"><h1 id="welcomeTitle">Olá, sou o <span>{{ bot_name }}</span>!</h1><p id="welcomeSubtitle">Seu assistente inteligente, sempre pronto para ajudar.<br>Faça uma pergunta, tire suas dúvidas ou peça uma explicação.</p><div class="suggestions"><button class="suggestion" type="button" data-welcome="Explique um conceito de forma simples"><strong>💡 Explique um conceito</strong><small>de forma simples</small></button><button class="suggestion" type="button" data-welcome="Resuma um texto para mim"><strong>▤ Resuma um texto</strong><small>ou conteúdo</small></button><button class="suggestion" type="button" data-welcome="Me ajude com código e programação"><strong>&lt;/&gt; Ajude com código</strong><small>e programação</small></button><button class="suggestion" type="button" data-welcome="Tire uma dúvida sobre qualquer assunto"><strong>❔ Tire uma dúvida</strong><small>sobre qualquer assunto</small></button></div>';w.querySelectorAll('[data-welcome]').forEach(b=>b.addEventListener('click',()=>use(b.dataset.welcome||'')));return w;}
 function newConversation(){activeConversationId=null;messages=[];chat.innerHTML='';chat.appendChild(createWelcome());updateWelcomeGreeting();}
 function startNewChat(){newConversation();showChat();closeMobileMenu();chat.classList.add('new-chat-flash');setTimeout(()=>chat.classList.remove('new-chat-flash'),450);input.focus()}
@@ -1318,6 +1318,7 @@ function setJarvisMode(enabled,announce=true){
  if(title)title.textContent=enabled?'JARVIS VOICE • COSMO':'COSMO VOICE';
  const hint=document.querySelector('.voice-mode-hint');
  if(hint)hint.textContent=enabled?'Comandos: abrir produtividade, mostrar estatísticas, nova conversa, criar tarefa…':'Após começar, o Cosmo volta a ouvir automaticamente • Toque durante a fala para interromper';
+ if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync();
  if(announce&&typeof notify==='function')notify(enabled?'Modo JARVIS ativado':'Modo JARVIS desativado');
 }
 function toggleJarvisMode(){setJarvisMode(!document.body.classList.contains('jarvis-mode'))}
@@ -1344,6 +1345,7 @@ function captureAutoMemory(text){
  for(const item of found)if(!entries.some(x=>x.toLowerCase()===item.toLowerCase()))entries.push(item);
  const compact=entries.slice(-12).join('\n').slice(0,1500);
  localStorage.setItem('cosmo-memory',compact);
+ if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync();
  const mi=document.querySelector('#memoryInput');if(mi)mi.value=compact;
  const ms=document.querySelector('#memoryStatus');if(ms)ms.textContent='🧠 Memória atualizada automaticamente neste navegador.';
  return true;
@@ -1401,7 +1403,7 @@ renderSidebarRecent();newConversation();updateWelcomeGreeting();
 const voiceButton=document.querySelector('#voice');function updateVoiceButton(){voiceButton.textContent='◉';voiceButton.title='Abrir modo de voz'}updateVoiceButton();voiceButton.addEventListener('click',openVoiceMode);
 let voiceRecognition=null,voiceListening=false,voiceModeBusy=false,voiceModeClosing=false,voiceAutoListen=false,voiceTurnId=0;
 const voiceOverlay=document.querySelector('#voiceModeOverlay'),voiceStatus=document.querySelector('#voiceModeStatus'),voiceTranscript=document.querySelector('#voiceModeTranscript'),voiceMain=document.querySelector('#voiceModeMain'),voiceStop=document.querySelector('#voiceModeStop');
-function setVoiceState(state,text){voiceOverlay.classList.remove('listening','thinking','speaking');if(state)voiceOverlay.classList.add(state);if(text)voiceStatus.textContent=text;voiceMain.classList.toggle('active',state==='listening');voiceMain.textContent=state==='listening'?'⏸':state==='speaking'?'⏹':'🎙️';voiceMain.setAttribute('aria-label',state==='listening'?'Pausar escuta':state==='speaking'?'Interromper fala':'Começar a falar')}
+function setVoiceState(state,text){voiceOverlay.classList.remove('listening','thinking','speaking');if(state)voiceOverlay.classList.add(state);if(text)voiceStatus.textContent=text;const hud=document.querySelector('#jarvisHudState');if(hud)hud.textContent=state==='listening'?'MICROFONE ATIVO':state==='thinking'?'PROCESSANDO':state==='speaking'?'RESPONDENDO':(document.body.classList.contains('jarvis-mode')?'JARVIS ONLINE':'COSMO ONLINE');voiceMain.classList.toggle('active',state==='listening');voiceMain.textContent=state==='listening'?'⏸':state==='speaking'?'⏹':'🎙️';voiceMain.setAttribute('aria-label',state==='listening'?'Pausar escuta':state==='speaking'?'Interromper fala':'Começar a falar')}
 function openVoiceMode(){closeMobileMenu();voiceOverlay.hidden=false;voiceModeClosing=false;voiceAutoListen=false;setVoiceState('','Toque no microfone para começar');voiceTranscript.textContent='Depois que você começar, o Cosmo ouvirá novamente após cada resposta.';if(!speakEnabled){speakEnabled=true;localStorage.setItem('cosmo-speak','true')}}
 function closeVoiceMode(){voiceModeClosing=true;voiceAutoListen=false;voiceTurnId++;stopVoiceListening();if('speechSynthesis'in window)speechSynthesis.cancel();voiceOverlay.hidden=true;setVoiceState('','');voiceModeBusy=false}
 function stopVoiceListening(){if(voiceRecognition){try{voiceRecognition.stop()}catch{}}voiceListening=false;voiceMain.classList.remove('active')}
@@ -1501,5 +1503,164 @@ mic.addEventListener('click',async()=>{
  }catch(err){bubble(err.name==='NotAllowedError'?'O acesso ao microfone foi bloqueado. Permita o microfone nas configurações do navegador e tente novamente.':'Não consegui acessar o microfone. Verifique se ele está conectado e tente novamente.','bot')}
 });
 audioFile.addEventListener('change',async()=>{const file=audioFile.files[0];if(!file)return;if(file.size>8*1024*1024){notify('O áudio deve ter no máximo 8 MB.','error');audioFile.value='';return}showAttachmentChip(file,'audio');const fd=new FormData();fd.append('audio',file);bubble('🎧 Enviando e transcrevendo: '+file.name,'user');send.disabled=true;mic.disabled=true;try{const r=await fetch('/transcribe',{method:'POST',body:fd});const d=await r.json();if(!r.ok)throw new Error(d.error||'Falha na transcrição');input.value=d.text||'';resizeComposer();notify('Áudio transcrito');if(input.value.trim())form.requestSubmit()}catch(err){notify(err.message||'Não consegui enviar o áudio.','error')}finally{send.disabled=false;mic.disabled=false;clearAttachment()}});
+
+/* Cloud account + persistent sync. Local browser storage remains the offline fallback. */
+window.cosmoCloud={available:false,authenticated:false,email:null,csrfToken:"",ready:false,busy:false,timer:null,mode:"login"};
+function setAccountStatus(message,type=""){const el=document.querySelector("#accountStatus");if(el){el.textContent=message;el.className="account-status"+(type?" "+type:"")}}
+function setCloudHud(){const el=document.querySelector("#jarvisHudCloud");if(!el)return;el.textContent=!window.cosmoCloud.available?"Banco não configurado":window.cosmoCloud.authenticated?"Conta sincronizada":"Armazenamento local"}
+function updateAccountUI(){
+ const c=window.cosmoCloud, button=document.querySelector("#accountButton"), form=document.querySelector("#accountForm");
+ document.querySelector("#accountHeading").textContent=c.authenticated?"COSMO ID / CONECTADO":"COSMO ID / CLOUD LINK";
+ document.querySelector("#accountSubmit").textContent=c.mode==="register"?"Criar conta":"Entrar";
+ document.querySelector("#accountPassword").autocomplete=c.mode==="register"?"new-password":"current-password";
+ document.querySelector("#accountModeSwitch").hidden=c.authenticated;
+ document.querySelector("#accountModeSwitch").textContent=c.mode==="register"?"Já tem conta? Entrar":"Não tem conta? Criar uma";
+ document.querySelector("#accountLogout").hidden=!c.authenticated;
+ document.querySelector("#accountDelete").hidden=!c.authenticated;
+ document.querySelector("#accountSyncNow").disabled=!c.authenticated;
+ document.querySelector("#accountSubmit").disabled=!c.available||c.busy;
+ document.querySelector("#accountEmail").disabled=!c.available||c.busy;
+ document.querySelector("#accountPassword").disabled=!c.available||c.busy;
+ form.hidden=c.authenticated;
+ if(button){button.querySelector(".nav-label").textContent=c.authenticated?(c.email||"Conta conectada"):"Conta / nuvem";button.querySelector(".account-avatar").textContent=c.authenticated?(c.email||"C").slice(0,1).toUpperCase():"K"}
+ setCloudHud();
+}
+async function refreshCloudStatus(){
+ try{
+  const r=await fetch("/api/auth/status",{credentials:"same-origin",cache:"no-store"});
+  const d=await r.json();
+  const c=window.cosmoCloud;c.available=!!d.available;c.authenticated=!!d.authenticated;c.email=d.email||null;c.csrfToken=d.csrf_token||"";
+  updateAccountUI();
+  if(!c.available)setAccountStatus("A conta na nuvem ainda não está habilitada. Configure DATABASE_URL com um PostgreSQL persistente e SECRET_KEY no Render. O Cosmo local continua funcionando.","error");
+  else if(c.authenticated)setAccountStatus("Conectado como "+c.email+". Verificando a sincronização…","success");
+  else setAccountStatus("Entre ou crie uma conta para sincronizar seus dados entre dispositivos.");
+  return d;
+ }catch(e){setAccountStatus("Não consegui verificar o servidor. Seus dados locais continuam disponíveis.","error");return null}
+}
+function localCloudData(){
+ let conversationsLocal=[],tasksLocal=[],notesLocal=[];
+ try{const x=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(x))conversationsLocal=x.slice(0,50)}catch{}
+ try{const x=JSON.parse(localStorage.getItem("cosmo-tasks-v1")||"[]");if(Array.isArray(x))tasksLocal=x.slice(0,500)}catch{}
+ try{const x=JSON.parse(localStorage.getItem("cosmo-notes-v1")||"[]");if(Array.isArray(x))notesLocal=x.slice(0,200)}catch{}
+ return {memory:(localStorage.getItem("cosmo-memory")||"").slice(0,1500),conversations:conversationsLocal,tasks:tasksLocal,notes:notesLocal,preferences:{
+  personality:localStorage.getItem("cosmo-personality")||"amigavel",language:localStorage.getItem("cosmo-language")||"pt",color:localStorage.getItem("cosmo-color")||"#725dff",theme:localStorage.getItem("cosmo-theme")||"dark",voice:localStorage.getItem("cosmo-voice")||"",speak:localStorage.getItem("cosmo-speak")==="true",jarvisMode:localStorage.getItem("cosmo-jarvis-mode")==="true",memoryEnabled:localStorage.getItem("cosmo-memory-enabled")!=="false",profileName:localStorage.getItem("cosmo-profile-name")||""
+ }};
+}
+function mergeCloudData(local,remote){
+ const map=new Map();
+ for(const item of [...(remote.conversations||[]),...(local.conversations||[])])if(item&&typeof item.id==="string"){const old=map.get(item.id);if(!old||(item.updatedAt||0)>=(old.updatedAt||0))map.set(item.id,item)}
+ const unique=(items,keyfn,limit)=>{const m=new Map();for(const x of items||[]){if(!x||typeof x!=="object")continue;const key=keyfn(x);if(key&&!m.has(key))m.set(key,x)}return [...m.values()].slice(-limit)};
+ const memory=[...(remote.memory||"").split(/\n+/),...(local.memory||"").split(/\n+/)].map(x=>x.trim()).filter(Boolean);
+ const seen=new Set();
+ const uniqueMemory=memory.filter(x=>{const k=x.toLocaleLowerCase();if(seen.has(k))return false;seen.add(k);return true}).slice(-12).join("\n").slice(0,1500);
+ return {memory:uniqueMemory,conversations:[...map.values()].sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).slice(0,50),
+  tasks:unique([...(remote.tasks||[]),...(local.tasks||[])],x=>String(x.id||x.text||JSON.stringify(x)),500),
+  notes:unique([...(remote.notes||[]),...(local.notes||[])],x=>String(x.id||((x.title||"")+"|"+(x.text||""))),200),
+  preferences:{...(local.preferences||{}),...(remote.preferences||{})}};
+}
+function applyCloudData(data){
+ window.cosmoCloud.ready=false;
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(data.conversations||[]));
+ localStorage.setItem("cosmo-memory",String(data.memory||"").slice(0,1500));
+ localStorage.setItem("cosmo-tasks-v1",JSON.stringify(data.tasks||[]));
+ localStorage.setItem("cosmo-notes-v1",JSON.stringify(data.notes||[]));
+ conversations=(data.conversations||[]).filter(c=>c&&typeof c.id==="string"&&Array.isArray(c.messages)).slice(0,50);
+ cosmoTasks=Array.isArray(data.tasks)?data.tasks.slice(0,500):[];
+ cosmoNotes=Array.isArray(data.notes)?data.notes.slice(0,200):[];
+ const p=data.preferences||{};
+ const map={personality:"cosmo-personality",language:"cosmo-language",color:"cosmo-color",theme:"cosmo-theme",voice:"cosmo-voice",speak:"cosmo-speak",jarvisMode:"cosmo-jarvis-mode",memoryEnabled:"cosmo-memory-enabled",profileName:"cosmo-profile-name"};
+ for(const [key,storageKey] of Object.entries(map))if(p[key]!==undefined)localStorage.setItem(storageKey,String(p[key]));
+ if(typeof memoryInput!=="undefined")memoryInput.value=data.memory||"";
+ if(typeof personalitySelect!=="undefined"&&p.personality)personalitySelect.value=p.personality;
+ if(typeof languageSelect!=="undefined"&&p.language)languageSelect.value=p.language;
+ if(typeof colorSelect!=="undefined"&&p.color)colorSelect.value=p.color;
+ if(typeof profileNameInput!=="undefined"&&p.profileName)profileNameInput.value=p.profileName;
+ if(typeof memoryEnabled!=="undefined")memoryEnabled.checked=p.memoryEnabled!==false;
+ if(typeof themeSelect!=="undefined"&&p.theme){themeSelect.value=p.theme;applyTheme(p.theme)}
+ if(typeof voiceSelect!=="undefined"&&p.voice)voiceSelect.value=p.voice;
+ if(typeof sidebarAccountLabel!=="undefined"&&p.profileName)sidebarAccountLabel.textContent=p.profileName;
+ setJarvisMode(p.jarvisMode===true||p.jarvisMode==="true",false);
+ if(typeof applyAccent==="function")applyAccent();
+ if(typeof updateMemoryStatus==="function")updateMemoryStatus();
+ renderSidebarRecent();
+ window.cosmoCloud.ready=true;
+}
+async function cloudRequest(url,method="GET",body=null){
+ const headers={"Accept":"application/json"};
+ if(body!==null)headers["Content-Type"]="application/json";
+ if(method!=="GET")headers["X-CSRF-Token"]=window.cosmoCloud.csrfToken;
+ const r=await fetch(url,{method,headers,credentials:"same-origin",cache:"no-store",body:body===null?undefined:JSON.stringify(body)});
+ const d=await r.json().catch(()=>({}));
+ if(!r.ok)throw new Error(d.error||"Falha na comunicação com a nuvem.");
+ if(d.csrf_token)window.cosmoCloud.csrfToken=d.csrf_token;
+ return d;
+}
+async function synchronizeCloud(showMessage=false){
+ const c=window.cosmoCloud;
+ if(!c.authenticated||!c.available||c.busy)return;
+ c.busy=true;updateAccountUI();
+ try{
+  const remote=await cloudRequest("/api/sync");
+  const local=localCloudData();
+  const remoteHasData=!!(remote.memory||(remote.conversations||[]).length||(remote.tasks||[]).length||(remote.notes||[]).length||Object.keys(remote.preferences||{}).length);
+  const merged=remoteHasData?mergeCloudData(local,remote):local;
+  applyCloudData(merged);
+  await cloudRequest("/api/sync","PUT",merged);
+  if(showMessage){setAccountStatus("Sincronização concluída. Conversas, memória, tarefas e notas foram sincronizadas.","success");notify("Cosmo sincronizado com a nuvem")}
+ }catch(e){if(showMessage)setAccountStatus(e.message+" Seus dados locais foram mantidos.","error");else console.warn("Cosmo cloud sync:",e.message)}
+ finally{c.busy=false;updateAccountUI()}
+}
+window.scheduleCosmoCloudSync=function(){
+ const c=window.cosmoCloud;
+ if(!c||!c.ready||!c.authenticated||!c.available||c.busy)return;
+ clearTimeout(c.timer);
+ c.timer=setTimeout(async()=>{
+  try{const local=localCloudData();await cloudRequest("/api/sync","PUT",local);setCloudHud()}
+  catch(e){if(e.message.includes("Entre na sua conta")||e.message.includes("Sessão inválida")){c.authenticated=false;c.email=null;updateAccountUI()}}
+ },1200);
+};
+function openAccountPanel(){document.querySelector("#accountOverlay").hidden=false;refreshCloudStatus().then(()=>{if(window.cosmoCloud.authenticated)synchronizeCloud(false)});document.querySelector("#accountEmail").focus()}
+function closeAccountPanel(){document.querySelector("#accountOverlay").hidden=true}
+document.querySelector("#accountButton").addEventListener("click",openAccountPanel);
+document.querySelector("#accountClose").addEventListener("click",closeAccountPanel);
+document.querySelector("#accountOverlay").addEventListener("click",e=>{if(e.target===e.currentTarget)closeAccountPanel()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.querySelector("#accountOverlay").hidden)closeAccountPanel()});
+document.querySelector("#accountModeSwitch").addEventListener("click",()=>{
+ const c=window.cosmoCloud;c.mode=c.mode==="login"?"register":"login";
+ document.querySelector("#accountHeading").textContent=c.mode==="register"?"CRIAR COSMO ID":"COSMO ID / CLOUD LINK";
+ updateAccountUI();setAccountStatus(c.mode==="register"?"Use um e-mail válido e uma senha exclusiva com pelo menos 10 caracteres.":"Entre com seu e-mail e senha.");
+});
+document.querySelector("#accountForm").addEventListener("submit",async e=>{
+ e.preventDefault();const c=window.cosmoCloud;if(!c.available||c.busy)return;
+ const email=document.querySelector("#accountEmail").value.trim();
+ const password=document.querySelector("#accountPassword").value;
+ c.busy=true;updateAccountUI();setAccountStatus(c.mode==="register"?"Criando conta…":"Entrando…");
+ try{
+  const d=await cloudRequest(c.mode==="register"?"/api/auth/register":"/api/auth/login","POST",{email,password});
+  c.authenticated=true;c.email=d.email;c.csrfToken=d.csrf_token||c.csrfToken;c.mode="login";
+  document.querySelector("#accountPassword").value="";
+  updateAccountUI();await synchronizeCloud(true);
+ }catch(err){setAccountStatus(err.message,"error")}
+ finally{c.busy=false;updateAccountUI()}
+});
+document.querySelector("#accountSyncNow").addEventListener("click",()=>synchronizeCloud(true));
+document.querySelector("#accountLogout").addEventListener("click",async()=>{
+ const c=window.cosmoCloud;try{await cloudRequest("/api/auth/logout","POST",{});c.authenticated=false;c.email=null;c.ready=false;c.mode="login";updateAccountUI();setAccountStatus("Você saiu da conta. Seus dados locais foram mantidos.","success")}catch(e){setAccountStatus(e.message,"error")}
+});
+document.querySelector("#accountDelete").addEventListener("click",async()=>{
+ const password=prompt("Para excluir permanentemente sua conta e os dados da nuvem, digite sua senha:");
+ if(password===null)return;
+ if(!confirm("Confirma excluir permanentemente a conta e os dados armazenados na nuvem? Os dados locais deste navegador não serão apagados."))return;
+ const c=window.cosmoCloud;
+ try{await cloudRequest("/api/account","DELETE",{password});c.authenticated=false;c.email=null;c.ready=false;c.mode="login";updateAccountUI();setAccountStatus("Conta e dados da nuvem excluídos. A cópia local deste navegador foi mantida.","success")}
+ catch(e){setAccountStatus(e.message,"error")}
+});
+async function initCosmoCloud(){
+ await refreshCloudStatus();
+ if(window.cosmoCloud.authenticated){await synchronizeCloud(false);setAccountStatus("Conectado como "+window.cosmoCloud.email+". Sincronização ativa.","success")}
+}
+function updateJarvisClock(){const el=document.querySelector("#jarvisHudClock");if(el)el.textContent=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" • LOCAL"}
+updateJarvisClock();setInterval(updateJarvisClock,1000);
+initCosmoCloud();
 </script></body></html>
 
