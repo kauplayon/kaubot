@@ -1480,7 +1480,7 @@ function executeJarvisVoiceCommand(raw){
  if(/^(abrir|mostrar) (as )?configurações$/.test(lower)){openSettings();return 'Abrindo as configurações.'}
  if(/^(voltar para o chat|voltar ao chat|mostrar chat|mostrar conversa)$/.test(lower)){showChat();return 'Voltamos para o chat.'}
  if(/^(mostrar|abrir) (as )?notícias( de hoje)?$/.test(lower)){document.querySelector('#cosmoNewsList')?.scrollIntoView({behavior:'smooth',block:'center'});document.querySelector('#refreshCosmoNews')?.click();return 'Atualizando o painel de notícias do Cosmo.'}
- const siteMatch=lower.match(/^(?:abrir|acesse|acessar|ir para) (?:o site )?(.+)$/);
+ const siteMatch=lower.match(/^(?:abrir|abre|abra|acesse|acessar|ir para) (?:(?:o|a) )?(?:(?:site|página) (?:do|da|de) )?(.+)$/);
  if(siteMatch){const siteName=siteMatch[1].trim().replace(/^site do /,'').replace(/^site da /,'');if(window.cosmoOpenKnownSite?.(siteName))return 'Abrindo '+siteName+'.'}
  const task=text.match(/^(?:criar|adicionar|anotar) (?:uma )?tarefa(?: chamada)?[: ]+(.{2,140})$/i);
  if(task){cosmoTasks.unshift({text:task[1].trim(),done:false});saveWorkspace();notify('Tarefa adicionada por voz');return 'Tarefa adicionada: '+task[1].trim()+'.'}
@@ -1754,7 +1754,7 @@ initCosmoCloud();
   }catch(error){status.textContent='Não foi possível atualizar. Tente novamente em instantes.'}
   finally{refresh?.removeAttribute('aria-busy')}
  }
- refresh?.addEventListener('click',refreshNews);refreshNews();
+ refresh?.addEventListener('click',refreshNews);refreshNews();setInterval(refreshNews,5*60*1000);
  // O comando abre apenas destinos conhecidos; URLs arbitrárias ditadas não são executadas.
  window.cosmoOpenKnownSite=function(name){
   const sites={'google':'https://www.google.com/','youtube':'https://www.youtube.com/','youtub':'https://www.youtube.com/','youtube music':'https://music.youtube.com/','wikipedia':'https://pt.wikipedia.org/','wikipédia':'https://pt.wikipedia.org/','github':'https://github.com/','gmail':'https://mail.google.com/','google maps':'https://maps.google.com/','mapas':'https://maps.google.com/','instagram':'https://www.instagram.com/','whatsapp':'https://web.whatsapp.com/','tiktok':'https://www.tiktok.com/','netflix':'https://www.netflix.com/','spotify':'https://open.spotify.com/','render':'https://dashboard.render.com/','github do cosmo':'https://github.com/kauplayon/kaubot'};
