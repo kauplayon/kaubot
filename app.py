@@ -178,8 +178,8 @@ def auth_register():
 
 @app.post("/api/auth/login")
 def auth_login():
-    if not storage_ready():
-        return jsonify({"error": "Memória em nuvem indisponível. O administrador precisa configurar DATABASE_URL no Render."}), 503
+    if not auth_available():
+        return jsonify({"error": "Memória em nuvem indisponível. Configure DATABASE_URL e SECRET_KEY no Render."}), 503
     if not _csrf_ok():
         return jsonify({"error": "Sessão de segurança expirada. Atualize a página e tente novamente."}), 400
     if _auth_rate_limited():
