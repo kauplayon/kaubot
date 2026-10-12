@@ -1517,7 +1517,7 @@ function updateAccountUI(){
  document.querySelector("#accountModeSwitch").textContent=c.mode==="register"?"Já tem conta? Entrar":"Não tem conta? Criar uma";
  document.querySelector("#accountLogout").hidden=!c.authenticated;
  document.querySelector("#accountDelete").hidden=!c.authenticated;
- document.querySelector("#accountSyncNow").disabled=!c.authenticated;
+ document.querySelector("#accountSyncNow").disabled=!c.authenticated||c.busy;
  document.querySelector("#accountSubmit").disabled=!c.available||c.busy;
  document.querySelector("#accountEmail").disabled=!c.available||c.busy;
  document.querySelector("#accountPassword").disabled=!c.available||c.busy;
@@ -1637,7 +1637,7 @@ document.querySelector("#accountForm").addEventListener("submit",async e=>{
  c.busy=true;updateAccountUI();setAccountStatus(c.mode==="register"?"Criando conta…":"Entrando…");
  try{
   const d=await cloudRequest(c.mode==="register"?"/api/auth/register":"/api/auth/login","POST",{email,password});
-  c.authenticated=true;c.email=d.email;c.csrfToken=d.csrf_token||c.csrfToken;c.mode="login";
+  c.authenticated=true;c.email=d.email;c.csrfToken=d.csrf_token||c.csrfToken;c.mode="login";c.busy=false;
   document.querySelector("#accountPassword").value="";
   updateAccountUI();await synchronizeCloud(true);
  }catch(err){setAccountStatus(err.message,"error")}
