@@ -59,10 +59,13 @@ def _current_user(db):
     user_id = session.get("user_id")
     return db.get(User, user_id) if isinstance(user_id, int) else None
 
+def auth_available():
+    return storage_ready() and bool(os.getenv("SECRET_KEY"))
+
 def require_login(fn):
     @wraps(fn)
     def wrapped(*args, **kwargs):
-        if not storage_ready():
+        if not auth_available():
             return jsonify({"error": "Memória em nuvem indisponível. Configure DATABASE_URL no Render."}), 503
         if not session.get("user_id"):
             return jsonify({"error": "Entre na sua conta para continuar."}), 401
@@ -123,13 +126,14 @@ def health():
         "ai_configured": client_configured,
         "vision_configured": client_configured,
         "persistent_storage_configured": storage_ready(),
+        "account_auth_configured": auth_available(),
         "version": "3.0 — JARVIS em desenvolvimento"
     })
 
 @app.get("/api/auth/status")
 def auth_status():
     return jsonify({
-        "available": storage_ready(),
+        "available": auth_available(),
         "authenticated": bool(session.get("user_id")) and storage_ready(),
         "email": session.get("user_email") if session.get("user_id") else None,
         "csrf_token": _csrf_token(),
@@ -137,8 +141,8 @@ def auth_status():
 
 @app.post("/api/auth/register")
 def auth_register():
-    if not storage_ready():
-        return jsonify({"error": "Memória em nuvem indisponível. O administrador precisa configurar DATABASE_URL no Render."}), 503
+    if not auth_available():
+        return jsonify({"error": "Memória em nuvem indisponível. Configure DATABASE_URL e SECRET_KEY no Render."}), 503
     if not _csrf_ok():
         return jsonify({"error": "Sessão de segurança expirada. Atualize a página e tente novamente."}), 400
     if _auth_rate_limited():
@@ -163,6 +167,7 @@ def auth_register():
         session["user_id"] = user.id
         session["user_email"] = user.email
         session.permanent = True
+        _AUTH_ATTEMPTS.pop(request.remote_addr or "unknown", None)
         return jsonify({"ok": True, "email": user.email, "csrf_token": _csrf_token()}), 201
     except Exception:
         db.rollback()
@@ -191,6 +196,7 @@ def auth_login():
         session["user_id"] = user.id
         session["user_email"] = user.email
         session.permanent = True
+        _AUTH_ATTEMPTS.pop(request.remote_addr or "unknown", None)
         _csrf_token()
         return jsonify({"ok": True, "email": user.email, "csrf_token": session["csrf_token"]})
     finally:
