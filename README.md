@@ -80,3 +80,9 @@ Não publique tokens, chaves de API, senhas ou dados pessoais no GitHub.
 
 ## Aviso
 O Cosmo pode cometer erros. Confira informações importantes em fontes confiáveis.
+
+## Cosmo Command Deck — atualização experimental
+
+A branch `feature/jarvis-3.0-persistent-memory` inclui uma central visual estilo HUD, relógio local, feed de manchetes recentes via Google News RSS e comandos de voz para abrir destinos conhecidos (Google, YouTube, GitHub, Gmail, Maps, entre outros). O feed é atualizado ao carregar e pode ser atualizado manualmente. A disponibilidade depende do acesso do servidor ao RSS e não representa uma garantia de cobertura jornalística em tempo real.
+
+O comando de abertura por voz usa uma lista explícita de sites conhecidos e navega na mesma aba; ele não executa URLs arbitrárias ditadas. Testes automatizados não substituem testes no navegador, microfone e ambiente do Render.
