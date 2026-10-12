@@ -34,4 +34,4 @@ jobs:
       - name: Run tests
         env:
           SECRET_KEY: test-only-secret-key-change-this
-        run: pytest -q
+        run: python -m pytest -q
