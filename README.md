@@ -18,6 +18,8 @@ Cosmo é um assistente web com IA Cloudflare Workers AI, memória, contexto de c
 - Voz por entrada de áudio e leitura de respostas.
 - Modo JARVIS opcional com interface HUD futurista e personalidade de assistente pessoal.
 - Comandos por voz para abrir produtividade/estatísticas, iniciar conversa, alternar modo JARVIS, criar tarefas e salvar notas.
+- HUD cinematográfico JARVIS com painel de status, relógio local e estados de voz.
+- Contas com senha armazenada em hash e sincronização de conversas, memória, tarefas, notas e preferências via PostgreSQL.
 - Tarefas e notas locais.
 
 ## 1.0 Release — Cosmo 1.0
@@ -42,8 +44,22 @@ Copie `.env.example` para `.env` e configure:
 - `CLOUDFLARE_VISION_MODEL`
 - `BOT_NAME`
 - `BOT_PERSONALITY`
+- `SECRET_KEY` (obrigatória para habilitar contas; use uma chave aleatória longa e mantenha-a privada).
+- `DATABASE_URL` (URL de conexão de um PostgreSQL persistente; obrigatória para sincronização em nuvem).
 
 O projeto usa Cloudflare Workers AI. O modelo visual padrão é `@cf/meta/llama-4-scout-17b-16e-instruct`.
+
+## Contas e sincronização em nuvem (beta)
+
+1. Crie um banco PostgreSQL persistente e configure DATABASE_URL no serviço do Render usando a URL de conexão adequada.
+2. Gere uma chave aleatória longa para SECRET_KEY e cadastre-a como variável secreta no Render. Não use o valor de exemplo de .env.example em produção.
+3. O aplicativo cria as tabelas iniciais ao iniciar. A configuração do banco deve estar pronta antes de habilitar o cadastro.
+4. Faça deploy e verifique /health: persistent_storage_configured e account_auth_configured devem estar como true.
+5. Abra Conta / nuvem, crie sua conta e sincronize os dados locais. O primeiro login combina dados locais e remotos para reduzir o risco de perda de dados.
+
+O Cosmo continua funcionando em modo local quando o banco não está configurado. Nesse caso, cadastro e sincronização em nuvem ficam desabilitados e os dados locais não são apagados. O armazenamento persistente PostgreSQL pode gerar cobrança conforme o plano do provedor; confira os limites e preços atuais antes de ativá-lo.
+
+**Limitações desta versão beta:** ainda não há verificação de e-mail nem fluxo de recuperação de senha. Use uma senha exclusiva e não armazene segredos ou dados altamente sensíveis na memória. Antes de abrir o cadastro ao público, implemente verificação de e-mail e recuperação de conta.
 
 ## Pesquisa na web
 O modo Agente pode buscar dados usando uma camada de ferramentas do próprio Cosmo. Os resultados podem ser usados como contexto adicional para a resposta.
