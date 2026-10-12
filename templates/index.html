@@ -1616,8 +1616,10 @@ window.scheduleCosmoCloudSync=function(){
  if(c.busy){c.pendingSync=true;return;}
  clearTimeout(c.timer);
  c.timer=setTimeout(async()=>{
+  c.busy=true;updateAccountUI();
   try{const local=localCloudData();await cloudRequest("/api/sync","PUT",local);setCloudHud()}
   catch(e){if(e.message.includes("Entre na sua conta")||e.message.includes("Sessão inválida")){c.authenticated=false;c.email=null;updateAccountUI()}}
+  finally{c.busy=false;updateAccountUI();if(c.pendingSync){c.pendingSync=false;window.scheduleCosmoCloudSync()}}
  },1200);
 };
 function openAccountPanel(){document.querySelector("#accountOverlay").hidden=false;refreshCloudStatus().then(()=>{if(window.cosmoCloud.authenticated)synchronizeCloud(false)});document.querySelector("#accountEmail").focus()}
