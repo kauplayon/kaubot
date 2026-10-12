@@ -11,9 +11,10 @@ from flask import Flask, render_template, request, jsonify, send_from_directory,
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 from cosmo_tools import build_tool_context
-from cosmo_storage import User, UserData, storage_ready, session_factory, get_or_create_data
+from cosmo_storage import User, UserData, storage_ready, session_factory, get_or_create_data, configure_storage
 
 load_dotenv()
+configure_storage()
 app = Flask(__name__)
 app.config.update(
     SECRET_KEY=os.getenv("SECRET_KEY") or secrets.token_hex(32),
