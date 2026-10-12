@@ -77,10 +77,10 @@ def chat():
     personality = personalities.get(str(data.get("personality", "amigavel")), personalities["amigavel"])
     languages = {"pt": "português do Brasil", "en": "English", "es": "español", "fr": "français"}
     language = languages.get(str(data.get("language", "pt")), "português do Brasil")
-    system_prompt = SYSTEM + "\\nPersonalidade escolhida: " + personality + "\\nResponda sempre no idioma: " + language + "."
+    system_prompt = SYSTEM + "\nPersonalidade escolhida: " + personality + "\nResponda sempre no idioma: " + language + "."
     if jarvis_mode:
         system_prompt += (
-            "\\nModo JARVIS ativado: você é o Cosmo em uma experiência de assistente pessoal inspirada em interfaces futuristas. "
+            "\nModo JARVIS ativado: você é o Cosmo em uma experiência de assistente pessoal inspirada em interfaces futuristas. "
             "Seja proativo, preciso, calmo e conciso; organize respostas em status, opções e próximos passos quando isso ajudar. "
             "Use somente ferramentas e dados realmente disponíveis no contexto. Não afirme que controlou o computador, abriu aplicativos externos, "
             "alterou arquivos ou executou ações que não foram realizadas. Para ações no próprio Cosmo, oriente o usuário a usar os comandos suportados. "
