@@ -10,7 +10,7 @@ import requests
 from flask import Flask, render_template, request, jsonify, send_from_directory, session
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
-from cosmo_tools import build_tool_context
+from cosmo_tools import build_tool_context, current_news_search
 from cosmo_storage import User, UserData, storage_ready, session_factory, get_or_create_data, configure_storage
 
 load_dotenv()
@@ -295,6 +295,23 @@ def delete_account():
         return jsonify({"error": "Não foi possível excluir a conta agora."}), 500
     finally:
         db.close()
+
+@app.get("/api/news")
+def api_news():
+    """Briefing de notícias atuais via Google News RSS, sem chave de API."""
+    query = (request.args.get("q") or "tecnologia inteligência artificial Brasil").strip()[:180]
+    try:
+        data = current_news_search(query, limit=8)
+        return jsonify({
+            "ok": True,
+            "query": query,
+            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "items": data.get("sources", [])[:8],
+        }), 200, {"Cache-Control": "no-store"}
+    except Exception:
+        app.logger.exception("Falha ao carregar briefing de notícias")
+        return jsonify({"ok": False, "error": "Não foi possível atualizar as notícias agora.", "items": []}), 502, {"Cache-Control": "no-store"}
+
 
 @app.post("/chat")
 def chat():
