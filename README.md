@@ -16,6 +16,8 @@ Cosmo é um assistente web com IA Cloudflare Workers AI, memória, contexto de c
 - Modo Agente com roteamento de ferramentas.
 - Pesquisa na web e contexto de fontes.
 - Voz por entrada de áudio e leitura de respostas.
+- Modo JARVIS opcional com interface HUD futurista e personalidade de assistente pessoal.
+- Comandos por voz para abrir produtividade/estatísticas, iniciar conversa, alternar modo JARVIS, criar tarefas e salvar notas.
 - Tarefas e notas locais.
 
 ## 1.0 Release — Cosmo 1.0
@@ -55,7 +57,7 @@ O modo Agente pode buscar dados usando uma camada de ferramentas do próprio Cos
 ## PWA e dados
 O Cosmo pode ser instalado como PWA em navegadores compatíveis. Conversas, memória, tarefas, notas e preferências ficam no navegador por padrão.
 
-O backup JSON permite transferir manualmente os dados para outro dispositivo. A versão atual não possui autenticação com conta de servidor nem sincronização em nuvem entre dispositivos; isso depende de um backend persistente de autenticação e banco de dados, que fica planejado para uma próxima etapa.
+O backup JSON permite transferir manualmente os dados para outro dispositivo. A versão atual não possui autenticação com conta de servidor nem sincronização em nuvem entre dispositivos; isso depende de um backend persistente de autenticação e banco de dados, que fica planejado para uma próxima etapa. O modo JARVIS e os comandos de produtividade também usam os dados locais deste navegador.
 
 ## Segurança
 Não publique tokens, chaves de API, senhas ou dados pessoais no GitHub.
