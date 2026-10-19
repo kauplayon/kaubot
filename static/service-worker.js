@@ -1,4 +1,4 @@
-const CACHE_NAME="cosmo-3.0-shell-v2";
+const CACHE_NAME="cosmo-3.0-shell-v3";
 const APP_SHELL=["/","/manifest.json","/static/fundo-cosmo.jpg","/static/logo-cosmo-transparent.png"];
 
 self.addEventListener("install",event=>{
