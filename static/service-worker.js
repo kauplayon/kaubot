@@ -1,5 +1,5 @@
-const CACHE_NAME="cosmo-3.0-shell-v2";
-const APP_SHELL=["/","/manifest.json","/static/fundo-cosmo.jpg","/static/logo-cosmo-transparent.png"];
+const CACHE_NAME="cosmo-4.0-cinematic-shell-v1";
+const APP_SHELL=["/","/manifest.json","/static/fundo-cosmo.jpg","/static/logo-cosmo-transparent.png","/static/cosmo-cinematic-hud-v4.css","/static/cosmo-cinematic-hud-v4.js"];
 
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()));
