@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#7c63ff"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/static/logo-cosmo-transparent.png">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#041522"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/static/logo-cosmo-transparent.png">
 <title>{{ bot_name }} | Kauplayon</title>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo-cosmo-transparent.png') }}">
 <style>
@@ -1114,14 +1114,138 @@ body.jarvis-mode .voice-orb{filter:hue-rotate(80deg) saturate(1.25)}
 body.jarvis-mode .voice-mode-main{border-color:rgba(0,220,255,.75);color:#8ef4ff;box-shadow:0 0 28px rgba(0,210,255,.2)}
 body.jarvis-mode .voice-mode-status{color:#8ef4ff}
 @media(prefers-reduced-motion:reduce){body.jarvis-mode *{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
-</style></head>
+
+/* JARVIS 3.0 cinematic HUD — CSS/SVG-free effects, no external assets */
+.jarvis-hud{display:none}
+body.jarvis-mode .jarvis-hud{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:10px;margin:0 22px 16px;padding:12px;border:1px solid rgba(75,222,255,.22);border-radius:15px;background:linear-gradient(120deg,rgba(1,20,34,.86),rgba(4,37,55,.42));box-shadow:inset 0 0 28px rgba(0,202,255,.035),0 8px 28px rgba(0,0,0,.14)}
+.jarvis-hud-panel{min-width:0;display:flex;align-items:center;gap:10px;padding:8px 10px;border-right:1px solid rgba(82,220,255,.14)}
+.jarvis-hud-panel:last-child{border-right:0}
+.jarvis-hud-kicker{display:block;color:#5edff8;font-size:9px;letter-spacing:2px;font-weight:800;text-transform:uppercase}
+.jarvis-hud-value{display:block;color:#e1faff;font-size:13px;font-weight:650;margin-top:4px;overflow-wrap:anywhere}
+.jarvis-hud-sub{display:block;color:#77aebf;font-size:10px;margin-top:3px}
+.jarvis-signal{width:9px;height:9px;flex:0 0 auto;border-radius:50%;background:#52f4ce;box-shadow:0 0 12px #52f4ce;animation:jarvisSignal 2.4s ease-in-out infinite}
+.jarvis-hud-radar{width:45px;height:45px;flex:0 0 auto;border-radius:50%;position:relative;border:1px solid rgba(63,222,255,.5);background:repeating-radial-gradient(circle,transparent 0 7px,rgba(52,215,255,.14) 8px 9px),linear-gradient(90deg,transparent 49%,rgba(52,215,255,.2) 50%,transparent 51%),linear-gradient(transparent 49%,rgba(52,215,255,.2) 50%,transparent 51%);overflow:hidden}
+.jarvis-hud-radar:after{content:"";position:absolute;inset:0;background:conic-gradient(from 0deg,transparent 0 72%,rgba(60,232,255,.5));border-radius:50%;animation:jarvisRadar 5s linear infinite}
+body.jarvis-mode .page{background:radial-gradient(ellipse at 60% 15%,rgba(0,154,207,.08),transparent 45%)}
+body.jarvis-mode .main{background:transparent}
+body.jarvis-mode .topbar{border-bottom:1px solid rgba(69,213,255,.15)}
+body.jarvis-mode .sidebar{backdrop-filter:blur(16px)}
+body.jarvis-mode .chat{scrollbar-color:rgba(61,214,255,.38) transparent}
+body.jarvis-mode .welcome{position:relative}
+body.jarvis-mode .welcome:before{content:"";position:absolute;width:190px;height:190px;left:50%;top:5px;transform:translateX(-50%);border-radius:50%;border:1px solid rgba(63,221,255,.12);box-shadow:0 0 0 12px rgba(63,221,255,.025),0 0 0 28px rgba(63,221,255,.018);pointer-events:none;animation:jarvisBreath 5s ease-in-out infinite}
+body.jarvis-mode .welcome-logo{filter:drop-shadow(0 0 16px rgba(42,218,255,.32))}
+body.jarvis-mode .msg.bot{box-shadow:inset 3px 0 rgba(65,222,255,.65),0 8px 24px rgba(0,0,0,.12)}
+body.jarvis-mode .suggestion{position:relative;overflow:hidden;transition:transform .18s,border-color .18s,box-shadow .18s}
+body.jarvis-mode .suggestion:hover{transform:translateY(-2px);box-shadow:0 0 18px rgba(0,209,255,.12)}
+body.jarvis-mode .voice-mode-overlay{background:radial-gradient(ellipse at center,rgba(0,95,137,.24),rgba(0,4,12,.96) 62%)}
+body.jarvis-mode .voice-mode-card{position:relative;overflow:hidden;box-shadow:0 0 0 1px rgba(63,223,255,.08),0 0 80px rgba(0,180,255,.12),inset 0 0 70px rgba(0,154,210,.05)}
+body.jarvis-mode .voice-mode-card:before{content:"";position:absolute;inset:12px;border:1px solid rgba(65,222,255,.15);border-radius:inherit;pointer-events:none}
+body.jarvis-mode .voice-orb{position:relative;isolation:isolate}
+body.jarvis-mode .voice-orb:before,body.jarvis-mode .voice-orb:after{content:"";position:absolute;inset:-22px;border-radius:50%;border:1px solid rgba(73,224,255,.4);border-left-color:transparent;border-right-color:rgba(73,224,255,.12);animation:jarvisRadar 8s linear infinite;pointer-events:none}
+body.jarvis-mode .voice-orb:after{inset:-38px;border-style:dashed;border-color:rgba(73,224,255,.18);animation-direction:reverse;animation-duration:22s}
+body.jarvis-mode .voice-mode-status{letter-spacing:2px;text-transform:uppercase;font-size:11px}
+body.jarvis-mode .voice-mode-transcript{border:1px solid rgba(73,224,255,.16);background:rgba(0,20,35,.58);border-radius:10px;padding:12px}
+body.jarvis-mode .workspace-panel,body.jarvis-mode .stats-panel{background:linear-gradient(145deg,rgba(1,15,28,.97),rgba(2,28,43,.97));border-color:rgba(64,220,255,.3)}
+body.jarvis-mode .stat-card,body.jarvis-mode .workspace-item,body.jarvis-mode .workspace-note{border-color:rgba(64,220,255,.19);background:rgba(4,35,51,.62)}
+body.jarvis-mode .jarvis-hud button{font:inherit}
+.account-overlay{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(1,7,15,.78);backdrop-filter:blur(12px)}
+.account-overlay[hidden]{display:none!important}
+.account-card{width:min(100%,440px);max-height:min(90vh,760px);overflow:auto;padding:24px;border:1px solid rgba(103,129,255,.3);border-radius:20px;background:#10152a;color:#f4f6ff;box-shadow:0 25px 100px rgba(0,0,0,.45)}
+.jarvis-mode .account-card{border-color:rgba(69,222,255,.4);background:linear-gradient(145deg,#041421,#0b2031);box-shadow:0 0 60px rgba(0,190,255,.12),0 25px 100px rgba(0,0,0,.5)}
+.account-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.account-head h2{margin:0;font-size:17px;letter-spacing:2px}
+.account-close{border:0;background:transparent;color:inherit;font-size:22px;cursor:pointer}
+.account-copy{color:#a8b1d0;font-size:13px;line-height:1.5;margin:0 0 18px}
+.account-form{display:grid;gap:12px}
+.account-form label{display:grid;gap:6px;color:#bfc9e5;font-size:12px}
+.account-form input{width:100%;padding:12px;border:1px solid rgba(132,145,207,.32);border-radius:10px;background:#080e20;color:#fff;outline:none}
+.jarvis-mode .account-form input{border-color:rgba(64,220,255,.3);background:#020e19}
+.account-form input:focus{border-color:#50dfff;box-shadow:0 0 0 3px rgba(64,220,255,.1)}
+.account-primary,.account-secondary,.account-danger{min-height:42px;padding:10px 13px;border-radius:10px;border:1px solid transparent;font-weight:700;cursor:pointer}
+.account-primary{background:linear-gradient(120deg,#1b8eaf,#48d9ed);color:#02131b}
+.account-secondary{background:rgba(110,130,190,.1);border-color:rgba(130,150,200,.24);color:#e7edff}
+.account-danger{background:rgba(255,70,95,.08);border-color:rgba(255,90,110,.3);color:#ff9baa}
+.account-primary:disabled,.account-secondary:disabled{opacity:.45;cursor:not-allowed}
+.account-status{font-size:12px;line-height:1.5;color:#91a1c8;min-height:18px;margin:14px 0}
+.account-status.error{color:#ff9baa}.account-status.success{color:#7bf0c5}
+.account-actions{display:grid;gap:9px;margin-top:12px}
+.account-switch{border:0;background:transparent;color:#72dff7;cursor:pointer;padding:10px 0}
+.account-separator{height:1px;background:rgba(140,155,205,.18);margin:16px 0}
+@keyframes jarvisSignal{0%,100%{opacity:1;box-shadow:0 0 12px #52f4ce}50%{opacity:.55;box-shadow:0 0 4px #52f4ce}}
+@keyframes jarvisRadar{to{transform:rotate(360deg)}}
+@keyframes jarvisBreath{0%,100%{opacity:.45;transform:translateX(-50%) scale(.96)}50%{opacity:1;transform:translateX(-50%) scale(1.04)}}
+@media(max-width:720px){body.jarvis-mode .jarvis-hud{grid-template-columns:1fr 1fr;margin:0 10px 12px;padding:8px;gap:4px}.jarvis-hud-panel{padding:7px;border-right:0}.jarvis-hud-panel:first-child{grid-column:1/-1;border-bottom:1px solid rgba(82,220,255,.14)}.jarvis-hud-radar{width:36px;height:36px}.jarvis-hud-value{font-size:12px}.account-card{padding:19px}}
+@media(prefers-reduced-motion:reduce){body.jarvis-mode .jarvis-hud *,body.jarvis-mode .voice-orb:before,body.jarvis-mode .voice-orb:after,body.jarvis-mode .welcome:before{animation:none!important;transition:none!important}}
+
+/* COSMO JARVIS 3.1 — camada visual HUD; mantém os componentes e fluxos existentes */
+:root{--cosmo-cyan:#58e8ff;--cosmo-blue:#399bff;--cosmo-glass:rgba(4,18,38,.76);--cosmo-hairline:rgba(88,232,255,.24)}
+body.jarvis-mode{background-color:#020711;background-image:radial-gradient(ellipse at 50% 0%,rgba(0,151,210,.17),transparent 55%),linear-gradient(135deg,rgba(2,9,22,.92),rgba(3,14,31,.88)),url("/static/fundo-cosmo.jpg")}
+body.jarvis-mode:after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.14;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(70,220,255,.08) 4px,transparent 5px);mix-blend-mode:screen}
+body.jarvis-mode .chat-shell{position:relative;border-color:var(--cosmo-hairline);border-radius:18px;background:linear-gradient(145deg,rgba(3,17,37,.83),rgba(4,12,30,.7));box-shadow:inset 0 0 55px rgba(20,166,225,.055),0 0 0 1px rgba(88,232,255,.035),0 24px 75px rgba(0,0,0,.36)}
+body.jarvis-mode .chat-shell:before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;background:linear-gradient(var(--cosmo-cyan),var(--cosmo-cyan)) left top/26px 1px no-repeat,linear-gradient(var(--cosmo-cyan),var(--cosmo-cyan)) left top/1px 26px no-repeat,linear-gradient(var(--cosmo-cyan),var(--cosmo-cyan)) right top/26px 1px no-repeat,linear-gradient(var(--cosmo-cyan),var(--cosmo-cyan)) right top/1px 26px no-repeat,linear-gradient(var(--cosmo-cyan),var(--cosmo-cyan)) left bottom/26px 1px no-repeat,linear-gradient(var(--cosmo-cyan),var(--cosmo-cyan)) left bottom/1px 26px no-repeat,linear-gradient(var(--cosmo-cyan),var(--cosmo-cyan)) right bottom/26px 1px no-repeat,linear-gradient(var(--cosmo-cyan),var(--cosmo-cyan)) right bottom/1px 26px no-repeat;opacity:.45}
+body.jarvis-mode .chat-shell>*{position:relative;z-index:1}
+body.jarvis-mode .topbar{border-bottom-color:rgba(88,232,255,.2)}
+body.jarvis-mode .icon-btn,body.jarvis-mode .profile,body.jarvis-mode .mobile-menu-btn{border-color:rgba(88,232,255,.34);background:rgba(3,20,40,.8);box-shadow:inset 0 0 16px rgba(41,190,255,.045)}
+body.jarvis-mode .sidebar{border-color:rgba(88,232,255,.25);background:rgba(2,11,27,.93)}
+body.jarvis-mode .nav button:hover,body.jarvis-mode .nav button.active{border-color:rgba(88,232,255,.3);background:rgba(23,135,184,.17)}
+body.jarvis-mode .jarvis-hud{position:relative;overflow:hidden;border:1px solid rgba(88,232,255,.3);border-radius:15px;background:linear-gradient(105deg,rgba(2,22,42,.94),rgba(4,33,53,.66));box-shadow:inset 0 0 32px rgba(0,201,255,.055),0 8px 28px rgba(0,0,0,.2)}
+body.jarvis-mode .jarvis-hud:after{content:"";position:absolute;left:0;right:0;top:-30%;height:35%;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(72,224,255,.08),transparent);animation:cosmoHudSweep 8s linear infinite}
+body.jarvis-mode .jarvis-hud-panel{border-right-color:rgba(88,232,255,.17)}
+body.jarvis-mode .jarvis-hud-kicker{color:#65eaff;text-shadow:0 0 12px rgba(65,220,255,.25)}
+body.jarvis-mode .jarvis-hud-value{color:#e5fbff}
+body.jarvis-mode .jarvis-hud-sub{color:#83b9ca}
+body.jarvis-mode .jarvis-hud-radar{width:48px;height:48px;box-shadow:0 0 18px rgba(54,214,255,.12)}
+body.jarvis-mode .welcome h1{letter-spacing:.04em;text-shadow:0 0 26px rgba(66,194,255,.22)}
+body.jarvis-mode .welcome h1 span{color:#62eaff}
+body.jarvis-mode .welcome-logo{filter:drop-shadow(0 0 20px rgba(49,199,255,.36))}
+body.jarvis-mode .suggestion{border-color:rgba(88,232,255,.25);background:linear-gradient(135deg,rgba(5,36,62,.68),rgba(9,20,49,.74));transition:transform .18s ease,border-color .18s ease,background .18s ease}
+body.jarvis-mode .suggestion:hover{transform:translateY(-2px);border-color:rgba(88,232,255,.62);background:linear-gradient(135deg,rgba(8,66,91,.72),rgba(16,32,73,.8))}
+body.jarvis-mode form{border-color:rgba(88,232,255,.55);background:rgba(2,13,32,.91);box-shadow:0 0 24px rgba(0,191,255,.09),inset 0 0 18px rgba(0,191,255,.035)}
+body.jarvis-mode .send{background:linear-gradient(135deg,#168fc4,#386dff);box-shadow:0 0 16px rgba(38,177,255,.2)}
+body.jarvis-mode .msg.bot{border-color:rgba(88,232,255,.18);background:linear-gradient(135deg,rgba(8,31,54,.92),rgba(15,26,57,.88))}
+body.jarvis-mode .msg.user{background:linear-gradient(135deg,#176d9d,#4355ce)}
+body.jarvis-mode .voice-mode-card{border-color:rgba(88,232,255,.48);background:radial-gradient(ellipse at 50% 25%,rgba(0,173,221,.14),transparent 46%),rgba(2,10,27,.97);box-shadow:0 0 65px rgba(0,175,255,.13),0 24px 90px rgba(0,0,0,.5)}
+body.jarvis-mode .voice-orb{filter:drop-shadow(0 0 22px rgba(57,217,255,.25))}
+@keyframes cosmoHudSweep{0%{transform:translateY(-120%)}100%{transform:translateY(430%)}}
+@media(prefers-reduced-motion:reduce){body.jarvis-mode .jarvis-hud:after{animation:none}body.jarvis-mode .suggestion{transition:none}}
+@media(max-width:800px){body.jarvis-mode .jarvis-hud{margin:0 8px 10px;padding:8px;grid-template-columns:1fr 1fr;gap:5px}body.jarvis-mode .jarvis-hud-panel{padding:7px 5px;border-right:0}body.jarvis-mode .jarvis-hud-panel:last-child{grid-column:1/-1;border-top:1px solid rgba(88,232,255,.14);padding-top:9px}body.jarvis-mode .jarvis-hud-radar{width:36px;height:36px}body.jarvis-mode .jarvis-hud-kicker{font-size:8px;letter-spacing:1.4px}body.jarvis-mode .jarvis-hud-value{font-size:12px}body.jarvis-mode .jarvis-hud-sub{font-size:9px}}
+
+/* COSMO COMMAND DECK — interface JARVIS experimental */
+:root{--cosmo-cyan:#59efff;--cosmo-cyan-soft:rgba(89,239,255,.18);--cosmo-ink:#031018;--cosmo-line:rgba(89,239,255,.23)}
+body{background:#02080d!important;background-image:radial-gradient(ellipse at 50% -20%,rgba(0,156,198,.22),transparent 56%),linear-gradient(rgba(69,215,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(69,215,255,.025) 1px,transparent 1px)!important;background-size:auto,34px 34px,34px 34px!important;color:#e8fbff}
+body:before{background:linear-gradient(120deg,rgba(1,7,12,.24),rgba(0,15,24,.7))!important}
+.page{grid-template-columns:72px minmax(0,1fr);gap:14px;max-width:1720px;margin:0 auto}
+.sidebar{border-color:var(--cosmo-line);background:rgba(2,13,22,.92);border-radius:8px}
+.sidebar:hover,.sidebar:focus-within{box-shadow:0 0 45px rgba(0,215,255,.11),18px 0 45px rgba(0,0,0,.45)}
+.brand-name{letter-spacing:4px;color:var(--cosmo-cyan)}
+.nav button{border-radius:7px;color:#bcebf2}.nav button:hover,.nav button.active{background:rgba(0,190,225,.11);border-color:var(--cosmo-line);color:#fff}
+.main{gap:10px}.topbar{height:48px;min-height:48px}.chat-shell{border-radius:8px;border-color:var(--cosmo-line);background:rgba(2,12,20,.78);box-shadow:0 0 50px rgba(0,170,220,.055),inset 0 0 50px rgba(0,160,210,.025)}
+.jarvis-hud{margin:0 0 4px!important;border-radius:8px!important;border-color:var(--cosmo-line)!important;background:rgba(2,17,26,.8)!important}
+.cosmo-command-deck{flex-shrink:0;padding:13px 16px;border:1px solid var(--cosmo-line);border-radius:8px;background:linear-gradient(110deg,rgba(2,22,33,.94),rgba(2,14,24,.8));box-shadow:inset 0 0 36px rgba(0,205,255,.025)}
+.deck-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.deck-kicker,.deck-label{display:block;color:#63dce9;font-size:9px;letter-spacing:2px;font-weight:700}.deck-heading h2{font-size:clamp(17px,2vw,23px);letter-spacing:.2px;margin:4px 0;color:#effcff}.deck-heading h2 span{color:var(--cosmo-cyan)}.deck-heading p{font-size:11px;color:#86aeb9;margin:0}.deck-live{display:flex;align-items:flex-end;flex-direction:column;gap:5px;color:#71dce7;font-size:9px;letter-spacing:1.3px}.deck-live i{width:7px;height:7px;border-radius:50%;background:#5dffbc;box-shadow:0 0 12px #5dffbc;display:inline-block}.deck-live time{font-size:15px;letter-spacing:2px;color:#e6fbff;font-variant-numeric:tabular-nums}
+.deck-grid{display:grid;grid-template-columns:minmax(150px,.75fr) minmax(150px,.75fr) minmax(270px,1.5fr);gap:10px}.deck-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0;min-height:120px;padding:13px;border:1px solid rgba(89,239,255,.17);border-radius:7px;background:linear-gradient(145deg,rgba(5,35,48,.72),rgba(2,17,27,.7));color:#e9fbff;text-align:left;overflow:hidden}.deck-card:not(.deck-news){cursor:pointer;transition:transform .18s,border-color .18s,background .18s}.deck-card:not(.deck-news):hover{transform:translateY(-2px);border-color:rgba(89,239,255,.65);background:rgba(5,47,62,.86)}.deck-icon{font-size:21px;color:var(--cosmo-cyan);line-height:1}.deck-card strong{font-size:13px;font-weight:650}.deck-card small{font-size:10px;color:#8eb3be;line-height:1.4}.deck-action{margin-top:auto;color:var(--cosmo-cyan);font-size:9px;letter-spacing:1.5px}.deck-news{min-height:120px;gap:8px}.news-heading{display:flex;justify-content:space-between;align-items:center;width:100%;gap:10px}.news-heading strong{display:block;margin-top:4px;font-size:13px}.news-heading button{width:30px;height:30px;border:1px solid var(--cosmo-line);border-radius:6px;background:rgba(4,42,55,.7);color:var(--cosmo-cyan);font-size:20px;cursor:pointer}.news-status{font-size:10px;color:#8eb3be}.news-list{display:grid;grid-template-columns:1fr 1fr;gap:7px;width:100%}.news-item{display:block;min-width:0;padding:8px;border-left:2px solid rgba(89,239,255,.48);background:rgba(0,0,0,.14);color:#dffaff;text-decoration:none;font-size:10px;line-height:1.4}.news-item:hover{border-left-color:var(--cosmo-cyan);background:rgba(0,190,225,.08)}.news-item span{display:block;margin-top:5px;color:#6eabb9;font-size:9px}.news-footer{display:flex;justify-content:space-between;gap:8px;width:100%;padding-top:5px;border-top:1px solid rgba(89,239,255,.1);font-size:8px;letter-spacing:.7px;color:#568d9a}
+#chat{padding:24px}.welcome h1 span{color:var(--cosmo-cyan)}.suggestion{border-radius:7px;border-color:rgba(89,239,255,.25);background:rgba(3,31,43,.62)}.suggestion:hover{background:rgba(0,95,119,.25)}form{border-radius:8px;border-color:rgba(89,239,255,.5);background:rgba(2,13,22,.96);box-shadow:0 0 24px rgba(0,195,255,.06)}.send{border-radius:6px;background:linear-gradient(135deg,#007d98,#59efff);color:#001017}.msg.bot{border-radius:7px;background:rgba(4,28,40,.92);border-color:rgba(89,239,255,.15)}.msg.user{border-radius:7px;background:linear-gradient(135deg,#076e86,#138aa2);color:#f0fdff}footer{color:#5e8994}
+body.jarvis-mode .cosmo-command-deck{display:block}
+@media(max-width:1000px){.deck-grid{grid-template-columns:1fr 1fr}.deck-news{grid-column:1/-1}.news-list{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){.page{display:flex;gap:0}.main{gap:0}.topbar{height:48px;min-height:48px}.cosmo-command-deck{padding:12px;margin:0 0 8px;border-radius:0;border-left:0;border-right:0}.deck-heading{margin-bottom:10px}.deck-heading p{font-size:10px}.deck-grid{grid-template-columns:1fr 1fr;gap:7px}.deck-card{min-height:95px;padding:10px}.deck-news{grid-column:1/-1;min-height:0}.news-list{grid-template-columns:1fr}.news-item:nth-child(n+4){display:none}.deck-live{font-size:8px}.deck-live time{font-size:13px}.chat-shell{border-radius:8px 8px 0 0}#chat{padding:14px 12px}.jarvis-hud{margin:0 8px 8px!important}.main{overflow-y:auto}.cosmo-command-deck{flex-shrink:0}.chat-shell{flex:1;min-height:460px}}
+@media(prefers-reduced-motion:reduce){.deck-card{transition:none!important}}
+
+</style><link rel="stylesheet" href="{{ url_for('static', filename='cosmo-cinematic-hud-v4.css') }}?v=4">
+</head>
 <body><div class="page">
-<aside class="sidebar" id="sidebar"><button class="brand" type="button" onclick="location.reload()" title="Recarregar o Cosmo"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><div class="brand-name">COSMO ✦</div></button><button class="new-chat-button" type="button" onclick="startNewChat()" title="Nova conversa" aria-label="Nova conversa"><span class="nav-icon" aria-hidden="true">＋</span><span class="nav-label">Nova conversa</span></button><nav class="nav"><button class="active" type="button" onclick="showChat()" title="Chat"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Chat</span></button><button type="button" onclick="openVoiceMode()" title="Modo de voz"><span class="nav-icon" aria-hidden="true">◉</span><span class="nav-label">Modo de voz</span></button><button type="button" id="jarvisModeButton" onclick="toggleJarvisMode()" title="Ativar modo JARVIS" aria-pressed="false"><span class="nav-icon" aria-hidden="true">⌬</span><span class="nav-label">Modo JARVIS</span></button><button type="button" onclick="showWorkspace()" title="Produtividade"><span class="nav-icon" aria-hidden="true">✓</span><span class="nav-label">Produtividade</span></button><button type="button" onclick="showStats()" title="Estatísticas"><span class="nav-icon" aria-hidden="true">▥</span><span class="nav-label">Estatísticas</span></button><button type="button" onclick="info('Sobre')" title="Sobre"><span class="nav-icon" aria-hidden="true">ⓘ</span><span class="nav-label">Sobre</span></button></nav><section class="sidebar-recent"><div class="sidebar-section-title">Recentes</div><input id="historySearch" class="history-search" type="search" placeholder="🔎 Pesquisar conversas..." aria-label="Pesquisar conversas"><div id="sidebarRecent"></div></section><div class="sidebar-bottom"><button class="sidebar-settings" type="button" onclick="openSettings()" title="Configurações"><span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Configurações</span></button><button class="sidebar-account" type="button" title="Conta"><span class="account-avatar">K</span><span class="nav-label">Kauã</span></button></div></aside><div id="mobileMenuBackdrop" hidden aria-hidden="true"></div>
-<main class="main"><div class="topbar"><button class="mobile-menu-btn" type="button" id="mobileMenu" aria-label="Abrir menu" title="Abrir menu">☰</button><button class="mobile-brand" type="button" onclick="showChat()" aria-label="Abrir o chat" title="Cosmo"><span class="mobile-brand-dot"></span><span>COSMO</span></button><div class="mobile-top-actions"><button class="mobile-new-chat-btn" type="button" id="mobileNewChat" aria-label="Nova conversa" title="Nova conversa">＋</button><button class="icon-btn mobile-voice-btn" type="button" id="voice" aria-label="Ativar voz" title="Ativar/desativar fala">🔇</button></div></div><div class="voice-mode-overlay" id="voiceModeOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="voiceModeTitle"><div class="voice-mode-card"><button class="voice-mode-close" type="button" id="voiceModeClose" aria-label="Fechar modo de voz">✕</button><div class="voice-orb" id="voiceOrb" aria-hidden="true"></div><h2 class="voice-mode-title" id="voiceModeTitle">COSMO VOICE</h2><div class="voice-mode-status" id="voiceModeStatus">Toque no microfone para conversar</div><div class="voice-mode-transcript" id="voiceModeTranscript">O Cosmo vai ouvir sua voz e responder falando.</div><div class="voice-mode-controls"><button class="voice-mode-main" id="voiceModeMain" type="button" aria-label="Começar a ouvir">🎙️</button><button class="voice-mode-stop" id="voiceModeStop" type="button" aria-label="Parar voz">⏹</button></div><div class="voice-mode-hint">Após começar, o Cosmo volta a ouvir automaticamente • Toque durante a fala para interromper</div></div></div><div class="about-overlay" id="settingsOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="settingsHeading"><div class="about-card"><div class="about-head"><div class="about-title"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><h2 id="settingsHeading">CONFIGURAÇÕES</h2></div><button class="about-close" type="button" id="settingsClose" aria-label="Fechar">✕</button></div><div class="about-tagline">Personalize sua experiência com o Cosmo ✦</div><div class="about-grid"><section class="about-section"><h3>💬 Modo de conversa</h3><label for="mode">Escolha como o Cosmo vai ajudar</label><select id="mode" aria-label="Modo de conversa" title="Modo de conversa"><option value="normal">💬 Normal</option><option value="study">📚 Estudos</option><option value="tutor">🎓 Tutor</option><option value="developer">💻 Desenvolvedor</option><option value="agent">🤖 Agente</option></select></section><section class="about-section"><h3>🎭 Personalidade</h3><label for="personalitySelect">Personalidade</label><select id="personalitySelect"><option value="amigavel">😊 Amigável</option><option value="professor">📚 Professor</option><option value="criativo">💡 Criativo</option><option value="objetivo">⚡ Objetivo</option><option value="formal">💼 Formal</option></select></section><section class="about-section"><h3>🌐 Idioma</h3><label for="languageSelect">Idioma das respostas</label><select id="languageSelect"><option value="pt">Português</option><option value="en">English</option><option value="es">Español</option><option value="fr">Français</option></select></section><section class="about-section"><h3>🌓 Tema</h3><label for="themeSelect">Aparência do Cosmo</label><select id="themeSelect"><option value="dark">🌙 Escuro</option><option value="light">☀️ Claro</option></select></section><section class="about-section"><h3>🎨 Aparência</h3><label for="colorSelect">Cor de destaque</label><select id="colorSelect"><option value="#725dff">Roxo</option><option value="#1687ff">Azul</option><option value="#00a884">Verde</option><option value="#e052a0">Rosa</option><option value="#e08a22">Laranja</option></select></section><section class="about-section"><h3>🧠 Memória personalizada</h3><label for="memoryInput">Memória de longo prazo (fica neste navegador)</label><textarea id="memoryInput" maxlength="1500" placeholder="Ex.: Prefiro respostas curtas e exemplos simples." style="width:100%;min-height:70px;border-radius:9px;padding:9px;background:#151b43;color:white;border:1px solid rgba(126,136,255,.5)"></textarea><label class="memory-toggle"><input id="memoryEnabled" type="checkbox" checked> Usar memória nas respostas</label><button type="button" id="forgetMemory" class="memory-forget">🧹 Esquecer esta informação</button><p id="memoryStatus" class="about-note">A memória fica apenas neste navegador.</p></section><section class="about-section"><h3>🗣️ Voz do Cosmo</h3><label for="voiceSelect">Escolha uma voz disponível</label><select id="voiceSelect"></select><button type="button" id="testVoice" style="margin-top:8px">▶ Testar voz</button><p class="about-note">As vozes vêm do navegador ou do sistema do seu aparelho. A lista varia conforme o dispositivo; não são cópias de personagens ou atores famosos.</p></section><section class="about-section"><h3>👤 Conta & dados</h3><label for="profileName">Nome exibido neste navegador</label><input id="profileName" type="text" maxlength="40" placeholder="Seu nome"><div class="data-actions"><button type="button" id="exportData">⬇ Fazer backup</button><button type="button" id="importData">⬆ Restaurar backup</button><input id="importDataFile" type="file" accept=".json,application/json" hidden></div><p class="about-note">Os dados ficam neste navegador. O backup permite levar suas conversas, memória, tarefas e notas para outro dispositivo.</p></section><section class="about-section"><h3>📱 Aplicativo</h3><p>Instale o Cosmo como aplicativo no celular ou computador compatível.</p><button type="button" id="installPwa">＋ Instalar Cosmo</button></section><section class="about-section"><h3>💾 Salvar</h3><p>Salve suas preferências para usar o Cosmo do seu jeito.</p><button type="button" id="saveSettings" style="margin-top:10px">Salvar preferências</button></section></div></div></div><section class="chat-shell"><section id="chat"></section><div class="composer"><div class="quick-actions"><button type="button" data-quick="Explique o assunto de forma simples: ">Explicar</button><button type="button" data-quick="Resuma de forma objetiva: ">Resumir</button><button type="button" data-quick="Traduza para português: ">Traduzir</button><button type="button" data-quick="Corrija este texto: ">Corrigir</button><button type="button" data-quick="Crie ideias sobre: ">Criar ideias</button></div><div class="composer-tools"><button type="button" id="clearChat">Limpar conversa</button><button type="button" id="exportChat">↓ Exportar</button><button type="button" id="stopReply" hidden>■ Parar resposta</button></div><div id="attachmentChip" class="attachment-chip" hidden></div><form id="form"><div class="attach-wrap"><button class="attach-btn" type="button" id="attachBtn" aria-label="Adicionar arquivo" aria-expanded="false" title="Adicionar arquivo">＋</button><div class="attach-menu" id="attachMenu" hidden><button type="button" id="attachPdf">📄 Enviar PDF</button><button type="button" id="attachImage">🖼️ Enviar imagem</button><button type="button" id="attachAudio">🎧 Enviar áudio</button></div></div><textarea id="input" rows="1" placeholder="Digite uma mensagem..." autocomplete="off" aria-label="Digite uma mensagem"></textarea><button class="mic" type="button" id="mic" title="Falar">🎙️</button><input id="audioFile" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.webm,.flac" hidden><input id="pdfFile" type="file" accept=".pdf,application/pdf" hidden><input id="imageFile" type="file" accept="image/*" hidden><button class="send" type="submit" id="send" aria-label="Enviar mensagem">↑</button></form><footer>As conversas são enviadas à API configurada no servidor. Não compartilhe dados pessoais.</footer></div></section></main></div>
+<aside class="sidebar" id="sidebar"><button class="brand" type="button" onclick="location.reload()" title="Recarregar o Cosmo"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><div class="brand-name">COSMO ✦</div></button><button class="new-chat-button" type="button" onclick="startNewChat()" title="Nova conversa" aria-label="Nova conversa"><span class="nav-icon" aria-hidden="true">＋</span><span class="nav-label">Nova conversa</span></button><nav class="nav"><button class="active" type="button" onclick="showChat()" title="Chat"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Chat</span></button><button type="button" onclick="openVoiceMode()" title="Modo de voz"><span class="nav-icon" aria-hidden="true">◉</span><span class="nav-label">Modo de voz</span></button><button type="button" id="jarvisModeButton" onclick="toggleJarvisMode()" title="Ativar modo JARVIS" aria-pressed="false"><span class="nav-icon" aria-hidden="true">⌬</span><span class="nav-label">Modo JARVIS</span></button><button type="button" onclick="showWorkspace()" title="Produtividade"><span class="nav-icon" aria-hidden="true">✓</span><span class="nav-label">Produtividade</span></button><button type="button" onclick="showStats()" title="Estatísticas"><span class="nav-icon" aria-hidden="true">▥</span><span class="nav-label">Estatísticas</span></button><button type="button" onclick="info('Sobre')" title="Sobre"><span class="nav-icon" aria-hidden="true">ⓘ</span><span class="nav-label">Sobre</span></button></nav><section class="sidebar-recent"><div class="sidebar-section-title">Recentes</div><input id="historySearch" class="history-search" type="search" placeholder="🔎 Pesquisar conversas..." aria-label="Pesquisar conversas"><div id="sidebarRecent"></div></section><div class="sidebar-bottom"><button class="sidebar-settings" type="button" onclick="openSettings()" title="Configurações"><span class="nav-icon" aria-hidden="true">⚙</span><span class="nav-label">Configurações</span></button><button class="sidebar-account" id="accountButton" type="button" title="Conta e sincronização" aria-label="Abrir conta e sincronização"><span class="account-avatar">K</span><span class="nav-label">Conta / nuvem</span></button></div></aside><div id="mobileMenuBackdrop" hidden aria-hidden="true"></div>
+<main class="main"><div class="topbar"><button class="mobile-menu-btn" type="button" id="mobileMenu" aria-label="Abrir menu" title="Abrir menu">☰</button><button class="mobile-brand" type="button" onclick="showChat()" aria-label="Abrir o chat" title="Cosmo"><span class="mobile-brand-dot"></span><span>COSMO</span></button><div class="mobile-top-actions"><button class="mobile-new-chat-btn" type="button" id="mobileNewChat" aria-label="Nova conversa" title="Nova conversa">＋</button><button class="icon-btn mobile-voice-btn" type="button" id="voice" aria-label="Ativar voz" title="Ativar/desativar fala">🔇</button></div></div><section class="jarvis-hud" aria-label="Painel de status JARVIS"><div class="jarvis-hud-panel"><div class="jarvis-hud-radar" aria-hidden="true"></div><div><span class="jarvis-hud-kicker">COSMO SYSTEM</span><span class="jarvis-hud-value" id="jarvisHudState">SISTEMA PRONTO</span><span class="jarvis-hud-sub">Assistente pessoal • interface local</span></div></div><div class="jarvis-hud-panel"><span class="jarvis-signal" aria-hidden="true"></span><div><span class="jarvis-hud-kicker">CLOUD LINK</span><span class="jarvis-hud-value" id="jarvisHudCloud">Verificando conexão</span><span class="jarvis-hud-sub" id="jarvisHudClock">--:--:--</span></div></div><div class="jarvis-hud-panel"><div><span class="jarvis-hud-kicker">QUICK ACCESS</span><span class="jarvis-hud-value"><button type="button" class="account-switch" onclick="showWorkspace()">Tarefas</button> · <button type="button" class="account-switch" onclick="openVoiceMode()">Voz</button></span><span class="jarvis-hud-sub">Painel HUD • modo JARVIS</span></div></div></section><div class="voice-mode-overlay" id="voiceModeOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="voiceModeTitle"><div class="voice-mode-card"><button class="voice-mode-close" type="button" id="voiceModeClose" aria-label="Fechar modo de voz">✕</button><div class="voice-orb" id="voiceOrb" aria-hidden="true"></div><h2 class="voice-mode-title" id="voiceModeTitle">COSMO VOICE</h2><div class="voice-mode-status" id="voiceModeStatus">Toque no microfone para conversar</div><div class="voice-mode-transcript" id="voiceModeTranscript">O Cosmo vai ouvir sua voz e responder falando.</div><div class="voice-mode-controls"><button class="voice-mode-main" id="voiceModeMain" type="button" aria-label="Começar a ouvir">🎙️</button><button class="voice-mode-stop" id="voiceModeStop" type="button" aria-label="Parar voz">⏹</button></div><div class="voice-mode-hint">Após começar, o Cosmo volta a ouvir automaticamente • Toque durante a fala para interromper</div></div></div><div class="about-overlay" id="settingsOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="settingsHeading"><div class="about-card"><div class="about-head"><div class="about-title"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><h2 id="settingsHeading">CONFIGURAÇÕES</h2></div><button class="about-close" type="button" id="settingsClose" aria-label="Fechar">✕</button></div><div class="about-tagline">Personalize sua experiência com o Cosmo ✦</div><div class="about-grid"><section class="about-section"><h3>💬 Modo de conversa</h3><label for="mode">Escolha como o Cosmo vai ajudar</label><select id="mode" aria-label="Modo de conversa" title="Modo de conversa"><option value="normal">💬 Normal</option><option value="study">📚 Estudos</option><option value="tutor">🎓 Tutor</option><option value="developer">💻 Desenvolvedor</option><option value="agent">🤖 Agente</option></select></section><section class="about-section"><h3>🎭 Personalidade</h3><label for="personalitySelect">Personalidade</label><select id="personalitySelect"><option value="amigavel">😊 Amigável</option><option value="professor">📚 Professor</option><option value="criativo">💡 Criativo</option><option value="objetivo">⚡ Objetivo</option><option value="formal">💼 Formal</option></select></section><section class="about-section"><h3>🌐 Idioma</h3><label for="languageSelect">Idioma das respostas</label><select id="languageSelect"><option value="pt">Português</option><option value="en">English</option><option value="es">Español</option><option value="fr">Français</option></select></section><section class="about-section"><h3>🌓 Tema</h3><label for="themeSelect">Aparência do Cosmo</label><select id="themeSelect"><option value="dark">🌙 Escuro</option><option value="light">☀️ Claro</option></select></section><section class="about-section"><h3>🎨 Aparência</h3><label for="colorSelect">Cor de destaque</label><select id="colorSelect"><option value="#725dff">Roxo</option><option value="#1687ff">Azul</option><option value="#00a884">Verde</option><option value="#e052a0">Rosa</option><option value="#e08a22">Laranja</option></select></section><section class="about-section"><h3>🧠 Memória personalizada</h3><label for="memoryInput">Memória de longo prazo (local ou sincronizada ao entrar)</label><textarea id="memoryInput" maxlength="1500" placeholder="Ex.: Prefiro respostas curtas e exemplos simples." style="width:100%;min-height:70px;border-radius:9px;padding:9px;background:#151b43;color:white;border:1px solid rgba(126,136,255,.5)"></textarea><label class="memory-toggle"><input id="memoryEnabled" type="checkbox" checked> Usar memória nas respostas</label><button type="button" id="forgetMemory" class="memory-forget">🧹 Esquecer esta informação</button><p id="memoryStatus" class="about-note">Sem login, a memória fica neste navegador. Ao entrar na conta, pode ser sincronizada com a nuvem.</p></section><section class="about-section"><h3>🗣️ Voz do Cosmo</h3><label for="voiceSelect">Escolha uma voz disponível</label><select id="voiceSelect"></select><button type="button" id="testVoice" style="margin-top:8px">▶ Testar voz</button><p class="about-note">As vozes vêm do navegador ou do sistema do seu aparelho. A lista varia conforme o dispositivo; não são cópias de personagens ou atores famosos.</p></section><section class="about-section"><h3>👤 Conta & dados</h3><label for="profileName">Nome exibido neste navegador</label><input id="profileName" type="text" maxlength="40" placeholder="Seu nome"><div class="data-actions"><button type="button" id="exportData">⬇ Fazer backup</button><button type="button" id="importData">⬆ Restaurar backup</button><input id="importDataFile" type="file" accept=".json,application/json" hidden></div><p class="about-note">Os dados ficam neste navegador. O backup permite levar suas conversas, memória, tarefas e notas para outro dispositivo.</p></section><section class="about-section"><h3>📱 Aplicativo</h3><p>Instale o Cosmo como aplicativo no celular ou computador compatível.</p><button type="button" id="installPwa">＋ Instalar Cosmo</button></section><section class="about-section"><h3>💾 Salvar</h3><p>Salve suas preferências para usar o Cosmo do seu jeito.</p><button type="button" id="saveSettings" style="margin-top:10px">Salvar preferências</button></section></div></div></div><section class="cosmo-command-deck" aria-label="Central de comando Cosmo">
+ <div class="deck-heading"><div><span class="deck-kicker">CENTRAL DE COMANDO / 01</span><h2>Bom dia. <span>Sistema online.</span></h2><p>Seu centro de pesquisa, notícias e ações rápidas.</p></div><div class="deck-live"><i></i><span>LIVE SYSTEM</span><time id="cosmoClock">--:--:--</time></div></div>
+ <div class="deck-grid">
+  <button class="deck-card deck-voice" type="button" onclick="openVoiceMode()"><span class="deck-icon">◉</span><span class="deck-label">INTERFACE DE VOZ</span><strong>Falar com Cosmo</strong><small>Comandos e conversa contínua</small><span class="deck-action">INICIAR ↗</span></button>
+  <button class="deck-card" type="button" onclick="document.querySelector('#input')?.focus()"><span class="deck-icon">⌕</span><span class="deck-label">PESQUISA INTELIGENTE</span><strong>O que vamos descobrir?</strong><small>Pesquise na web pelo chat</small><span class="deck-action">PESQUISAR ↗</span></button>
+  <div class="deck-card deck-news"><div class="news-heading"><div><span class="deck-label">FEED DE NOTÍCIAS</span><strong>Briefing ao vivo</strong></div><button id="refreshCosmoNews" type="button" aria-label="Atualizar notícias" title="Atualizar notícias">↻</button></div><div id="cosmoNewsStatus" class="news-status">Conectando ao feed de notícias…</div><div id="cosmoNewsList" class="news-list"></div><div class="news-footer"><span>FONTE: GOOGLE NEWS RSS</span><span id="cosmoNewsUpdated">AGUARDANDO ATUALIZAÇÃO</span></div></div>
+ </div>
+</section><section class="chat-shell"><section id="chat"></section><div class="composer"><div class="quick-actions"><button type="button" data-quick="Explique o assunto de forma simples: ">Explicar</button><button type="button" data-quick="Resuma de forma objetiva: ">Resumir</button><button type="button" data-quick="Traduza para português: ">Traduzir</button><button type="button" data-quick="Corrija este texto: ">Corrigir</button><button type="button" data-quick="Crie ideias sobre: ">Criar ideias</button></div><div class="composer-tools"><button type="button" id="clearChat">Limpar conversa</button><button type="button" id="exportChat">↓ Exportar</button><button type="button" id="stopReply" hidden>■ Parar resposta</button></div><div id="attachmentChip" class="attachment-chip" hidden></div><form id="form"><div class="attach-wrap"><button class="attach-btn" type="button" id="attachBtn" aria-label="Adicionar arquivo" aria-expanded="false" title="Adicionar arquivo">＋</button><div class="attach-menu" id="attachMenu" hidden><button type="button" id="attachPdf">📄 Enviar PDF</button><button type="button" id="attachImage">🖼️ Enviar imagem</button><button type="button" id="attachAudio">🎧 Enviar áudio</button></div></div><textarea id="input" rows="1" placeholder="Digite uma mensagem..." autocomplete="off" aria-label="Digite uma mensagem"></textarea><button class="mic" type="button" id="mic" title="Falar">🎙️</button><input id="audioFile" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.webm,.flac" hidden><input id="pdfFile" type="file" accept=".pdf,application/pdf" hidden><input id="imageFile" type="file" accept="image/*" hidden><button class="send" type="submit" id="send" aria-label="Enviar mensagem">↑</button></form><footer>As conversas são enviadas à API configurada no servidor. Não compartilhe dados pessoais.</footer></div></section></main></div>
 
 <div class="about-overlay" id="aboutOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="aboutHeading"><div class="about-card"><div class="about-head"><div class="about-title"><img src="{{ url_for('static', filename='logo-cosmo-transparent.png') }}" alt="Cosmo"><h2 id="aboutHeading">COSMO AI</h2></div><button class="about-close" type="button" id="aboutClose" aria-label="Fechar">✕</button></div><div class="about-tagline">Cosmo — Sua inteligência, seu universo. 🌌</div><div class="about-grid"><section class="about-section"><h3>🌌 Sobre o Cosmo</h3><p>Cosmo é um assistente virtual desenvolvido por Kauplayon, criado para ajudar em estudos, programação, pesquisas e dúvidas do dia a dia. Seu objetivo é tornar o acesso à informação mais simples e rápido.</p></section><section class="about-section"><h3>🚀 Funcionalidades</h3><ul><li>Conversas com inteligência artificial</li><li>Modo de estudos, tutor e agente</li><li>Pesquisa na web com ferramentas</li><li>Ajuda com programação</li><li>Leitura e análise de PDFs</li><li>Leitura de PDFs escaneados com OCR</li><li>Análise de imagens e textos visíveis</li><li>Áudio e leitura de respostas em voz alta</li><li>Memória personalizada e contexto</li><li>Tarefas e notas</li><li>Backup e restauração de dados</li><li>Instalação como PWA</li><li>Personalização da aparência e personalidade</li></ul></section><section class="about-section"><h3>👨‍💻 Desenvolvedor</h3><p><strong>Desenvolvido por:</strong> Kauplayon<br><strong>Projeto:</strong> Cosmo AI<br><strong>Versão:</strong> 1.0 — Em desenvolvimento</p></section><section class="about-section"><h3>🛠️ Tecnologias utilizadas</h3><ul><li>Python</li><li>Flask</li><li>HTML, CSS e JavaScript</li><li>Cloudflare Workers AI</li><li>pypdf e pypdfium2</li><li>Service Worker / PWA</li></ul></section><section class="about-section"><h3>📋 Informações do projeto</h3><p><strong>Versão:</strong> 1.0 — Em desenvolvimento<br><strong>Status:</strong> Em desenvolvimento</p><a class="about-github" href="https://github.com/kauplayon/kaubot" target="_blank" rel="noopener noreferrer">↗ Ver projeto no GitHub</a></section><section class="about-section"><h3>💡 Aviso sobre a IA</h3><p>O Cosmo pode cometer erros ou apresentar informações desatualizadas. Confira informações importantes em fontes confiáveis.</p></section></div></div></div>
-\n<div id="toastStack" class="toast-stack" aria-live="polite"></div>
-<script>
+<div id="toastStack" class="toast-stack" aria-live="polite"></div>
+<div class="account-overlay" id="accountOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="accountHeading"><section class="account-card"><div class="account-head"><h2 id="accountHeading">COSMO ID / CLOUD LINK</h2><button class="account-close" type="button" id="accountClose" aria-label="Fechar conta">×</button></div><p class="account-copy">Entre para sincronizar conversas, memórias, tarefas e notas entre dispositivos. Seus dados locais continuam disponíveis mesmo sem uma conta.</p><form class="account-form" id="accountForm"><label for="accountEmail">E-mail<input id="accountEmail" name="email" type="email" autocomplete="email" maxlength="254" required></label><label for="accountPassword">Senha (mínimo de 10 caracteres)<input id="accountPassword" name="password" type="password" autocomplete="current-password" minlength="10" maxlength="256" required></label><button class="account-primary" id="accountSubmit" type="submit">Entrar</button></form><button class="account-switch" id="accountModeSwitch" type="button">Não tem conta? Criar uma</button><p class="account-status" id="accountStatus" role="status" aria-live="polite">Verificando disponibilidade do armazenamento...</p><div class="account-separator"></div><div class="account-actions"><button class="account-secondary" type="button" id="accountSyncNow">Sincronizar agora</button><button class="account-secondary" type="button" id="accountLogout" hidden>Sair da conta</button><button class="account-danger" type="button" id="accountDelete" hidden>Excluir conta e dados da nuvem</button></div><p class="account-copy">A senha é armazenada como hash no servidor. Use uma senha exclusiva. A memória automática pode ser desativada nas configurações.</p></section></div><script>
 
 // Botão para abrir o menu no celular
 const mobileNewChat=document.querySelector('#mobileNewChat');mobileNewChat?.addEventListener('click',()=>{startNewChat();notify('Nova conversa')});
@@ -1170,9 +1294,9 @@ languageSelect.value=localStorage.getItem('cosmo-language')||'pt';
 colorSelect.value=localStorage.getItem('cosmo-color')||'#725dff';
 memoryInput.value=localStorage.getItem('cosmo-memory')||'';profileNameInput.value=localStorage.getItem('cosmo-profile-name')||'Kauã';if(sidebarAccountLabel)sidebarAccountLabel.textContent=profileNameInput.value;const memoryEnabled=document.querySelector('#memoryEnabled');const forgetMemory=document.querySelector('#forgetMemory');const memoryStatus=document.querySelector('#memoryStatus');memoryEnabled.checked=memoryIsEnabled();function updateMemoryStatus(){const has=!!(memoryInput.value.trim());memoryStatus.textContent=memoryEnabled.checked?(has?'🧠 Memória ativa e disponível para as respostas.':'Nenhuma informação de memória salva.'):'Memória desativada. Ela não será enviada ao Cosmo.'}updateMemoryStatus();
 function applyAccent(){document.documentElement.style.setProperty('--line',colorSelect.value+'88');document.documentElement.style.setProperty('--accent',colorSelect.value);document.querySelectorAll('.send').forEach(b=>b.style.background=colorSelect.value);document.querySelectorAll('form').forEach(f=>f.style.borderColor=colorSelect.value)}
-function savePreferences(){localStorage.setItem('cosmo-profile-name',profileNameInput.value.trim()||'Kauã');if(sidebarAccountLabel)sidebarAccountLabel.textContent=profileNameInput.value.trim()||'Kauã';localStorage.setItem('cosmo-personality',personalitySelect.value);localStorage.setItem('cosmo-language',languageSelect.value);localStorage.setItem('cosmo-color',colorSelect.value);localStorage.setItem('cosmo-memory',memoryInput.value.trim());localStorage.setItem('cosmo-memory-enabled',String(memoryEnabled.checked));localStorage.setItem('cosmo-theme',themeSelect.value);localStorage.setItem('cosmo-voice',voiceSelect.value||'');applyAccent();updateMemoryStatus();broadcastSync('preferences')}
+function savePreferences(){localStorage.setItem('cosmo-profile-name',profileNameInput.value.trim()||'Kauã');if(sidebarAccountLabel)sidebarAccountLabel.textContent=profileNameInput.value.trim()||'Kauã';localStorage.setItem('cosmo-personality',personalitySelect.value);localStorage.setItem('cosmo-language',languageSelect.value);localStorage.setItem('cosmo-color',colorSelect.value);localStorage.setItem('cosmo-memory',memoryInput.value.trim());localStorage.setItem('cosmo-memory-enabled',String(memoryEnabled.checked));localStorage.setItem('cosmo-theme',themeSelect.value);localStorage.setItem('cosmo-voice',voiceSelect.value||'');applyAccent();updateMemoryStatus();broadcastSync('preferences');if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync()}
 [personalitySelect,languageSelect,colorSelect,memoryInput,document.querySelector('#themeSelect'),profileNameInput].forEach(el=>el.addEventListener('change',()=>{savePreferences();applyAccent()}));
-memoryInput.addEventListener('input',savePreferences);profileNameInput.addEventListener('input',()=>{savePreferences()});memoryEnabled.addEventListener('change',()=>{savePreferences();notify(memoryEnabled.checked?'Memória ativada':'Memória desativada')});forgetMemory.addEventListener('click',()=>{memoryInput.value='';localStorage.removeItem('cosmo-memory');updateMemoryStatus();notify('Memória esquecida')});
+memoryInput.addEventListener('input',savePreferences);profileNameInput.addEventListener('input',()=>{savePreferences()});memoryEnabled.addEventListener('change',()=>{savePreferences();notify(memoryEnabled.checked?'Memória ativada':'Memória desativada')});forgetMemory.addEventListener('click',()=>{memoryInput.value='';localStorage.removeItem('cosmo-memory');updateMemoryStatus();if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync();notify('Memória esquecida')});
 applyAccent();
 document.querySelector('#saveSettings').addEventListener('click',()=>{savePreferences();settingsOverlay.hidden=true;notify('Preferências salvas')});document.querySelector('#exportData').addEventListener('click',()=>{const data={version:'1.0',exportedAt:new Date().toISOString(),localStorage:Object.fromEntries(Object.entries(localStorage).filter(([k])=>k.startsWith('cosmo-'))) };const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='cosmo-backup.json';a.click();URL.revokeObjectURL(url);notify('Backup criado')});
 document.querySelector('#importData').addEventListener('click',()=>document.querySelector('#importDataFile').click());document.querySelector('#importDataFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text());if(!data||typeof data.localStorage!=='object')throw new Error('Backup inválido');Object.entries(data.localStorage).forEach(([k,v])=>{if(k.startsWith('cosmo-')&&typeof v==='string')localStorage.setItem(k,v)});notify('Backup restaurado. Recarregando...');setTimeout(()=>location.reload(),500)}catch(err){notify(err.message||'Não foi possível restaurar o backup.','error')}finally{e.target.value=''}});
@@ -1184,14 +1308,14 @@ colorSelect.addEventListener('change',applyAccent);
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function workspaceStore(key,fallback){try{const v=JSON.parse(localStorage.getItem(key)||'null');return Array.isArray(v)?v:fallback}catch{return fallback}}
 let cosmoTasks=workspaceStore('cosmo-tasks-v1',[]);let cosmoNotes=workspaceStore('cosmo-notes-v1',[]);
-function saveWorkspace(){localStorage.setItem('cosmo-tasks-v1',JSON.stringify(cosmoTasks));localStorage.setItem('cosmo-notes-v1',JSON.stringify(cosmoNotes));}
+function saveWorkspace(){localStorage.setItem('cosmo-tasks-v1',JSON.stringify(cosmoTasks));localStorage.setItem('cosmo-notes-v1',JSON.stringify(cosmoNotes));if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync()}
 function showWorkspace(){
  closeMobileMenu();
  const panel=document.createElement('div');panel.className='workspace-panel';
  const render=()=>{
    const tasksHtml=cosmoTasks.length?cosmoTasks.map((t,i)=>'<div class="workspace-item '+(t.done?'done':'')+'"><button class="workspace-check" data-task="'+i+'" aria-label="Concluir tarefa">'+(t.done?'✓':'○')+'</button><span>'+escapeHtml(t.text)+'</span><button class="workspace-remove" data-task-remove="'+i+'" aria-label="Excluir tarefa">✕</button></div>').join(''):'<p class="workspace-empty">Nenhuma tarefa ainda.</p>';
    const notesHtml=cosmoNotes.length?cosmoNotes.map((n,i)=>'<div class="workspace-note"><div><strong>'+escapeHtml(n.title||'Nota')+'</strong><p>'+escapeHtml(n.text)+'</p></div><button class="workspace-remove" data-note-remove="'+i+'" aria-label="Excluir nota">✕</button></div>').join(''):'<p class="workspace-empty">Nenhuma nota ainda.</p>';
-   panel.innerHTML='<div class="workspace-heading"><div><span class="stats-kicker">COSMO WORKSPACE</span><h2>✅ Produtividade</h2><p>Tarefas e notas salvas neste navegador.</p></div><button type="button" class="stats-back" id="workspaceChat">← Voltar ao chat</button></div>'+
+   panel.innerHTML='<div class="workspace-heading"><div><span class="stats-kicker">COSMO WORKSPACE</span><h2>✅ Produtividade</h2><p>Tarefas e notas locais; entre na conta para sincronizar entre dispositivos.</p></div><button type="button" class="stats-back" id="workspaceChat">← Voltar ao chat</button></div>'+
    '<div class="workspace-grid"><section class="workspace-card"><h3>✅ Tarefas</h3><form id="taskForm" class="workspace-form"><input id="taskInput" placeholder="Adicionar tarefa..." maxlength="140"><button type="submit">＋</button></form><div>'+tasksHtml+'</div></section>'+
    '<section class="workspace-card"><h3>📝 Notas</h3><form id="noteForm" class="workspace-note-form"><input id="noteTitle" placeholder="Título" maxlength="60"><textarea id="noteText" placeholder="Escreva uma nota..." maxlength="600"></textarea><button type="submit">Salvar nota</button></form><div>'+notesHtml+'</div></section></div>';
    panel.querySelector('#workspaceChat').onclick=showChat;
@@ -1237,7 +1361,7 @@ const syncChannel='BroadcastChannel' in window?new BroadcastChannel('cosmo-sync-
 function broadcastSync(type){try{syncChannel?.postMessage({type,time:Date.now()})}catch{}}
 if(syncChannel)syncChannel.onmessage=()=>{try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');if(Array.isArray(saved))conversations=saved.filter(c=>c&&typeof c.id==='string'&&Array.isArray(c.messages)).slice(0,50);renderSidebarRecent();notify('Dados sincronizados nesta aba')}catch{}};
 window.addEventListener('storage',e=>{if(e.key&&e.key.startsWith('cosmo-')){renderSidebarRecent();}});
-function persistConversations(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(conversations.slice(0,50)));renderSidebarRecent();broadcastSync('conversations')}catch{bubble('O armazenamento do navegador está cheio. Apague conversas antigas.','bot')}}
+function persistConversations(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(conversations.slice(0,50)));renderSidebarRecent();broadcastSync('conversations');if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync()}catch{bubble('O armazenamento do navegador está cheio. Apague conversas antigas.','bot')}}
 function createWelcome(){const w=document.createElement('div');w.className='welcome';w.id='welcome';w.innerHTML='<img class="welcome-logo" src="{{ url_for("static", filename="logo-cosmo-transparent.png") }}" alt="Logo Cosmo"><h1 id="welcomeTitle">Olá, sou o <span>{{ bot_name }}</span>!</h1><p id="welcomeSubtitle">Seu assistente inteligente, sempre pronto para ajudar.<br>Faça uma pergunta, tire suas dúvidas ou peça uma explicação.</p><div class="suggestions"><button class="suggestion" type="button" data-welcome="Explique um conceito de forma simples"><strong>💡 Explique um conceito</strong><small>de forma simples</small></button><button class="suggestion" type="button" data-welcome="Resuma um texto para mim"><strong>▤ Resuma um texto</strong><small>ou conteúdo</small></button><button class="suggestion" type="button" data-welcome="Me ajude com código e programação"><strong>&lt;/&gt; Ajude com código</strong><small>e programação</small></button><button class="suggestion" type="button" data-welcome="Tire uma dúvida sobre qualquer assunto"><strong>❔ Tire uma dúvida</strong><small>sobre qualquer assunto</small></button></div>';w.querySelectorAll('[data-welcome]').forEach(b=>b.addEventListener('click',()=>use(b.dataset.welcome||'')));return w;}
 function newConversation(){activeConversationId=null;messages=[];chat.innerHTML='';chat.appendChild(createWelcome());updateWelcomeGreeting();}
 function startNewChat(){newConversation();showChat();closeMobileMenu();chat.classList.add('new-chat-flash');setTimeout(()=>chat.classList.remove('new-chat-flash'),450);input.focus()}
@@ -1256,6 +1380,7 @@ function setJarvisMode(enabled,announce=true){
  if(title)title.textContent=enabled?'JARVIS VOICE • COSMO':'COSMO VOICE';
  const hint=document.querySelector('.voice-mode-hint');
  if(hint)hint.textContent=enabled?'Comandos: abrir produtividade, mostrar estatísticas, nova conversa, criar tarefa…':'Após começar, o Cosmo volta a ouvir automaticamente • Toque durante a fala para interromper';
+ if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync();
  if(announce&&typeof notify==='function')notify(enabled?'Modo JARVIS ativado':'Modo JARVIS desativado');
 }
 function toggleJarvisMode(){setJarvisMode(!document.body.classList.contains('jarvis-mode'))}
@@ -1282,6 +1407,7 @@ function captureAutoMemory(text){
  for(const item of found)if(!entries.some(x=>x.toLowerCase()===item.toLowerCase()))entries.push(item);
  const compact=entries.slice(-12).join('\n').slice(0,1500);
  localStorage.setItem('cosmo-memory',compact);
+ if(window.scheduleCosmoCloudSync)window.scheduleCosmoCloudSync();
  const mi=document.querySelector('#memoryInput');if(mi)mi.value=compact;
  const ms=document.querySelector('#memoryStatus');if(ms)ms.textContent='🧠 Memória atualizada automaticamente neste navegador.';
  return true;
@@ -1339,7 +1465,7 @@ renderSidebarRecent();newConversation();updateWelcomeGreeting();
 const voiceButton=document.querySelector('#voice');function updateVoiceButton(){voiceButton.textContent='◉';voiceButton.title='Abrir modo de voz'}updateVoiceButton();voiceButton.addEventListener('click',openVoiceMode);
 let voiceRecognition=null,voiceListening=false,voiceModeBusy=false,voiceModeClosing=false,voiceAutoListen=false,voiceTurnId=0;
 const voiceOverlay=document.querySelector('#voiceModeOverlay'),voiceStatus=document.querySelector('#voiceModeStatus'),voiceTranscript=document.querySelector('#voiceModeTranscript'),voiceMain=document.querySelector('#voiceModeMain'),voiceStop=document.querySelector('#voiceModeStop');
-function setVoiceState(state,text){voiceOverlay.classList.remove('listening','thinking','speaking');if(state)voiceOverlay.classList.add(state);if(text)voiceStatus.textContent=text;voiceMain.classList.toggle('active',state==='listening');voiceMain.textContent=state==='listening'?'⏸':state==='speaking'?'⏹':'🎙️';voiceMain.setAttribute('aria-label',state==='listening'?'Pausar escuta':state==='speaking'?'Interromper fala':'Começar a falar')}
+function setVoiceState(state,text){voiceOverlay.classList.remove('listening','thinking','speaking');if(state)voiceOverlay.classList.add(state);if(text)voiceStatus.textContent=text;const hud=document.querySelector('#jarvisHudState');if(hud)hud.textContent=state==='listening'?'MICROFONE ATIVO':state==='thinking'?'PROCESSANDO':state==='speaking'?'RESPONDENDO':(document.body.classList.contains('jarvis-mode')?'JARVIS ONLINE':'COSMO ONLINE');voiceMain.classList.toggle('active',state==='listening');voiceMain.textContent=state==='listening'?'⏸':state==='speaking'?'⏹':'🎙️';voiceMain.setAttribute('aria-label',state==='listening'?'Pausar escuta':state==='speaking'?'Interromper fala':'Começar a falar')}
 function openVoiceMode(){closeMobileMenu();voiceOverlay.hidden=false;voiceModeClosing=false;voiceAutoListen=false;setVoiceState('','Toque no microfone para começar');voiceTranscript.textContent='Depois que você começar, o Cosmo ouvirá novamente após cada resposta.';if(!speakEnabled){speakEnabled=true;localStorage.setItem('cosmo-speak','true')}}
 function closeVoiceMode(){voiceModeClosing=true;voiceAutoListen=false;voiceTurnId++;stopVoiceListening();if('speechSynthesis'in window)speechSynthesis.cancel();voiceOverlay.hidden=true;setVoiceState('','');voiceModeBusy=false}
 function stopVoiceListening(){if(voiceRecognition){try{voiceRecognition.stop()}catch{}}voiceListening=false;voiceMain.classList.remove('active')}
@@ -1354,6 +1480,9 @@ function executeJarvisVoiceCommand(raw){
  if(/^(nova conversa|novo chat|começar nova conversa|limpar conversa)$/.test(lower)){startNewChat();return 'Nova conversa iniciada.'}
  if(/^(abrir|mostrar) (as )?configurações$/.test(lower)){openSettings();return 'Abrindo as configurações.'}
  if(/^(voltar para o chat|voltar ao chat|mostrar chat|mostrar conversa)$/.test(lower)){showChat();return 'Voltamos para o chat.'}
+ if(/^(mostrar|abrir) (as )?notícias( de hoje)?$/.test(lower)){document.querySelector('#cosmoNewsList')?.scrollIntoView({behavior:'smooth',block:'center'});document.querySelector('#refreshCosmoNews')?.click();return 'Atualizando o painel de notícias do Cosmo.'}
+ const siteMatch=lower.match(/^(?:abrir|abre|abra|acesse|acessar|ir para) (?:(?:o|a) )?(?:(?:site|página) (?:do|da|de) )?(.+)$/);
+ if(siteMatch){const siteName=siteMatch[1].trim().replace(/^site do /,'').replace(/^site da /,'');if(window.cosmoOpenKnownSite?.(siteName))return 'Abrindo '+siteName+'.'}
  const task=text.match(/^(?:criar|adicionar|anotar) (?:uma )?tarefa(?: chamada)?[: ]+(.{2,140})$/i);
  if(task){cosmoTasks.unshift({text:task[1].trim(),done:false});saveWorkspace();notify('Tarefa adicionada por voz');return 'Tarefa adicionada: '+task[1].trim()+'.'}
  const note=text.match(/^(?:criar nota|salvar nota|anotar)[: ]+(.{2,500})$/i);
@@ -1439,5 +1568,203 @@ mic.addEventListener('click',async()=>{
  }catch(err){bubble(err.name==='NotAllowedError'?'O acesso ao microfone foi bloqueado. Permita o microfone nas configurações do navegador e tente novamente.':'Não consegui acessar o microfone. Verifique se ele está conectado e tente novamente.','bot')}
 });
 audioFile.addEventListener('change',async()=>{const file=audioFile.files[0];if(!file)return;if(file.size>8*1024*1024){notify('O áudio deve ter no máximo 8 MB.','error');audioFile.value='';return}showAttachmentChip(file,'audio');const fd=new FormData();fd.append('audio',file);bubble('🎧 Enviando e transcrevendo: '+file.name,'user');send.disabled=true;mic.disabled=true;try{const r=await fetch('/transcribe',{method:'POST',body:fd});const d=await r.json();if(!r.ok)throw new Error(d.error||'Falha na transcrição');input.value=d.text||'';resizeComposer();notify('Áudio transcrito');if(input.value.trim())form.requestSubmit()}catch(err){notify(err.message||'Não consegui enviar o áudio.','error')}finally{send.disabled=false;mic.disabled=false;clearAttachment()}});
-</script></body></html>
+
+/* Cloud account + persistent sync. Local browser storage remains the offline fallback. */
+window.cosmoCloud={available:false,authenticated:false,email:null,csrfToken:"",ready:false,busy:false,pendingSync:false,timer:null,mode:"login"};
+function setAccountStatus(message,type=""){const el=document.querySelector("#accountStatus");if(el){el.textContent=message;el.className="account-status"+(type?" "+type:"")}}
+function setCloudHud(){const el=document.querySelector("#jarvisHudCloud");if(!el)return;el.textContent=!window.cosmoCloud.available?"Banco não configurado":window.cosmoCloud.authenticated?"Conta sincronizada":"Armazenamento local"}
+function updateAccountUI(){
+ const c=window.cosmoCloud, button=document.querySelector("#accountButton"), form=document.querySelector("#accountForm");
+ document.querySelector("#accountHeading").textContent=c.authenticated?"COSMO ID / CONECTADO":"COSMO ID / CLOUD LINK";
+ document.querySelector("#accountSubmit").textContent=c.mode==="register"?"Criar conta":"Entrar";
+ document.querySelector("#accountPassword").autocomplete=c.mode==="register"?"new-password":"current-password";
+ document.querySelector("#accountModeSwitch").hidden=c.authenticated;
+ document.querySelector("#accountModeSwitch").textContent=c.mode==="register"?"Já tem conta? Entrar":"Não tem conta? Criar uma";
+ document.querySelector("#accountLogout").hidden=!c.authenticated;
+ document.querySelector("#accountDelete").hidden=!c.authenticated;
+ document.querySelector("#accountSyncNow").disabled=!c.authenticated||c.busy;
+ document.querySelector("#accountSubmit").disabled=!c.available||c.busy;
+ document.querySelector("#accountEmail").disabled=!c.available||c.busy;
+ document.querySelector("#accountPassword").disabled=!c.available||c.busy;
+ form.hidden=c.authenticated;
+ if(button){button.querySelector(".nav-label").textContent=c.authenticated?(c.email||"Conta conectada"):"Conta / nuvem";button.querySelector(".account-avatar").textContent=c.authenticated?(c.email||"C").slice(0,1).toUpperCase():"K"}
+ setCloudHud();
+}
+async function refreshCloudStatus(){
+ try{
+  const r=await fetch("/api/auth/status",{credentials:"same-origin",cache:"no-store"});
+  const d=await r.json();
+  const c=window.cosmoCloud;c.available=!!d.available;c.authenticated=!!d.authenticated;c.email=d.email||null;c.csrfToken=d.csrf_token||"";
+  updateAccountUI();
+  if(!c.available)setAccountStatus("A conta na nuvem ainda não está habilitada. Configure DATABASE_URL com um PostgreSQL persistente e SECRET_KEY no Render. O Cosmo local continua funcionando.","error");
+  else if(c.authenticated)setAccountStatus("Conectado como "+c.email+". Verificando a sincronização…","success");
+  else setAccountStatus("Entre ou crie uma conta para sincronizar seus dados entre dispositivos.");
+  return d;
+ }catch(e){setAccountStatus("Não consegui verificar o servidor. Seus dados locais continuam disponíveis.","error");return null}
+}
+function localCloudData(){
+ let conversationsLocal=[],tasksLocal=[],notesLocal=[];
+ try{const x=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(x))conversationsLocal=x.slice(0,50)}catch{}
+ try{const x=JSON.parse(localStorage.getItem("cosmo-tasks-v1")||"[]");if(Array.isArray(x))tasksLocal=x.slice(0,500)}catch{}
+ try{const x=JSON.parse(localStorage.getItem("cosmo-notes-v1")||"[]");if(Array.isArray(x))notesLocal=x.slice(0,200)}catch{}
+ return {memory:(localStorage.getItem("cosmo-memory")||"").slice(0,1500),conversations:conversationsLocal,tasks:tasksLocal,notes:notesLocal,preferences:{
+  personality:localStorage.getItem("cosmo-personality")||"amigavel",language:localStorage.getItem("cosmo-language")||"pt",color:localStorage.getItem("cosmo-color")||"#725dff",theme:localStorage.getItem("cosmo-theme")||"dark",voice:localStorage.getItem("cosmo-voice")||"",speak:localStorage.getItem("cosmo-speak")==="true",jarvisMode:localStorage.getItem("cosmo-jarvis-mode")==="true",memoryEnabled:localStorage.getItem("cosmo-memory-enabled")!=="false",profileName:localStorage.getItem("cosmo-profile-name")||""
+ }};
+}
+function mergeCloudData(local,remote){
+ const map=new Map();
+ for(const item of [...(remote.conversations||[]),...(local.conversations||[])])if(item&&typeof item.id==="string"){const old=map.get(item.id);if(!old||(item.updatedAt||0)>=(old.updatedAt||0))map.set(item.id,item)}
+ const unique=(items,keyfn,limit)=>{const m=new Map();for(const x of items||[]){if(!x||typeof x!=="object")continue;const key=keyfn(x);if(key&&!m.has(key))m.set(key,x)}return [...m.values()].slice(-limit)};
+ const memory=[...(remote.memory||"").split(/\n+/),...(local.memory||"").split(/\n+/)].map(x=>x.trim()).filter(Boolean);
+ const seen=new Set();
+ const uniqueMemory=memory.filter(x=>{const k=x.toLocaleLowerCase();if(seen.has(k))return false;seen.add(k);return true}).slice(-12).join("\n").slice(0,1500);
+ return {memory:uniqueMemory,conversations:[...map.values()].sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).slice(0,50),
+  tasks:unique([...(remote.tasks||[]),...(local.tasks||[])],x=>String(x.id||x.text||JSON.stringify(x)),500),
+  notes:unique([...(remote.notes||[]),...(local.notes||[])],x=>String(x.id||((x.title||"")+"|"+(x.text||""))),200),
+  preferences:{...(local.preferences||{}),...(remote.preferences||{})}};
+}
+function applyCloudData(data){
+ window.cosmoCloud.ready=false;
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(data.conversations||[]));
+ localStorage.setItem("cosmo-memory",String(data.memory||"").slice(0,1500));
+ localStorage.setItem("cosmo-tasks-v1",JSON.stringify(data.tasks||[]));
+ localStorage.setItem("cosmo-notes-v1",JSON.stringify(data.notes||[]));
+ conversations=(data.conversations||[]).filter(c=>c&&typeof c.id==="string"&&Array.isArray(c.messages)).slice(0,50);
+ cosmoTasks=Array.isArray(data.tasks)?data.tasks.slice(0,500):[];
+ cosmoNotes=Array.isArray(data.notes)?data.notes.slice(0,200):[];
+ const p=data.preferences||{};
+ const map={personality:"cosmo-personality",language:"cosmo-language",color:"cosmo-color",theme:"cosmo-theme",voice:"cosmo-voice",speak:"cosmo-speak",jarvisMode:"cosmo-jarvis-mode",memoryEnabled:"cosmo-memory-enabled",profileName:"cosmo-profile-name"};
+ for(const [key,storageKey] of Object.entries(map))if(p[key]!==undefined)localStorage.setItem(storageKey,String(p[key]));
+ if(typeof memoryInput!=="undefined")memoryInput.value=data.memory||"";
+ if(typeof personalitySelect!=="undefined"&&p.personality)personalitySelect.value=p.personality;
+ if(typeof languageSelect!=="undefined"&&p.language)languageSelect.value=p.language;
+ if(typeof colorSelect!=="undefined"&&p.color)colorSelect.value=p.color;
+ if(typeof profileNameInput!=="undefined"&&p.profileName)profileNameInput.value=p.profileName;
+ if(typeof memoryEnabled!=="undefined")memoryEnabled.checked=p.memoryEnabled!==false;
+ if(typeof themeSelect!=="undefined"&&p.theme){themeSelect.value=p.theme;applyTheme(p.theme)}
+ if(typeof voiceSelect!=="undefined"&&p.voice)voiceSelect.value=p.voice;
+ if(typeof sidebarAccountLabel!=="undefined"&&p.profileName)sidebarAccountLabel.textContent=p.profileName;
+ setJarvisMode(p.jarvisMode===true||p.jarvisMode==="true",false);
+ if(typeof applyAccent==="function")applyAccent();
+ if(typeof updateMemoryStatus==="function")updateMemoryStatus();
+ renderSidebarRecent();
+ window.cosmoCloud.ready=true;
+}
+async function cloudRequest(url,method="GET",body=null){
+ const headers={"Accept":"application/json"};
+ if(body!==null)headers["Content-Type"]="application/json";
+ if(method!=="GET")headers["X-CSRF-Token"]=window.cosmoCloud.csrfToken;
+ const r=await fetch(url,{method,headers,credentials:"same-origin",cache:"no-store",body:body===null?undefined:JSON.stringify(body)});
+ const d=await r.json().catch(()=>({}));
+ if(!r.ok)throw new Error(d.error||"Falha na comunicação com a nuvem.");
+ if(d.csrf_token)window.cosmoCloud.csrfToken=d.csrf_token;
+ return d;
+}
+async function synchronizeCloud(showMessage=false){
+ const c=window.cosmoCloud;
+ if(!c.authenticated||!c.available||c.busy)return;
+ c.busy=true;updateAccountUI();
+ try{
+  const remote=await cloudRequest("/api/sync");
+  const local=localCloudData();
+  const remoteHasData=!!(remote.memory||(remote.conversations||[]).length||(remote.tasks||[]).length||(remote.notes||[]).length||Object.keys(remote.preferences||{}).length);
+  const merged=remoteHasData?mergeCloudData(local,remote):local;
+  applyCloudData(merged);
+  await cloudRequest("/api/sync","PUT",merged);
+  if(showMessage){setAccountStatus("Sincronização concluída. Conversas, memória, tarefas e notas foram sincronizadas.","success");notify("Cosmo sincronizado com a nuvem")}
+ }catch(e){if(showMessage)setAccountStatus(e.message+" Seus dados locais foram mantidos.","error");else console.warn("Cosmo cloud sync:",e.message)}
+ finally{c.busy=false;updateAccountUI();if(c.pendingSync){c.pendingSync=false;window.scheduleCosmoCloudSync()}}
+}
+window.scheduleCosmoCloudSync=function(){
+ const c=window.cosmoCloud;
+ if(!c||!c.ready||!c.authenticated||!c.available)return;
+ if(c.busy){c.pendingSync=true;return;}
+ clearTimeout(c.timer);
+ c.timer=setTimeout(async()=>{
+  c.busy=true;updateAccountUI();
+  try{const local=localCloudData();await cloudRequest("/api/sync","PUT",local);setCloudHud()}
+  catch(e){if(e.message.includes("Entre na sua conta")||e.message.includes("Sessão inválida")){c.authenticated=false;c.email=null;updateAccountUI()}}
+  finally{c.busy=false;updateAccountUI();if(c.pendingSync){c.pendingSync=false;window.scheduleCosmoCloudSync()}}
+ },1200);
+};
+function openAccountPanel(){document.querySelector("#accountOverlay").hidden=false;refreshCloudStatus().then(()=>{if(window.cosmoCloud.authenticated)synchronizeCloud(false)});document.querySelector("#accountEmail").focus()}
+function closeAccountPanel(){document.querySelector("#accountOverlay").hidden=true}
+document.querySelector("#accountButton").addEventListener("click",openAccountPanel);
+document.querySelector("#accountClose").addEventListener("click",closeAccountPanel);
+document.querySelector("#accountOverlay").addEventListener("click",e=>{if(e.target===e.currentTarget)closeAccountPanel()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!document.querySelector("#accountOverlay").hidden)closeAccountPanel()});
+document.querySelector("#accountModeSwitch").addEventListener("click",()=>{
+ const c=window.cosmoCloud;c.mode=c.mode==="login"?"register":"login";
+ document.querySelector("#accountHeading").textContent=c.mode==="register"?"CRIAR COSMO ID":"COSMO ID / CLOUD LINK";
+ updateAccountUI();setAccountStatus(c.mode==="register"?"Use um e-mail válido e uma senha exclusiva com pelo menos 10 caracteres.":"Entre com seu e-mail e senha.");
+});
+document.querySelector("#accountForm").addEventListener("submit",async e=>{
+ e.preventDefault();const c=window.cosmoCloud;if(!c.available||c.busy)return;
+ const email=document.querySelector("#accountEmail").value.trim();
+ const password=document.querySelector("#accountPassword").value;
+ c.busy=true;updateAccountUI();setAccountStatus(c.mode==="register"?"Criando conta…":"Entrando…");
+ try{
+  const d=await cloudRequest(c.mode==="register"?"/api/auth/register":"/api/auth/login","POST",{email,password});
+  c.authenticated=true;c.email=d.email;c.csrfToken=d.csrf_token||c.csrfToken;c.mode="login";c.busy=false;
+  document.querySelector("#accountPassword").value="";
+  updateAccountUI();await synchronizeCloud(true);
+ }catch(err){setAccountStatus(err.message,"error")}
+ finally{c.busy=false;updateAccountUI()}
+});
+document.querySelector("#accountSyncNow").addEventListener("click",()=>synchronizeCloud(true));
+document.querySelector("#accountLogout").addEventListener("click",async()=>{
+ const c=window.cosmoCloud;try{await cloudRequest("/api/auth/logout","POST",{});c.authenticated=false;c.email=null;c.ready=false;c.mode="login";updateAccountUI();setAccountStatus("Você saiu da conta. Seus dados locais foram mantidos.","success")}catch(e){setAccountStatus(e.message,"error")}
+});
+document.querySelector("#accountDelete").addEventListener("click",async()=>{
+ const password=prompt("Para excluir permanentemente sua conta e os dados da nuvem, digite sua senha:");
+ if(password===null)return;
+ if(!confirm("Confirma excluir permanentemente a conta e os dados armazenados na nuvem? Os dados locais deste navegador não serão apagados."))return;
+ const c=window.cosmoCloud;
+ try{await cloudRequest("/api/account","DELETE",{password});c.authenticated=false;c.email=null;c.ready=false;c.mode="login";updateAccountUI();setAccountStatus("Conta e dados da nuvem excluídos. A cópia local deste navegador foi mantida.","success")}
+ catch(e){setAccountStatus(e.message,"error")}
+});
+async function initCosmoCloud(){
+ await refreshCloudStatus();
+ if(window.cosmoCloud.authenticated){await synchronizeCloud(false);setAccountStatus("Conectado como "+window.cosmoCloud.email+". Sincronização ativa.","success")}
+}
+function updateJarvisClock(){const el=document.querySelector("#jarvisHudClock");if(el)el.textContent=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" • LOCAL"}
+updateJarvisClock();setInterval(updateJarvisClock,1000);
+initCosmoCloud();
+
+// Cosmo Command Deck: relógio local, notícias recentes e comandos seguros de abertura de sites.
+(function initCosmoCommandDeck(){
+ const clock=document.getElementById('cosmoClock');
+ const tick=()=>{if(clock)clock.textContent=new Intl.DateTimeFormat('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(new Date())};
+ tick();setInterval(tick,1000);
+ const status=document.getElementById('cosmoNewsStatus'),list=document.getElementById('cosmoNewsList'),updated=document.getElementById('cosmoNewsUpdated'),refresh=document.getElementById('refreshCosmoNews');
+ async function refreshNews(){
+  if(!status||!list)return;
+  status.textContent='Atualizando notícias…';refresh?.setAttribute('aria-busy','true');
+  try{
+   const response=await fetch('/api/news?q='+encodeURIComponent('tecnologia inteligência artificial Brasil'),{cache:'no-store'});
+   const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||'Feed indisponível');
+   list.replaceChildren();
+   (data.items||[]).slice(0,4).forEach(item=>{
+    if(!item.title||!item.url)return;
+    let url;try{url=new URL(item.url);if(!['https:','http:'].includes(url.protocol))return}catch{return}
+    const a=document.createElement('a');a.className='news-item';a.href=url.href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=item.title;
+    const meta=document.createElement('span');meta.textContent=(item.published?new Date(item.published).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):'Fonte: Google News');a.appendChild(meta);list.appendChild(a);
+   });
+   status.textContent=list.children.length?'Manchetes recentes • selecione para abrir a fonte':'Nenhuma manchete disponível agora.';
+   updated.textContent='ATUALIZADO '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  }catch(error){status.textContent='Não foi possível atualizar. Tente novamente em instantes.'}
+  finally{refresh?.removeAttribute('aria-busy')}
+ }
+ refresh?.addEventListener('click',refreshNews);refreshNews();setInterval(refreshNews,5*60*1000);
+ // O comando abre apenas destinos conhecidos; URLs arbitrárias ditadas não são executadas.
+ window.cosmoOpenKnownSite=function(name){
+  const sites={'google':'https://www.google.com/','youtube':'https://www.youtube.com/','youtub':'https://www.youtube.com/','youtube music':'https://music.youtube.com/','wikipedia':'https://pt.wikipedia.org/','wikipédia':'https://pt.wikipedia.org/','github':'https://github.com/','gmail':'https://mail.google.com/','google maps':'https://maps.google.com/','mapas':'https://maps.google.com/','instagram':'https://www.instagram.com/','whatsapp':'https://web.whatsapp.com/','tiktok':'https://www.tiktok.com/','netflix':'https://www.netflix.com/','spotify':'https://open.spotify.com/','render':'https://dashboard.render.com/','github do cosmo':'https://github.com/kauplayon/kaubot'};
+  const url=sites[String(name||'').toLocaleLowerCase('pt-BR').trim()];
+  if(!url)return false;
+  window.location.assign(url);return true;
+ };
+})();
+
+</script><script src="{{ url_for('static', filename='cosmo-cinematic-hud-v4.js') }}?v=4"></script>
+</body></html>
 

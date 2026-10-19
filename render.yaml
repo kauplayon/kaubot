@@ -7,6 +7,10 @@ services:
     startCommand: gunicorn app:app
     healthCheckPath: /health
     envVars:
+      - key: SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
       - key: CLOUDFLARE_API_TOKEN
         sync: false
       - key: CLOUDFLARE_ACCOUNT_ID

@@ -1,12 +1,84 @@
 import os
+import re
+import hmac
+import json
+import secrets
+import time
+from functools import wraps
+
 import requests
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, session
 from dotenv import load_dotenv
-from cosmo_tools import build_tool_context
+from werkzeug.security import generate_password_hash, check_password_hash
+from cosmo_tools import build_tool_context, current_news_search
+from cosmo_storage import User, UserData, storage_ready, session_factory, get_or_create_data, configure_storage
 
 load_dotenv()
+configure_storage()
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
+app.config.update(
+    SECRET_KEY=os.getenv("SECRET_KEY") or secrets.token_hex(32),
+    MAX_CONTENT_LENGTH=8 * 1024 * 1024,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=(os.getenv("RENDER") == "true" or os.getenv("SESSION_COOKIE_SECURE", "").lower() == "true"),
+    PERMANENT_SESSION_LIFETIME=60 * 60 * 24 * 30,
+)
+
+_AUTH_ATTEMPTS = {}
+def _auth_rate_limited():
+    now = time.monotonic()
+    key = request.remote_addr or "unknown"
+    attempts = [stamp for stamp in _AUTH_ATTEMPTS.get(key, []) if now - stamp < 900]
+    if len(attempts) >= 12:
+        _AUTH_ATTEMPTS[key] = attempts
+        return True
+    attempts.append(now)
+    _AUTH_ATTEMPTS[key] = attempts
+    return False
+
+def _csrf_token():
+    token = session.get("csrf_token")
+    if not token:
+        token = secrets.token_urlsafe(32)
+        session["csrf_token"] = token
+    return token
+
+def _csrf_ok():
+    supplied = request.headers.get("X-CSRF-Token", "")
+    expected = session.get("csrf_token", "")
+    return bool(supplied and expected and hmac.compare_digest(supplied, expected))
+
+def _json_size_ok(data, limit=1_000_000):
+    try:
+        return len(json.dumps(data, ensure_ascii=False, separators=(",", ":")).encode("utf-8")) <= limit
+    except (TypeError, ValueError):
+        return False
+
+def _current_user(db):
+    user_id = session.get("user_id")
+    return db.get(User, user_id) if isinstance(user_id, int) else None
+
+def auth_available():
+    return storage_ready() and bool(os.getenv("SECRET_KEY"))
+
+def require_login(fn):
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
+        if not auth_available():
+            return jsonify({"error": "Memória em nuvem indisponível. Configure DATABASE_URL no Render."}), 503
+        if not session.get("user_id"):
+            return jsonify({"error": "Entre na sua conta para continuar."}), 401
+        return fn(*args, **kwargs)
+    return wrapped
+
+@app.after_request
+def add_security_headers(response):
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    response.headers.setdefault("Permissions-Policy", "camera=(), geolocation=()")
+    return response
 
 api_token = os.getenv("CLOUDFLARE_API_TOKEN")
 account_id = os.getenv("CLOUDFLARE_ACCOUNT_ID")
@@ -53,8 +125,193 @@ def health():
         "status": "ok",
         "ai_configured": client_configured,
         "vision_configured": client_configured,
-        "version": "1.0 — Em desenvolvimento"
+        "persistent_storage_configured": storage_ready(),
+        "account_auth_configured": auth_available(),
+        "version": "3.0 — JARVIS em desenvolvimento"
     })
+
+@app.get("/api/auth/status")
+def auth_status():
+    return jsonify({
+        "available": auth_available(),
+        "authenticated": bool(session.get("user_id")) and storage_ready(),
+        "email": session.get("user_email") if session.get("user_id") else None,
+        "csrf_token": _csrf_token(),
+    })
+
+@app.post("/api/auth/register")
+def auth_register():
+    if not auth_available():
+        return jsonify({"error": "Memória em nuvem indisponível. Configure DATABASE_URL e SECRET_KEY no Render."}), 503
+    if not _csrf_ok():
+        return jsonify({"error": "Sessão de segurança expirada. Atualize a página e tente novamente."}), 400
+    if _auth_rate_limited():
+        return jsonify({"error": "Muitas tentativas. Aguarde 15 minutos antes de tentar novamente."}), 429
+    data = request.get_json(silent=True) or {}
+    email = str(data.get("email", "")).strip().lower()
+    password = str(data.get("password", ""))
+    if len(email) > 254 or not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", email):
+        return jsonify({"error": "Informe um e-mail válido."}), 400
+    if len(password) < 10 or len(password) > 256:
+        return jsonify({"error": "A senha precisa ter entre 10 e 256 caracteres."}), 400
+    db = session_factory()
+    try:
+        if db.query(User).filter_by(email=email).first():
+            return jsonify({"error": "Não foi possível criar a conta com esses dados. Confira o e-mail ou entre na conta existente."}), 409
+        user = User(email=email, password_hash=generate_password_hash(password, method="scrypt"))
+        db.add(user)
+        db.flush()
+        db.add(UserData(user_id=user.id, memory="", conversations=[], tasks=[], notes=[], preferences={}))
+        db.commit()
+        session.clear()
+        session["user_id"] = user.id
+        session["user_email"] = user.email
+        session.permanent = True
+        _AUTH_ATTEMPTS.pop(request.remote_addr or "unknown", None)
+        return jsonify({"ok": True, "email": user.email, "csrf_token": _csrf_token()}), 201
+    except Exception:
+        db.rollback()
+        app.logger.exception("Falha ao criar conta Cosmo")
+        return jsonify({"error": "Não foi possível criar a conta agora. Tente novamente mais tarde."}), 500
+    finally:
+        db.close()
+
+@app.post("/api/auth/login")
+def auth_login():
+    if not auth_available():
+        return jsonify({"error": "Memória em nuvem indisponível. Configure DATABASE_URL e SECRET_KEY no Render."}), 503
+    if not _csrf_ok():
+        return jsonify({"error": "Sessão de segurança expirada. Atualize a página e tente novamente."}), 400
+    if _auth_rate_limited():
+        return jsonify({"error": "Muitas tentativas. Aguarde 15 minutos antes de tentar novamente."}), 429
+    data = request.get_json(silent=True) or {}
+    email = str(data.get("email", "")).strip().lower()
+    password = str(data.get("password", ""))
+    db = session_factory()
+    try:
+        user = db.query(User).filter_by(email=email).first() if len(email) <= 254 else None
+        if not user or not check_password_hash(user.password_hash, password):
+            return jsonify({"error": "E-mail ou senha incorretos."}), 401
+        session.clear()
+        session["user_id"] = user.id
+        session["user_email"] = user.email
+        session.permanent = True
+        _AUTH_ATTEMPTS.pop(request.remote_addr or "unknown", None)
+        _csrf_token()
+        return jsonify({"ok": True, "email": user.email, "csrf_token": session["csrf_token"]})
+    finally:
+        db.close()
+
+@app.post("/api/auth/logout")
+def auth_logout():
+    if not _csrf_ok():
+        return jsonify({"error": "Sessão de segurança expirada. Atualize a página e tente novamente."}), 400
+    session.clear()
+    return jsonify({"ok": True, "csrf_token": _csrf_token()})
+
+@app.get("/api/sync")
+@require_login
+def sync_get():
+    db = session_factory()
+    try:
+        user = _current_user(db)
+        if user is None:
+            session.clear()
+            return jsonify({"error": "Sessão inválida. Entre novamente."}), 401
+        row = get_or_create_data(db, user)
+        db.commit()
+        return jsonify({
+            "memory": row.memory or "",
+            "conversations": row.conversations or [],
+            "tasks": row.tasks or [],
+            "notes": row.notes or [],
+            "preferences": row.preferences or {},
+            "updated_at": row.updated_at.isoformat() if row.updated_at else None,
+        })
+    finally:
+        db.close()
+
+@app.put("/api/sync")
+@require_login
+def sync_put():
+    if not _csrf_ok():
+        return jsonify({"error": "Sessão de segurança expirada. Atualize a página e tente novamente."}), 400
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict) or not _json_size_ok(data):
+        return jsonify({"error": "Os dados enviados são inválidos ou grandes demais."}), 413
+    memory = data.get("memory", "")
+    conversations = data.get("conversations", [])
+    tasks = data.get("tasks", [])
+    notes = data.get("notes", [])
+    preferences = data.get("preferences", {})
+    if not isinstance(memory, str) or len(memory) > 1500:
+        return jsonify({"error": "A memória precisa ser um texto de até 1500 caracteres."}), 400
+    limits = ((conversations, 50, "conversas"), (tasks, 500, "tarefas"), (notes, 200, "notas"))
+    for value, maximum, label in limits:
+        if not isinstance(value, list) or len(value) > maximum or any(not isinstance(item, dict) for item in value):
+            return jsonify({"error": "Lista de " + label + " inválida ou acima do limite."}), 400
+    if not isinstance(preferences, dict) or len(preferences) > 80:
+        return jsonify({"error": "Preferências inválidas."}), 400
+    db = session_factory()
+    try:
+        user = _current_user(db)
+        if user is None:
+            session.clear()
+            return jsonify({"error": "Sessão inválida. Entre novamente."}), 401
+        row = get_or_create_data(db, user)
+        row.memory = memory.strip()
+        row.conversations = conversations
+        row.tasks = tasks
+        row.notes = notes
+        row.preferences = preferences
+        db.commit()
+        return jsonify({"ok": True, "updated_at": row.updated_at.isoformat() if row.updated_at else None})
+    except Exception:
+        db.rollback()
+        app.logger.exception("Falha ao sincronizar dados Cosmo")
+        return jsonify({"error": "Não foi possível salvar a sincronização. Seus dados locais foram mantidos."}), 500
+    finally:
+        db.close()
+
+@app.delete("/api/account")
+@require_login
+def delete_account():
+    if not _csrf_ok():
+        return jsonify({"error": "Sessão de segurança expirada. Atualize a página e tente novamente."}), 400
+    data = request.get_json(silent=True) or {}
+    password = str(data.get("password", ""))
+    db = session_factory()
+    try:
+        user = _current_user(db)
+        if user is None or not check_password_hash(user.password_hash, password):
+            return jsonify({"error": "Senha incorreta. A conta não foi excluída."}), 403
+        db.delete(user)
+        db.commit()
+        session.clear()
+        return jsonify({"ok": True, "csrf_token": _csrf_token()})
+    except Exception:
+        db.rollback()
+        app.logger.exception("Falha ao excluir conta Cosmo")
+        return jsonify({"error": "Não foi possível excluir a conta agora."}), 500
+    finally:
+        db.close()
+
+@app.get("/api/news")
+def api_news():
+    """Briefing de notícias atuais via Google News RSS, sem chave de API."""
+    query = (request.args.get("q") or "tecnologia inteligência artificial Brasil").strip()[:180]
+    try:
+        data = current_news_search(query, limit=8)
+        return jsonify({
+            "ok": True,
+            "query": query,
+            "updated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "items": data.get("sources", [])[:8],
+        }), 200, {"Cache-Control": "no-store"}
+    except Exception:
+        app.logger.exception("Falha ao carregar briefing de notícias")
+        return jsonify({"ok": False, "error": "Não foi possível atualizar as notícias agora.", "items": []}), 502, {"Cache-Control": "no-store"}
+
 
 @app.post("/chat")
 def chat():
