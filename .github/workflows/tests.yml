@@ -31,6 +31,7 @@ jobs:
           Path("/tmp/cosmo-inline.js").write_text("\n".join(scripts), encoding="utf-8")
           PY
           node --check /tmp/cosmo-inline.js
+          node --check static/cosmo-cinematic-hud-v4.js
       - name: Run tests
         env:
           SECRET_KEY: test-only-secret-key-change-this
