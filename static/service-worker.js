@@ -1,4 +1,4 @@
-const CACHE_NAME="cosmo-4.0-cinematic-shell-v1";
+const CACHE_NAME="cosmo-5.0-jarvis-default-shell";
 const APP_SHELL=["/","/manifest.json","/static/fundo-cosmo.jpg","/static/logo-cosmo-transparent.png","/static/cosmo-cinematic-hud-v4.css","/static/cosmo-cinematic-hud-v4.js"];
 
 self.addEventListener("install",event=>{
