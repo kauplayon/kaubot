@@ -7,54 +7,33 @@
 <meta name="description" content="NEXUS — Central de comando pessoal.">
 <title>NEXUS | Central de Comando</title>
 <style>
-:root{--bg:#080610;--panel:#100c1c;--panel2:#171126;--purple:#a855f7;--cyan:#22d3ee;--text:#f5f1ff;--muted:#9289a8;--border:rgba(168,85,247,.2);--glow:rgba(168,85,247,.18)}
+:root{color-scheme:dark;--bg:#080610;--panel:#100c1c;--panel2:#171126;--purple:#a855f7;--cyan:#22d3ee;--text:#f5f1ff;--muted:#9289a8;--border:rgba(168,85,247,.2);--glow:rgba(168,85,247,.2);--green:#4ade80}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:radial-gradient(ellipse at 70% 0%,#26113d 0%,transparent 38%),var(--bg);color:var(--text);font-family:Inter,"Segoe UI",Arial,sans-serif;min-height:100vh}
+body{min-height:100vh;background:radial-gradient(ellipse at 68% -10%,rgba(103,37,151,.3),transparent 42%),radial-gradient(ellipse at 0 100%,rgba(18,81,103,.12),transparent 36%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,"Segoe UI",Arial,sans-serif}
 button,input{font:inherit}button{cursor:pointer}
 .app{display:flex;min-height:100vh}
-.sidebar{width:245px;background:rgba(10,7,18,.96);border-right:1px solid var(--border);padding:25px 17px;display:flex;flex-direction:column;flex-shrink:0;transition:.3s;z-index:5}
-.brand{display:flex;align-items:center;gap:12px;padding:5px 9px 32px}
-.brand-icon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--purple),#5016a4);display:grid;place-items:center;box-shadow:0 0 25px var(--glow);font-size:23px}
-.brand h1{font-size:21px;letter-spacing:4px}.brand small{display:block;font-size:9px;color:var(--cyan);letter-spacing:2px;margin-top:4px}
-.menu-label{font-size:10px;color:var(--muted);letter-spacing:2px;padding:10px}
-.nav-btn{display:flex;align-items:center;gap:13px;width:100%;border:1px solid transparent;background:transparent;color:var(--muted);padding:13px;border-radius:10px;margin-bottom:5px;text-align:left;transition:.2s;font-size:13px}
-.nav-btn:hover,.nav-btn.active{color:white;background:linear-gradient(90deg,rgba(168,85,247,.19),transparent);border-color:var(--border)}
-.nav-btn.active{box-shadow:inset 3px 0 var(--purple)}.nav-icon{font-size:18px;width:22px}
-.sidebar-bottom{margin-top:auto;padding:15px 10px 0}.system-mini{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px;font-size:11px;color:var(--muted)}
-.online{color:#4ade80;display:flex;gap:8px;align-items:center;margin-top:10px}.dot{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 10px #4ade80}
-.main{flex:1;min-width:0;padding:28px 35px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:38px}
-.top-left{display:flex;align-items:center;gap:14px}.menu-toggle{display:none;background:var(--panel);color:white;border:1px solid var(--border);border-radius:9px;padding:9px 12px}
-.page-tag{color:var(--cyan);font-size:10px;letter-spacing:2px;margin-bottom:7px}.topbar h2{font-size:22px;font-weight:600}
-.top-info{display:flex;align-items:center;gap:15px;color:var(--muted);font-size:12px}.profile{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#641bb0,var(--cyan));color:white;font-weight:bold}
-.page{display:none;animation:appear .35s ease}.page.active{display:block}
-@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.welcome{margin-bottom:25px}.welcome h2{font-size:clamp(23px,3vw,32px);margin-bottom:8px}.welcome p{color:var(--muted);font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
-.card{background:linear-gradient(145deg,rgba(23,17,38,.96),rgba(13,10,22,.96));border:1px solid var(--border);border-radius:15px;padding:21px;position:relative;overflow:hidden}
-.card-label{color:var(--muted);font-size:11px;letter-spacing:1px;margin-bottom:13px}.card-value{font-size:26px;font-weight:600}.card-sub{color:var(--muted);font-size:11px;margin-top:8px}.card-icon{font-size:22px;margin-bottom:15px}
-.core-card{grid-column:span 2;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.core{width:145px;height:145px;border-radius:50%;position:relative;display:grid;place-items:center;margin:10px 0 20px;background:radial-gradient(circle,#35145a 0%,#140b25 52%,transparent 70%);box-shadow:0 0 40px rgba(168,85,247,.2)}
-.core:before,.core:after{content:"";position:absolute;inset:5px;border-radius:50%;border:2px solid transparent;border-top-color:var(--purple);border-bottom-color:var(--cyan);animation:rotate 5s linear infinite}
-.core:after{inset:-9px;border-top-color:var(--cyan);border-bottom-color:var(--purple);animation-direction:reverse;animation-duration:8s}
-.core-center{width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d8b4fe,#8b35df 35%,#24103e 75%);box-shadow:0 0 35px var(--purple),0 0 65px rgba(34,211,238,.2);animation:pulse 2.5s ease-in-out infinite}
-@keyframes rotate{to{transform:rotate(360deg)}}@keyframes pulse{50%{transform:scale(1.1);box-shadow:0 0 50px var(--purple)}}
-.core-status{font-size:11px;color:var(--cyan);letter-spacing:3px}.core-caption{font-size:10px;color:var(--muted);margin-top:7px}
-.section-title{font-size:14px;margin:28px 0 15px;letter-spacing:1px}.module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
-.module{background:var(--panel);border:1px solid var(--border);padding:18px;border-radius:13px;transition:.2s}.module:hover{transform:translateY(-3px);border-color:var(--purple)}
-.module-icon{font-size:24px;margin-bottom:13px}.module h3{font-size:13px;margin-bottom:7px}.module p{color:var(--muted);font-size:11px;line-height:1.6}.module-status{color:var(--cyan);font-size:9px;margin-top:12px}
-.task-form{display:flex;gap:10px;margin:20px 0}.task-form input{flex:1;min-width:0;background:var(--panel);border:1px solid var(--border);color:white;border-radius:9px;padding:13px;outline:none}.task-form input:focus{border-color:var(--purple)}
-.action-btn{background:linear-gradient(110deg,#7926bc,#a855f7);border:0;color:white;padding:12px 18px;border-radius:9px;font-weight:600}.task-list{display:grid;gap:10px}
-.task{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:13px}.task span{flex:1;overflow-wrap:anywhere}.task.done span{text-decoration:line-through;color:var(--muted)}.task input{accent-color:var(--purple)}
-.delete-btn{border:0;color:#fb7185;background:transparent;font-size:17px}
-.app-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:20px}
-.app-link{text-decoration:none;color:white;background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:22px;text-align:center;transition:.2s}
-.app-link:hover{border-color:var(--cyan);transform:translateY(-3px)}.app-link div{font-size:28px;margin-bottom:10px}.app-link span{font-size:12px}
-.setting-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px 0;border-bottom:1px solid var(--border);font-size:13px}.setting-row p{color:var(--muted);font-size:11px;margin-top:5px}
-.color-options{display:flex;gap:9px}.color-btn{width:25px;height:25px;border:2px solid white;border-radius:50%}
-.footer{margin-top:35px;border-top:1px solid var(--border);padding-top:17px;display:flex;justify-content:space-between;color:var(--muted);font-size:10px;gap:10px}
-@media(max-width:900px){.sidebar{width:205px}.main{padding:25px 20px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:650px){.sidebar{position:fixed;left:-260px;top:0;bottom:0;width:245px}.sidebar.open{left:0}.menu-toggle{display:block}.main{padding:20px 15px}.topbar{margin-bottom:27px}.topbar h2{font-size:17px}.top-info{gap:9px;font-size:10px}.grid{grid-template-columns:1fr 1fr;gap:10px}.core-card{grid-column:span 2}.module-grid{grid-template-columns:1fr 1fr;gap:10px}.app-grid{grid-template-columns:1fr 1fr}.card{padding:16px}.card-value{font-size:21px}.welcome h2{font-size:24px}.footer{flex-direction:column}}
-@media(max-width:370px){.grid{grid-template-columns:1fr}.core-card{grid-column:span 1}.module-grid{grid-template-columns:1fr}}
+.sidebar{width:254px;flex-shrink:0;position:fixed;inset:0 auto 0 0;z-index:20;padding:26px 17px 20px;background:rgba(9,7,16,.94);border-right:1px solid var(--border);backdrop-filter:blur(22px);display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 9px 38px}.brand-icon{width:43px;height:43px;border-radius:14px;display:grid;place-items:center;font-size:23px;background:linear-gradient(145deg,#bd72ff,#5414a0);box-shadow:0 0 28px var(--glow)}.brand h1{font-size:21px;letter-spacing:4px}.brand small{display:block;color:var(--cyan);font-size:9px;letter-spacing:2.3px;margin-top:4px}
+.menu-label{padding:9px 11px;color:#706780;font-size:9px;letter-spacing:2px}.nav-btn{width:100%;display:flex;align-items:center;gap:13px;padding:13px 14px;margin:3px 0;border:1px solid transparent;border-radius:11px;background:transparent;color:#a49ab8;text-align:left;font-size:12px;transition:.2s}.nav-btn:hover,.nav-btn.active{color:white;background:linear-gradient(100deg,rgba(168,85,247,.19),rgba(34,211,238,.035));border-color:var(--border)}.nav-btn.active{box-shadow:inset 3px 0 var(--purple)}.nav-icon{width:20px;text-align:center;font-size:17px;color:var(--cyan)}
+.sidebar-bottom{margin-top:auto}.system-mini{padding:15px;border:1px solid var(--border);border-radius:13px;background:linear-gradient(145deg,rgba(25,16,40,.9),rgba(12,10,20,.9));font-size:10px;color:var(--muted);letter-spacing:1px}.online{display:flex;align-items:center;gap:8px;margin-top:11px;color:var(--green);letter-spacing:0}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+.main{width:calc(100% - 254px);margin-left:254px;padding:27px clamp(20px,3vw,48px) 25px;min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:36px}.top-left{display:flex;align-items:center;gap:13px}.menu-toggle{display:none;background:var(--panel);color:white;border:1px solid var(--border);border-radius:9px;padding:9px 12px}.page-tag{font-size:9px;color:var(--cyan);letter-spacing:2.3px;margin-bottom:6px}.topbar h2{font-size:20px;font-weight:600}.top-info{display:flex;align-items:center;gap:16px;color:var(--muted);font-size:11px}.top-status{display:flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid rgba(74,222,128,.18);border-radius:20px;color:var(--green);background:rgba(74,222,128,.05)}.profile{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#7026b7,#1a8299);font-weight:700}
+.page{display:none;animation:appear .3s ease}.page.active{display:block}@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.welcome{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;margin-bottom:24px}.welcome h2{font-size:clamp(24px,3vw,34px);letter-spacing:-.8px;margin-bottom:7px}.welcome p{color:var(--muted);font-size:12px}.welcome-mark{font-size:10px;letter-spacing:1.5px;color:#8d7ca9;border:1px solid var(--border);padding:9px 12px;border-radius:8px;white-space:nowrap}
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(245px,.8fr);gap:17px}
+.card{background:linear-gradient(145deg,rgba(23,17,38,.93),rgba(12,10,21,.97));border:1px solid var(--border);border-radius:17px;padding:20px;position:relative;overflow:hidden;box-shadow:0 12px 35px rgba(0,0,0,.12)}
+.core-card{min-height:350px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;background:radial-gradient(ellipse at 50% 47%,rgba(111,35,166,.2),transparent 50%),linear-gradient(145deg,#171026,#0c0a15)}.eyebrow{font-size:9px;color:#a99cbe;letter-spacing:2px}.core{width:176px;height:176px;margin:24px 0 17px;position:relative;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,rgba(125,44,190,.28),rgba(20,10,35,.15) 62%,transparent 70%);filter:drop-shadow(0 0 22px rgba(168,85,247,.22))}.core:before,.core:after{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid transparent;border-top-color:var(--purple);border-bottom-color:var(--cyan);animation:spin 6s linear infinite}.core:after{inset:-9px;border-left-color:rgba(34,211,238,.85);border-right-color:rgba(168,85,247,.85);animation-direction:reverse;animation-duration:9s}.core-ring{position:absolute;inset:19px;border:1px dashed rgba(34,211,238,.38);border-radius:50%;animation:spin 18s linear infinite}.core-center{width:91px;height:91px;border-radius:50%;background:radial-gradient(circle at 33% 27%,#f1d9ff 0%,#bb72fa 18%,#7723bd 43%,#1b0c30 77%);box-shadow:0 0 25px #9c43e8,0 0 65px rgba(34,211,238,.2),inset -8px -10px 20px rgba(0,0,0,.4);animation:pulse 3s ease-in-out infinite}.core-status{font-size:11px;color:var(--cyan);letter-spacing:3px}.core-caption{font-size:9px;color:#80758f;letter-spacing:1.4px;margin-top:8px}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes pulse{50%{transform:scale(1.07);box-shadow:0 0 38px #a855f7,0 0 78px rgba(34,211,238,.25)}}
+.side-stack{display:grid;grid-template-rows:1fr 1fr;gap:17px}.metric-card{display:flex;flex-direction:column;justify-content:space-between;min-height:160px}.metric-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:10px;letter-spacing:1px}.metric-icon{font-size:18px;color:var(--cyan)}.metric-value{font-size:clamp(24px,3vw,34px);font-weight:650;letter-spacing:-1px;margin-top:15px}.metric-foot{font-size:10px;color:var(--muted);margin-top:5px}.metric-foot.good{color:var(--green)}.metric-number{color:var(--cyan)}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:26px 0 13px}.section-head h3{font-size:11px;letter-spacing:1.8px}.section-head span{font-size:9px;color:var(--muted)}
+.module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.module{background:rgba(17,13,28,.85);border:1px solid var(--border);border-radius:14px;padding:17px;transition:.2s}.module:hover{transform:translateY(-3px);border-color:rgba(168,85,247,.55)}.module-icon{width:37px;height:37px;display:grid;place-items:center;border-radius:11px;background:rgba(168,85,247,.12);color:var(--cyan);font-size:18px;margin-bottom:14px}.module h3{font-size:12px;margin-bottom:6px}.module p{color:var(--muted);font-size:10px;line-height:1.6}.module-status{font-size:8px;letter-spacing:1px;color:var(--cyan);margin-top:13px}
+.task-form{display:flex;gap:10px;margin:18px 0 22px}.task-form input{flex:1;min-width:0;background:#0b0812;border:1px solid var(--border);color:white;border-radius:10px;padding:13px;outline:none}.task-form input:focus{border-color:var(--purple)}.action-btn{background:linear-gradient(110deg,#7024b4,#a855f7);border:0;color:white;padding:12px 18px;border-radius:9px;font-size:11px;font-weight:650}.task-list{display:grid;gap:10px}.task{display:flex;align-items:center;gap:12px;background:rgba(12,9,20,.8);border:1px solid var(--border);border-radius:10px;padding:13px;font-size:12px}.task span{flex:1;overflow-wrap:anywhere}.task.done span{text-decoration:line-through;color:var(--muted)}.task input{accent-color:var(--purple)}.delete-btn{border:0;color:#fb7185;background:transparent;font-size:18px}.app-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}.app-link{text-decoration:none;color:white;background:linear-gradient(145deg,#171126,#0d0a16);border:1px solid var(--border);border-radius:14px;padding:22px;text-align:center;transition:.2s}.app-link:hover{border-color:var(--cyan);transform:translateY(-3px)}.app-link div{font-size:27px;color:var(--cyan);margin-bottom:10px}.app-link span{font-size:11px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:17px 0;border-bottom:1px solid var(--border);font-size:12px}.setting-row p{color:var(--muted);font-size:10px;margin-top:5px}.color-options{display:flex;gap:9px}.color-btn{width:25px;height:25px;border:2px solid rgba(255,255,255,.75);border-radius:50%}.footer{margin-top:30px;border-top:1px solid var(--border);padding-top:16px;display:flex;justify-content:space-between;color:#716781;font-size:9px;letter-spacing:1px;gap:10px}
+.mobile-overlay{display:none}
+@media(max-width:1050px){.sidebar{width:220px}.main{width:calc(100% - 220px);margin-left:220px;padding-inline:22px}.dashboard-grid{grid-template-columns:minmax(0,1.2fr) minmax(220px,.8fr)}.module-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.sidebar{width:260px;left:-270px;transition:left .25s ease;box-shadow:15px 0 50px rgba(0,0,0,.4)}.sidebar.open{left:0}.mobile-overlay.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:15}.main{width:100%;margin:0;padding:19px 15px 92px}.menu-toggle{display:block}.topbar{margin-bottom:27px}.topbar h2{font-size:17px}.top-info{gap:9px;font-size:10px}.top-status{padding:7px 9px}.top-status .status-text{display:none}.welcome{align-items:flex-start}.welcome h2{font-size:25px}.welcome-mark{display:none}.dashboard-grid{grid-template-columns:1fr;gap:12px}.core-card{min-height:300px;order:0}.side-stack{grid-template-columns:1fr 1fr;grid-template-rows:auto;gap:12px}.metric-card{min-height:135px;padding:15px}.metric-value{font-size:25px}.module-grid{grid-template-columns:1fr 1fr;gap:10px}.module{padding:14px}.app-grid{grid-template-columns:1fr 1fr;gap:10px}.app-link{padding:18px 12px}.card{padding:17px}.section-head{margin-top:22px}.footer{flex-direction:column;align-items:center;text-align:center}.mobile-nav{position:fixed;z-index:12;left:10px;right:10px;bottom:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:8px;background:rgba(13,9,22,.94);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(18px);box-shadow:0 8px 35px rgba(0,0,0,.45)}.mobile-nav button{border:0;border-radius:10px;background:transparent;color:#9289a8;padding:8px 3px;font-size:9px;display:flex;flex-direction:column;align-items:center;gap:4px}.mobile-nav button span{font-size:17px}.mobile-nav button.active{color:white;background:rgba(168,85,247,.18)}}
+@media(min-width:721px){.mobile-nav{display:none}}
+@media(max-width:390px){.main{padding-inline:12px}.side-stack{gap:8px}.metric-card{padding:12px}.metric-value{font-size:22px}.module-grid{gap:8px}.module{padding:12px}.core{width:155px;height:155px}.core-center{width:80px;height:80px}.task-form{flex-direction:column}.task-form .action-btn{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -69,33 +48,36 @@ button,input{font:inherit}button{cursor:pointer}
   <button class="nav-btn" data-page="settings"><span class="nav-icon">⚙</span> Configurações</button>
   <div class="sidebar-bottom"><div class="system-mini">NEXUS SYSTEM<div class="online"><span class="dot"></span> Interface ativa</div></div></div>
 </aside>
+<div class="mobile-overlay" id="mobileOverlay"></div>
 <main class="main">
 <header class="topbar">
   <div class="top-left"><button class="menu-toggle" id="menuToggle" aria-label="Abrir menu">☰</button><div><div class="page-tag">NEXUS / INTERFACE PRINCIPAL</div><h2 id="pageTitle">Visão geral</h2></div></div>
-  <div class="top-info"><span id="headerDate"></span><div class="profile">N</div></div>
+  <div class="top-info"><div class="top-status"><span class="dot"></span><span class="status-text">SISTEMA ONLINE</span></div><span id="headerDate"></span><div class="profile">N</div></div>
 </header>
 <section class="page active" id="dashboard">
-  <div class="welcome"><h2>Bem-vindo ao NEXUS.</h2><p>Sua central de comando pessoal está pronta.</p></div>
-  <div class="grid">
-    <div class="card"><div class="card-icon">◷</div><div class="card-label">HORÁRIO LOCAL</div><div class="card-value" id="clock">--:--:--</div><div class="card-sub">Atualizado em tempo real</div></div>
-    <div class="card"><div class="card-icon">◈</div><div class="card-label">DATA ATUAL</div><div class="card-value" id="dateValue">--/--</div><div class="card-sub" id="weekday">Carregando...</div></div>
-    <div class="card"><div class="card-icon">⌁</div><div class="card-label">TAREFAS PENDENTES</div><div class="card-value" id="taskCount">0</div><div class="card-sub">Aguardando conclusão</div></div>
-    <div class="card core-card"><div class="card-label">NÚCLEO CENTRAL DE PROCESSAMENTO</div><div class="core"><div class="core-center"></div></div><div class="core-status">NEXUS CORE ONLINE</div><div class="core-caption">INTERFACE DE COMANDO ATIVA</div></div>
-    <div class="card"><div class="card-icon">⌘</div><div class="card-label">STATUS DA INTERFACE</div><div class="card-value" style="color:#4ade80;font-size:19px">ONLINE</div><div class="card-sub">Aplicação carregada</div></div>
+  <div class="welcome"><div><h2>Bem-vindo ao NEXUS.</h2><p>Sua central de comando pessoal está pronta.</p></div><div class="welcome-mark">✧ &nbsp; PERSONAL COMMAND CENTER</div></div>
+  <div class="dashboard-grid">
+    <div class="card core-card"><div class="eyebrow">NÚCLEO CENTRAL DE PROCESSAMENTO</div><div class="core"><div class="core-ring"></div><div class="core-center"></div></div><div class="core-status">NEXUS CORE ONLINE</div><div class="core-caption">INTERFACE DE COMANDO ATIVA</div></div>
+    <div class="side-stack">
+      <div class="card metric-card"><div class="metric-top"><span>HORÁRIO LOCAL</span><span class="metric-icon">◷</span></div><div><div class="metric-value" id="clock">--:--:--</div><div class="metric-foot">Atualizado em tempo real</div></div></div>
+      <div class="card metric-card"><div class="metric-top"><span>TAREFAS PENDENTES</span><span class="metric-icon">⌁</span></div><div><div class="metric-value metric-number" id="taskCount">0</div><div class="metric-foot">Aguardando conclusão</div></div></div>
+      <div class="card metric-card"><div class="metric-top"><span>DATA ATUAL</span><span class="metric-icon">◈</span></div><div><div class="metric-value" id="dateValue">--/--</div><div class="metric-foot" id="weekday">Carregando...</div></div></div>
+      <div class="card metric-card"><div class="metric-top"><span>STATUS DA INTERFACE</span><span class="metric-icon">⌘</span></div><div><div class="metric-value" style="color:#4ade80;font-size:23px">ONLINE</div><div class="metric-foot good">Aplicação carregada</div></div></div>
+    </div>
   </div>
-  <h3 class="section-title">MÓDULOS DO NEXUS</h3>
+  <div class="section-head"><h3>MÓDULOS DO NEXUS</h3><span>VISÃO GERAL DOS RECURSOS</span></div>
   <div class="module-grid">
-    <div class="module"><div class="module-icon">◉</div><h3>Inteligência artificial</h3><p>Assistente virtual e comunicação inteligente.</p><div class="module-status">EM DESENVOLVIMENTO</div></div>
-    <div class="module"><div class="module-icon">☁</div><h3>Clima</h3><p>Informações meteorológicas e previsão do tempo.</p><div class="module-status">AGUARDANDO INTEGRAÇÃO</div></div>
-    <div class="module"><div class="module-icon">▤</div><h3>Notícias</h3><p>Central de informações e acontecimentos.</p><div class="module-status">AGUARDANDO INTEGRAÇÃO</div></div>
+    <div class="module"><div class="module-icon">◉</div><h3>Inteligência artificial</h3><p>Área reservada para o assistente virtual e comunicação inteligente.</p><div class="module-status">EM DESENVOLVIMENTO</div></div>
+    <div class="module"><div class="module-icon">☁</div><h3>Clima</h3><p>Espaço para informações meteorológicas e previsão do tempo.</p><div class="module-status">AGUARDANDO INTEGRAÇÃO</div></div>
+    <div class="module"><div class="module-icon">▤</div><h3>Notícias</h3><p>Central para acompanhar informações e acontecimentos.</p><div class="module-status">AGUARDANDO INTEGRAÇÃO</div></div>
   </div>
 </section>
 <section class="page" id="tasks">
-  <div class="welcome"><h2>Gerenciador de tarefas</h2><p>Organize suas atividades dentro do NEXUS.</p></div>
-  <div class="card"><div class="card-label">NOVA ATIVIDADE</div><form class="task-form" id="taskForm"><input id="taskInput" type="text" placeholder="Digite uma tarefa..." maxlength="120" required><button class="action-btn" type="submit">Adicionar</button></form><div class="card-label">SUAS ATIVIDADES</div><div class="task-list" id="taskList"></div></div>
+  <div class="welcome"><div><h2>Gerenciador de tarefas</h2><p>Organize suas atividades dentro do NEXUS.</p></div></div>
+  <div class="card"><div class="eyebrow">NOVA ATIVIDADE</div><form class="task-form" id="taskForm"><input id="taskInput" type="text" placeholder="Digite uma tarefa..." maxlength="120" required><button class="action-btn" type="submit">＋ &nbsp; Adicionar tarefa</button></form><div class="eyebrow">SUAS ATIVIDADES</div><div class="task-list" id="taskList"></div></div>
 </section>
 <section class="page" id="apps">
-  <div class="welcome"><h2>Central de aplicativos</h2><p>Acesso rápido às suas plataformas favoritas.</p></div>
+  <div class="welcome"><div><h2>Central de aplicativos</h2><p>Acesso rápido às suas plataformas favoritas.</p></div></div>
   <div class="app-grid">
     <a class="app-link" href="https://www.youtube.com/" target="_blank" rel="noopener"><div>▶</div><span>YouTube</span></a>
     <a class="app-link" href="https://open.spotify.com/" target="_blank" rel="noopener"><div>♫</div><span>Spotify</span></a>
@@ -106,32 +88,43 @@ button,input{font:inherit}button{cursor:pointer}
   </div>
 </section>
 <section class="page" id="settings">
-  <div class="welcome"><h2>Configurações</h2><p>Personalize sua central de comando.</p></div>
-  <div class="card"><div class="card-label">PERSONALIZAÇÃO VISUAL</div>
+  <div class="welcome"><div><h2>Configurações</h2><p>Personalize sua central de comando.</p></div></div>
+  <div class="card"><div class="eyebrow">PERSONALIZAÇÃO VISUAL</div>
     <div class="setting-row"><div><strong>Cor principal</strong><p>Escolha a identidade visual do NEXUS.</p></div><div class="color-options"><button class="color-btn" style="background:#a855f7" data-color="#a855f7" aria-label="Roxo"></button><button class="color-btn" style="background:#2563eb" data-color="#3b82f6" aria-label="Azul"></button><button class="color-btn" style="background:#059669" data-color="#10b981" aria-label="Verde"></button></div></div>
-    <div class="setting-row"><div><strong>Nome do sistema</strong><p>NEXUS — Central de Comando</p></div><span style="color:var(--cyan)">v1.0</span></div>
+    <div class="setting-row"><div><strong>Nome do sistema</strong><p>NEXUS — Central de Comando</p></div><span style="color:var(--cyan)">v2.0</span></div>
     <div class="setting-row"><div><strong>Armazenamento de tarefas</strong><p>Dados salvos neste navegador.</p></div><span style="color:#4ade80">LOCAL</span></div>
   </div>
 </section>
 <footer class="footer"><span>NEXUS COMMAND CENTER © 2026</span><span>INTERFACE DE PRODUTIVIDADE PESSOAL</span></footer>
 </main>
+<nav class="mobile-nav" aria-label="Navegação principal">
+  <button class="active" data-mobile-page="dashboard"><span>◈</span>Início</button>
+  <button data-mobile-page="tasks"><span>☷</span>Tarefas</button>
+  <button data-mobile-page="apps"><span>▦</span>Apps</button>
+  <button data-mobile-page="settings"><span>⚙</span>Ajustes</button>
+</nav>
 </div>
 <script>
 "use strict";
 const navButtons=document.querySelectorAll(".nav-btn");
+const mobileButtons=document.querySelectorAll(".mobile-nav button");
 const pages=document.querySelectorAll(".page");
 const pageTitle=document.getElementById("pageTitle");
 const titles={dashboard:"Visão geral",tasks:"Gerenciador de tarefas",apps:"Aplicativos",settings:"Configurações"};
-navButtons.forEach(button=>button.addEventListener("click",()=>{
-  const target=button.dataset.page;
-  navButtons.forEach(item=>item.classList.remove("active"));
-  button.classList.add("active");
-  pages.forEach(page=>page.classList.remove("active"));
-  document.getElementById(target).classList.add("active");
-  pageTitle.textContent=titles[target];
-  document.getElementById("sidebar").classList.remove("open");
-}));
-document.getElementById("menuToggle").addEventListener("click",()=>document.getElementById("sidebar").classList.toggle("open"));
+function navigate(target){
+  navButtons.forEach(item=>item.classList.toggle("active",item.dataset.page===target));
+  mobileButtons.forEach(item=>item.classList.toggle("active",item.dataset.mobilePage===target));
+  pages.forEach(page=>page.classList.toggle("active",page.id===target));
+  pageTitle.textContent=titles[target]||"Visão geral";
+  closeMenu();
+}
+navButtons.forEach(button=>button.addEventListener("click",()=>navigate(button.dataset.page)));
+mobileButtons.forEach(button=>button.addEventListener("click",()=>navigate(button.dataset.mobilePage)));
+const sidebar=document.getElementById("sidebar");
+const overlay=document.getElementById("mobileOverlay");
+function closeMenu(){sidebar.classList.remove("open");overlay.classList.remove("show")}
+document.getElementById("menuToggle").addEventListener("click",()=>{sidebar.classList.toggle("open");overlay.classList.toggle("show")});
+overlay.addEventListener("click",closeMenu);
 function updateClock(){
   const now=new Date();
   document.getElementById("clock").textContent=now.toLocaleTimeString("pt-BR");
