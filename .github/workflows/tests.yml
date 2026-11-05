@@ -1,4 +1,4 @@
-name: Cosmo tests
+name: NEXUS checks
 
 on:
   push:
@@ -18,21 +18,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt pytest
       - name: Check Python syntax
-        run: python -m compileall -q app.py cosmo_storage.py cosmo_tools.py tests
-      - name: Check browser JavaScript syntax
-        run: |
-          python - <<'PY'
-          import re
-          from pathlib import Path
-          html = Path("templates/index.html").read_text(encoding="utf-8")
-          scripts = re.findall(r"<script[^>]*>(.*?)</script>", html, re.S)
-          if not scripts:
-              raise SystemExit("No inline JavaScript found")
-          Path("/tmp/cosmo-inline.js").write_text("\n".join(scripts), encoding="utf-8")
-          PY
-          node --check /tmp/cosmo-inline.js
-          node --check static/cosmo-cinematic-hud-v4.js
+        run: python -m compileall -q app.py tests
       - name: Run tests
-        env:
-          SECRET_KEY: test-only-secret-key-change-this
         run: python -m pytest -q

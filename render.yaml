@@ -1,25 +1,11 @@
 services:
   - type: web
-    name: cosmo-chatbot
+    name: nexus-command-center
     runtime: python
     plan: free
     buildCommand: pip install --retries 10 --timeout 120 -r requirements.txt
     startCommand: gunicorn app:app
     healthCheckPath: /health
     envVars:
-      - key: SECRET_KEY
-        sync: false
-      - key: DATABASE_URL
-        sync: false
-      - key: CLOUDFLARE_API_TOKEN
-        sync: false
-      - key: CLOUDFLARE_ACCOUNT_ID
-        sync: false
-      - key: CLOUDFLARE_MODEL
-        value: "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
-      - key: CLOUDFLARE_VISION_MODEL
-        value: "@cf/meta/llama-4-scout-17b-16e-instruct"
-      - key: BOT_NAME
-        value: Cosmo
-      - key: BOT_PERSONALITY
-        value: "Amigável, paciente, curioso e didático. Use linguagem simples e natural."
+      - key: PYTHON_VERSION
+        value: 3.12.8
