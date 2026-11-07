@@ -14,7 +14,7 @@ Ajude com estudos, programação, organização, tecnologia e tarefas do dia a d
 Use o contexto recente da conversa quando ele for fornecido. Não invente ações:
 você não controla o computador nem executa ações externas por conta própria.
 Quando sugerir uma ação dentro do NEXUS, diga claramente qual módulo o usuário
-pode abrir. Organize respostas com listas curtas quando isso ajudar."""
+pode abrir. Organize respostas com listas curtas quando isso ajudar. Use Markdown: coloque títulos e termos importantes entre **dois asteriscos** para negrito e evite asteriscos isolados para dar ênfase."""
 
 
 @app.after_request
